@@ -1,16 +1,19 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import Header from './components/header/header';
-import Home from './components/header/Home/Home';
-import Login from './components/Login';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
+import Homepage from '../src/components/Homepage/Homepage'
+import Login from './components/Login';
+import TrailerPage from './components/TrailerPage/TrailerPage';
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<><Header/><Home/></>}/>
-      <Route path="/login" element={<Login/>}/>
-    </Routes>
+    <>
+        <Routes>
+          <Route exact path='/' element={<Homepage/>} />
+          <Route exact path='/' element={<TrailerPage/>}/>
+          <Route exact path="/login" element={<Login/>}/>
+        </Routes>
+    </>
   );
-}
+};
 
-export default App
+export default App;
