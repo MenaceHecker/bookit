@@ -1,8 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 import Homepage from '../src/components/Homepage/Homepage'
-import Login from './components/Login';
+import Login from './components/Login/Login';
 import TrailerPage from './components/TrailerPage/TrailerPage';
 const App = () => {
   return (
