@@ -1,0 +1,25 @@
+/* ManagePromotions.css */
+
+.body {
+    margin: 0 auto; 
+    max-width: 600px; 
+
+    padding-left: 195px;
+    padding-top: 20px;
+}
+
+.center_title {
+    color: white;
+}
+
+.addPromotions_button {
+    margin-left: 765px;
+
+    background: #e50813;
+    outline: none;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
