@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { Link } from 'react-router-dom';
 import "./header.css"
 import Logo from '../../assets/bookit-high-resolution-logo-colo.png'
 
@@ -36,7 +37,9 @@ const Header = () => {
               <input type="text" className="search-bar_input" placeholder="Search for Movies"/>
               <i className='fa fa-search' ></i>
             </div>
-            <i className='fa fa-user'></i>
+            <Link to="/login">
+              <i className='fa fa-user'></i>
+            </Link>
             <button className="btn_book">Book Now</button>
           </div>
         </div>
