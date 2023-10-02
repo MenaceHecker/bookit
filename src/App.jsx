@@ -6,6 +6,7 @@ import Signup from './components/Signup/Signup';
 import TrailerPage from './components/TrailerPage/TrailerPage';
 import MainAdmin from './Admin Pages/MainAdmin';
 import Login from './components/Login/Login';
+import Activate from './components/Activate/Activate';
 const App = () => {
   return (
     <>
@@ -13,7 +14,10 @@ const App = () => {
           <Route exact path='/' element={<Homepage/>} />
           <Route exact path='/TrailerPage' element={<TrailerPage/>}/>
           <Route exact path='/MainAdmin' element={<MainAdmin/>}/>
-
+          <Route exact path='/Homepage' element={<Homepage/>} />
+          <Route exact path='/Login' element={<Login/>} />
+          <Route exact path='/Signup' element={<Signup/>} />
+          <Route exact path='/Activate' element={<Activate/>} />
         </Routes>
     </>
   );
