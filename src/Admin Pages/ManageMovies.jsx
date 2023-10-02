@@ -17,6 +17,7 @@ import AdminSideBar from "./AdminSideBar/AdminSideBar";
 import AddMoviePopout from './MovieForms/AddMoviePopout';
 import { useState } from 'react';
 import './MovieForms/MovieForm.css'
+import Footer from "../components/footer/footer";
 
 function ManageMovies() {
 
@@ -82,7 +83,7 @@ function ManageMovies() {
         <div className = "table">
           <Table data={mockData} pageType="ManageMovies" movieType={movieType}  />
         </div>
-
+        <Footer/>
       </div>
      
     );

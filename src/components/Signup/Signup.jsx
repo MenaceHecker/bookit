@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
-
+import Header from '../header/header';
+import Footer from "../footer/footer";
 function Signup() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -32,6 +33,7 @@ function Signup() {
 
   return (
     <>
+      <Header/>
       <div className="center_title">Sign Up</div>
 
       <div className="signup_form">
@@ -66,6 +68,7 @@ function Signup() {
           </div>
         </form>
       </div>
+      <Footer/>
     </>
   );
 }
