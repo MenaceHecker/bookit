@@ -1,0 +1,32 @@
+/* VerticalSidebar.css */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 70px; 
+    bottom: 0;
+    width: 250px; /* Adjust the width as needed */
+    height: 100%; /* Make it full height */
+    background-color: #e50813;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    z-index:5;
+  }
+  
+ .sidebar button {
+    background-color: transparent;
+    
+    color: white;
+    
+    margin-bottom: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: medium;
+    
+    
+  }
+  
+  .sidebar button:hover {
+    background-color: transparent;
+  }
+  

@@ -1,0 +1,41 @@
+.center_title {
+    text-align: center;
+    padding-left: 195px;
+    padding-top: 75px;
+    font-size: 30px;
+    color: white;
+    
+}
+
+.add_button button {
+    margin-left: 790px;
+
+    background: #e50813;
+    outline: none;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+
+    
+}
+.navigation {
+    text-align: center;
+    font-size: 25px;
+    padding-left: 195px;
+   padding-bottom: 0px;
+    
+}
+
+.navigation button {
+    color: white;
+    background-color: transparent;
+  }
+
+ .table {
+   padding-left: 200px;
+   padding-right: 0px;
+    color: white;
+    margin: 0 auto 20px 20px;
+}
+
