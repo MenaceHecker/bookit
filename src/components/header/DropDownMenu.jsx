@@ -9,9 +9,8 @@ const DropDownMenu = () => {
         <li>
           <i className='fa fa-user'></i>
           <ul className="dropdown">
-            <li><Link to="/Login">Login</Link></li>
-            <li><Link to="/Signup">Register</Link></li>
-            <li><Link to="/Activate">Activate</Link></li>
+            <li><Link to="/Login">Log In</Link></li>
+            <li><Link to="/Signup">Sign Up</Link></li>
           </ul>
         </li>
       </ul>

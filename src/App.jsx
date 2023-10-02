@@ -8,6 +8,7 @@ import Checkout from "./components/checkout/Checkout.jsx";
 import OF from "./components/checkout/OF";
 import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
+import Activate from "./components/Activate/Activate";
 import ManageMovies from "./Admin Pages/ManageMovies";
 import ManageUsers from "./Admin Pages/ManageUsers";
 import ManagePromotions from "./Admin Pages/ManagePromotions";
