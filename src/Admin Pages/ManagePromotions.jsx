@@ -4,6 +4,7 @@ import AddPromotionsForm from "./PromotionsForm/AddPromotionsForm";
 import './ManagePromotions.css';
 import Table from "./Table/Table";
 import { useState } from "react";
+import Footer from "../components/footer/footer";
 
 
 function ManagePromotions() {
@@ -56,7 +57,7 @@ function ManagePromotions() {
                 <Table data={mockData} pageType="ManagePromotions" />
             </div>
 
-            
+        <Footer/>
         </div>
     );
 }

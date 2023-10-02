@@ -2,11 +2,15 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 import Homepage from '../src/components/Homepage/Homepage'
-import Signup from './components/Signup/Signup';
 import TrailerPage from './components/TrailerPage/TrailerPage';
 import MainAdmin from './Admin Pages/MainAdmin';
-import Login from './components/Login/Login';
-import Activate from './components/Activate/Activate';
+import Checkout from "./components/checkout/Checkout.jsx";
+import OF from "./components/checkout/OF";
+import Login from "./components/Login/Login";
+import Signup from "./components/Signup/Signup";
+import ManageMovies from "./Admin Pages/ManageMovies";
+import ManageUsers from "./Admin Pages/ManageUsers";
+import ManagePromotions from "./Admin Pages/ManagePromotions";
 const App = () => {
   return (
     <>

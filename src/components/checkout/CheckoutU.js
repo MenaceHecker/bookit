@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import OrderConf from "./OrderConf";
+import './check.css';
 
 const CheckoutU = () => {
     const [fields, setFields] = useState(
@@ -31,10 +31,6 @@ const CheckoutU = () => {
         setFields2(values);
     }
 
-    function openConf() {
-
-    }
-
     const submit = async () => {
         try {
             const response = await fetch('http://198.251.67.241:8080/api/billing', {
@@ -55,7 +51,7 @@ const CheckoutU = () => {
     return (
         <div id={"checkout_cont"}>
         <div className={"left"}>
-            <h1>Billing Information</h1>
+            <h1 id={'orderconf_h1'}>Billing Information</h1>
             {fields.map((field, index) => (
                 <div key={index} id={"inp_cont"}>
                     <input
@@ -67,7 +63,7 @@ const CheckoutU = () => {
                     />
                 </div>
             ))}
-            <h1>Payment Information</h1>
+            <h1 id={'orderconf_h1'}>Payment Information</h1>
             {fields2.map((field, index) => (
                 <div key={index} id={"inp_cont"}>
                     <input
@@ -88,7 +84,7 @@ const CheckoutU = () => {
         <div className={"right"}>
             {items.map((item, index) => (
                 <div key={index} id={"inp_cont"}>
-                    <p>{item}</p>
+                    <p id={'orderconf_h1'}>{item}</p>
                 </div>
             ))}
         </div>
@@ -97,8 +93,8 @@ const CheckoutU = () => {
                     <div key={index} id={"inp_cont"}>
                         <div id={"list_slot"}>
                             <input type="radio" value="Male" name="gender" />
-                            <p>{item.name}</p>
-                            <p>{item.number}</p>
+                            <p id={'orderconf_h1'}>{item.name}</p>
+                            <p id={'orderconf_h1'}>{item.number}</p>
                         </div>
                     </div>
                 ))}

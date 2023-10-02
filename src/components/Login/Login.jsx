@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import Header from '../header/header';
+import Footer from "../footer/footer";
 
 function Login() {
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ function Login() {
           </div>
         </form>
       </div>
+      <Footer/>
     </>
   );
 }

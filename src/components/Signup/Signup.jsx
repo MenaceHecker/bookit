@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 import Header from '../header/header';
+import Footer from "../footer/footer";
 function Signup() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -67,6 +68,7 @@ function Signup() {
           </div>
         </form>
       </div>
+      <Footer/>
     </>
   );
 }
