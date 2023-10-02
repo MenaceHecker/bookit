@@ -17,7 +17,8 @@ const movies = () => {
                         <h3>Cast: {cast}</h3>
                         <h3>{desc}</h3>
                         <div className='movie__item-trailer'>
-                            <button href={trailer}>Watch Trailer</button>
+                            <button href='/TrailerPage'>Watch Trailer</button>
+                            <button>Book</button>
                         </div>
                     </article>
                     )}        

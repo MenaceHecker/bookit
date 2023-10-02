@@ -15,6 +15,7 @@ import Table from "./Table/Table";
 import './ManageUsers.css';
 import AddUserForm from "./UserForms/AddUserForm";
 import { useState } from "react";
+import Footer from "../components/footer/footer";
 function ManageUsers() {
 
     const [showPopout, setShowPopout] = useState(false);
@@ -66,7 +67,7 @@ function ManageUsers() {
             </div>
 
 
-
+        <Footer/>
         </div>
     );
 }
