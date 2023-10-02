@@ -2,6 +2,7 @@ import React from 'react';
 import Header from '../header/header';
 import './TrailerPage.css';
 import YouTube from 'react-youtube';
+import Footer from "../footer/footer";
 
 const TrailerPage = () => {
   const videoId = 'nbp3Ra3Yp74'; 
@@ -37,6 +38,7 @@ const TrailerPage = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </div>
   );
 };

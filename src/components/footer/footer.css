@@ -1,0 +1,14 @@
+p {
+    color: white;
+    align-self: center;
+}
+footer {
+    float: initial;
+    align-content: center;
+    text-align: center;
+    padding: 25px;
+    background: #141414;
+}
+footer:hover {
+    background: #940702;
+}
