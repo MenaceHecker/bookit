@@ -7,24 +7,23 @@ import React, { useState } from 'react';
 const AddMoviePopout = ({setShowPopout }) => {
     
         const [formData, setFormData] = useState({
-          title: '',
-          category: '',
-          cast: '',
-          director: '',
-          producer: '',
-          synopsis: '',
-          reviews: '',
-          trailerPicture: '',
-          trailerVideo: '',
-          mpaaRating: '',
-          showDates: '',
-          showTimes: '',
+          movieTitle: '',
+          movieCategory: '',
+          movieCast: '',
+          movieDirector: '',
+          movieProducer: '',
+          movieSynopsis: '',
+          movieReviews: '',
+          movieTrailerPicture: '',
+          movieTrailerVideo: '',
+          movieMpaaRating: '',
+          movieShowDates: '',
+          movieShowTimes: '',
         });
       
         const handleInputChange = (e) => {
           console.log('Input changed:', e.target.name, e.target.value);
           const { name, value } = e.target;
-          setFormData(prevState => ({ ...prevState })); // Dummy update to trigger re-render
           if (name === 'showDate') {
             // Handle date input
             setFormData({ ...formData, [name]: value });
@@ -78,13 +77,13 @@ const AddMoviePopout = ({setShowPopout }) => {
                 
                   Title:
                   <br />
-                  <input type="text" name="title" value={formData.title} onChange={handleInputChange} />
+                  <input type="text" name="movieTitle" value={formData.movieTitle} onChange={handleInputChange} />
                 </label>
       
                 <label>
                   Category:
                   <br />
-                  <input type="text" name="category" value={formData.category} onChange={handleInputChange} />
+                  <input type="text" name="movieCategory" value={formData.movieCategory} onChange={handleInputChange} />
                 </label>
               </div>
       
@@ -92,13 +91,13 @@ const AddMoviePopout = ({setShowPopout }) => {
                 <label>
                   Cast:
                   <br />
-                  <input type="text" name="cast" value={formData.cast} onChange={handleInputChange} />
+                  <input type="text" name="movieCast" value={formData.movieCast} onChange={handleInputChange} />
                 </label>
       
                 <label>
                   Director:
                   <br />
-                  <input type="text" name="director" value={formData.director} onChange={handleInputChange} />
+                  <input type="text" name="movieDirector" value={formData.movieDirector} onChange={handleInputChange} />
                 </label>
               </div>
       
@@ -106,13 +105,13 @@ const AddMoviePopout = ({setShowPopout }) => {
                 <label>
                   Producer:
                   <br />
-                  <input type="text" name="producer" value={formData.producer} onChange={handleInputChange} />
+                  <input type="text" name="movieProducer" value={formData.movieProducer} onChange={handleInputChange} />
                 </label>
       
                 <label>
                   MPAA Rating:
                   <br />
-                  <input type="text" name="mpaaRating" value={formData.mpaaRating} onChange={handleInputChange} />
+                  <input type="text" name="movieMpaaRating" value={formData.movieMpaaRating} onChange={handleInputChange} />
                 </label>
               </div>
       
@@ -120,7 +119,7 @@ const AddMoviePopout = ({setShowPopout }) => {
                 <label>
                   Synopsis:
                   <br />
-                  <textarea name="synopsis" value={formData.synopsis} onChange={handleInputChange} />
+                  <textarea name="movieSynopsis" value={formData.movieSynopsis} onChange={handleInputChange} />
                 </label>
               </div>
       
@@ -128,7 +127,7 @@ const AddMoviePopout = ({setShowPopout }) => {
                 <label>
                   Reviews:
                   <br />
-                  <textarea name="reviews" value={formData.reviews} onChange={handleInputChange} />
+                  <textarea name="movieReviews" value={formData.movieReviews} onChange={handleInputChange} />
                 </label>
               </div>
       
@@ -136,13 +135,13 @@ const AddMoviePopout = ({setShowPopout }) => {
                 <label>
                   Trailer Picture:
                   <br />
-                  <input type="text" name="trailerPicture" value={formData.trailerPicture} onChange={handleInputChange} />
+                  <input type="text" name="movieTrailerPicture" value={formData.movieTrailerPicture} onChange={handleInputChange} />
                 </label>
       
                 <label>
                   Trailer Video:
                   <br />
-                  <input type="text" name="trailerVideo" value={formData.trailerVideo} onChange={handleInputChange} />
+                  <input type="text" name="movieTrailerVideo" value={formData.movieTrailerVideo} onChange={handleInputChange} />
                 </label>
               </div>
       
@@ -150,7 +149,7 @@ const AddMoviePopout = ({setShowPopout }) => {
                 <label>
                   Show Date:
                   <br />
-                  <input type="date" id = "date" name="showDate" value={formData.showDates} onChange={handleInputChange}/>
+                  <input type="date" id = "date" name="movieShowDates" value={formData.movieShowDates} onChange={handleInputChange}/>
                 </label>
               </div>
 
@@ -159,7 +158,7 @@ const AddMoviePopout = ({setShowPopout }) => {
                 <label>
                   Show Time:
                   <br />
-                  <input type="time" name="showTime" value={formData.showTimes} onChange={handleInputChange} />
+                  <input type="time" name="movieShowTimes" value={formData.movieShowTimes} onChange={handleInputChange} />
                 </label>
               </div>
 
