@@ -4,16 +4,12 @@ import { Link } from 'react-router-dom';
 
 const DropDownMenu = () => {
   return (
-    <div>
-      <ul>
-        <li>
+    <div className="dropdown">
           <i className='fa fa-user'></i>
-          <ul className="dropdown">
+          <ul>
             <li><Link to="/Login">Log In</Link></li>
             <li><Link to="/Signup">Sign Up</Link></li>
           </ul>
-        </li>
-      </ul>
     </div>
   );
 }
