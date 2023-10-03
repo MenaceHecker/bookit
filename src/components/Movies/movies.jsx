@@ -26,6 +26,9 @@ const Movies = () => {
                 <h3>Cast:<br></br>{movieCast}</h3>
                   <h3>Description:<br></br>{movieSynopsis}</h3>
                 <h3>Category:<br></br>{movieCategory}</h3>
+                  <div id={'button_div'}>
+                    <button>Book Now</button>
+                  </div>
               </article>
               </div>
           ))}

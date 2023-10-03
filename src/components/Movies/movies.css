@@ -52,7 +52,7 @@ h5.title{
     background-color: #2a2a2a;
     padding: 10px;
     max-width: 480px;
-    height: 720px;
+    height: 775px;
     margin: 15px;
 }
 h3 {
@@ -65,3 +65,12 @@ h3 {
     align-self: center;
 }
 
+#button_div {
+    width: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+button {
+    border-radius: 10px;
+}
