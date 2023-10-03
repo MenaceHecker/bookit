@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './SeatSelector.css'; // Assuming you have a CSS file named SeatSelector.css
+import './SeatSelector.css'; // SeatSelector: Red Seat for occupied, Transparent for not.
 
 const SeatSelector = ({ availableSeats }) => {
   const [selectedSeats, setSelectedSeats] = useState([]);
