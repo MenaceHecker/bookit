@@ -41,6 +41,7 @@ const AddMoviePopout = ({setShowPopout }) => {
           e.preventDefault();
         
           try {
+            setShowPopout(false);
             const response = await fetch('http://198.251.67.241:8080/api/newmovie', {
               method: 'POST',
               headers: {
@@ -51,7 +52,6 @@ const AddMoviePopout = ({setShowPopout }) => {
         
             if (response.ok) {
               const data = await response.json(); // This line parses the response body as JSON
-        
               // Handle success, e.g., show a success message
               console.log('Form submitted successfully!', data);
             } else {
