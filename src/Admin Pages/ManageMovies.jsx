@@ -32,9 +32,9 @@ function ManageMovies() {
   const [showPopout, setShowPopout] = useState(false);
 
   const togglePopout = () => {
+    fetchData();
     setShowPopout(!showPopout);
   };
-
   useEffect(() => {
     (async () => {
       const response = await fetch('http://198.251.67.241:8080/api/getlistings');
@@ -42,6 +42,15 @@ function ManageMovies() {
       setData(newData);
     })();
   }, []);
+  var input = 'http://198.251.67.241:8080/api/getlistings';
+  function fetchData() {
+    fetch(input)
+      .then(response => response.json())
+      .then(data => {
+        setData(data);
+      })
+      .catch(error => console.error('Error:', error));
+  }
 
   return (
     <div className="content">

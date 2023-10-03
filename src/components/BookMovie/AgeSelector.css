@@ -1,0 +1,4 @@
+.select_tickets_row {
+    display: flex;
+    flex-direction: column;
+}
