@@ -24,7 +24,7 @@ function Signup() {
       password: '',
       password2: '',
     });
-    navigate('/activate');
+    navigate('/Activate');
   };
 
   const onClose = () => {

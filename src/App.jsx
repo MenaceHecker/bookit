@@ -8,6 +8,7 @@ import Checkout from "./components/checkout/Checkout.jsx";
 import OF from "./components/checkout/OF";
 import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
+import Activate from "./components/Activate/Activate";
 import ManageMovies from "./Admin Pages/ManageMovies";
 import ManageUsers from "./Admin Pages/ManageUsers";
 import ManagePromotions from "./Admin Pages/ManagePromotions";
@@ -18,15 +19,16 @@ const App = () => {
           <Route exact path='/' element={<Homepage/>} />
           <Route exact path='/TrailerPage' element={<TrailerPage/>}/>
           <Route exact path='/MainAdmin' element={<MainAdmin/>}/>
-            <Route exact path='/Checkout' element={<Checkout/>}/>
-            <Route exact path='/OrderConfirmation' element={<OF/>}/>
-            <Route exact path='/Login' element={<Login/>}/>
-          <Route exact path='/Signup' element={<Signup/>}/>
+          <Route exact path='/Homepage' element={<Homepage/>} />
+          <Route exact path='/Checkout' element={<Checkout/>}/>
+          <Route exact path='/OrderConfirmation' element={<OF/>}/>
+          <Route exact path='/Login' element={<Login/>} />
+          <Route exact path='/Signup' element={<Signup/>} />
+          <Route exact path='/Activate' element={<Activate/>} />
           <Route exact path='/admin' element={<MainAdmin/>}/>
-          <Route exact path='/manage-movies' element={<ManageMovies/>}/>
-          <Route exact path='/manage-users' element={<ManageUsers/>}/>
-          <Route exact path='/manage-promo' element={<ManagePromotions/>}/>
-
+          <Route exact path='/ManageMovies' element={<ManageMovies/>}/>
+          <Route exact path='/ManageUsers' element={<ManageUsers/>}/>
+          <Route exact path='/ManagePromotions' element={<ManagePromotions/>}/>
         </Routes>
     </>
   );

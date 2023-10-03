@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Activate.css';
+import Header from '../header/header';
+import Footer from "../footer/footer";
 
 function Activate() {
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ function Activate() {
 
   return (
     <>
+      <Header/>
       <div className="center_title">Activate Account</div>
 
       <div className="activate_form">
@@ -53,6 +56,7 @@ function Activate() {
           </div>
         </form>
       </div>
+      <Footer/>
     </>
   );
 }

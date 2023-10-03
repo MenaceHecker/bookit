@@ -42,6 +42,7 @@ header {
   .fa.fa-user{
     color: red;
     cursor: pointer;
+    
   }
   .search-bar {
     border-radius: 100vh;
