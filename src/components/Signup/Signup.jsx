@@ -34,7 +34,7 @@ function Signup() {
   return (
     <>
       <Header/>
-      <div className="center_title">Sign Up</div>
+      <div className="signup_center_title">Sign Up</div>
 
       <div className="signup_form">
         <form onSubmit={handleSubmit} className="signup_container">

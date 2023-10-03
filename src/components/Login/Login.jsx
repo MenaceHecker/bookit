@@ -33,7 +33,7 @@ function Login() {
   return (
     <>
       <Header/>
-      <div className="center_title">Log In</div>
+      <div className="login_center_title">Log In</div>
 
       <div className="login_form">
         <form onSubmit={handleSubmit} className="login_container">
