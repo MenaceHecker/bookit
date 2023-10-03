@@ -52,7 +52,6 @@ const AddMoviePopout = ({setShowPopout }) => {
         
             if (response.ok) {
               const data = await response.json(); // This line parses the response body as JSON
-        
               // Handle success, e.g., show a success message
               console.log('Form submitted successfully!', data);
             } else {

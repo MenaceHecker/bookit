@@ -1,7 +1,7 @@
 // header and sidebar
 // table with movies
-// searchbar for movies to the left 
-// add movie button opens form on the right side 
+// searchbar for movies to the left
+// add movie button opens form on the right side
 // edit, delete, add movie (brings up form to edit, add, delete?)
 
 //create searchbar.jsx (reuse in manage users)
@@ -29,62 +29,55 @@ function ManageMovies() {
     setMovieType(type);
   };
 
-  
   const [showPopout, setShowPopout] = useState(false);
 
   const togglePopout = () => {
-      fetchData();
+    fetchData();
     setShowPopout(!showPopout);
   };
-    useEffect(() => {
-        (async () => {
-            const response = await fetch('http://198.251.67.241:8080/api/getlistings');
-            const newData = await response.json();
-            console.log('newData = ', newData);
-            setData(newData);
-        })();
-    }, []);
-    var input = 'http://198.251.67.241:8080/api/getlistings';
-    function fetchData() {
-        fetch(input)
-            .then(response => response.json())
-            .then(data => {
-                setData(data);
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    return (
-      <div className = "content">
-        <AdminHeader/>
-        <AdminSideBar/>
-
-      
-        <div className="center_title">
-            Manage Movies
-        </div>
-
-
-        
-        <div className = "navigation">
-          <button onClick={() => handleMovieTypeChange('currentlyShowing')}>Currently Showing</button>
-          <button onClick={() => handleMovieTypeChange('comingSoon')}>Coming Soon</button>
-        </div>
-
-
-        <div className="add_button">
-          <button onClick={togglePopout}>Add Movie</button>
-          {showPopout && <AddMoviePopout mode="add" onClose={togglePopout} setShowPopout={setShowPopout} />}
-        </div>
-
-        <div className = "table">
-          <Table data={data} pageType="ManageMovies" movieType={movieType}  />
-        </div>
-        <Footer/>
-      </div>
-     
-    );
+  useEffect(() => {
+    (async () => {
+      const response = await fetch('http://198.251.67.241:8080/api/getlistings');
+      const newData = await response.json();
+      setData(newData);
+    })();
+  }, []);
+  var input = 'http://198.251.67.241:8080/api/getlistings';
+  function fetchData() {
+    fetch(input)
+      .then(response => response.json())
+      .then(data => {
+        setData(data);
+      })
+      .catch(error => console.error('Error:', error));
   }
+
+  return (
+    <div className="content">
+      <AdminHeader/>
+      <AdminSideBar/>
+
+      <div className="center_title">
+          Manage Movies
+      </div>
+
+      {/*<div className="navigation">
+        <button type="button" onClick={() => handleMovieTypeChange('currentlyShowing')}>Currently Showing</button>
+        <button type="button" onClick={() => handleMovieTypeChange('comingSoon')}>Coming Soon</button>
+      </div>*/}
+
+      <div className="add_button">
+        <button onClick={togglePopout}>Add Movie</button>
+        {showPopout && <AddMoviePopout mode="add" onClose={togglePopout} setShowPopout={setShowPopout} />}
+      </div>
+
+      <div className="table">
+        <Table data={data} pageType="ManageMovies" movieType={movieType}  />
+      </div>
+      <Footer/>
+    </div>
+  );
+}
 
   //divide between currently showing and coming soon
   // table that shows title, director, image, trailer, room, and show dates
