@@ -85,6 +85,7 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Verification Status</th>
+                    <th>Type</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -95,6 +96,7 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
                       <td>{item.firstName}</td>
                       <td>{item.lastName}</td>
                       <td>{item.verificationStatus}</td>
+                      <td>{item.type}</td>
                       <td>
                         <button>Suspend</button>
                         <button>Delete</button>
