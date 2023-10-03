@@ -23,7 +23,15 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
     setShowPopout(false);
   };
 
-
+  const removeMovie = async (id) => {
+    try {
+      await fetch(`http://198.251.67.241:8080/api/rmmovie?id=${id}`, {
+        method: 'DELETE'
+      });
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
 
         const renderTable = () => {
           //ManageMovies.jsx
@@ -56,7 +64,7 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
                       <td>      
                         <button onClick={togglePopout}>Edit</button>
                         {showPopout && <EditMoviePopout onClose={closePopout} />}
-                        <button>Remove</button>
+                        <button onClick={() => removeMovie(item.id)}>Remove</button>
                       </td>
                     </tr>
                   ))}
