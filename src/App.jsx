@@ -12,6 +12,7 @@ import Activate from "./components/Activate/Activate";
 import ManageMovies from "./Admin Pages/ManageMovies";
 import ManageUsers from "./Admin Pages/ManageUsers";
 import ManagePromotions from "./Admin Pages/ManagePromotions";
+import BookingPage from "./components/BookMovie/BookingPage";
 const App = () => {
   return (
     <>
@@ -29,6 +30,7 @@ const App = () => {
           <Route exact path='/ManageMovies' element={<ManageMovies/>}/>
           <Route exact path='/ManageUsers' element={<ManageUsers/>}/>
           <Route exact path='/ManagePromotions' element={<ManagePromotions/>}/>
+          <Route exact path='/BookingPage' element={<BookingPage/>}/>
         </Routes>
     </>
   );
