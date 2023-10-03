@@ -49,10 +49,10 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
                 <tbody>
                   {data.map(item => (
                     <tr key={item.id}>
-                      <td>{item.movieName}</td>
+                      <td>{item.movieTitle}</td>
                       <td>{item.movieDirector}</td>
-                      <td>{item.rooms}</td>
-                      <td>{item.bookingDates.join(', ')}</td>
+                      <td>(TODO)</td>
+                      <td>{item.movieShowDates}</td>
                       <td>      
                         <button onClick={togglePopout}>Edit</button>
                         {showPopout && <EditMoviePopout onClose={closePopout} />}

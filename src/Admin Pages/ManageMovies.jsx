@@ -15,7 +15,7 @@ import './ManageMovies.css'
 import AdminHeader from "./AdminHeader/AdminHeader";
 import AdminSideBar from "./AdminSideBar/AdminSideBar";
 import AddMoviePopout from './MovieForms/AddMoviePopout';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './MovieForms/MovieForm.css'
 import Footer from "../components/footer/footer";
 
@@ -23,6 +23,7 @@ function ManageMovies() {
 
   const [movieType, setMovieType] = useState('currentlyShowing'); //This will allow the admin to switch between the "Currently Showing" movies and the "Coming soon" movies
   //different data from the database will be fetched depending on state
+  const [data, setData] = useState([]);
 
   const handleMovieTypeChange = (type) => {
     setMovieType(type);
@@ -35,27 +36,14 @@ function ManageMovies() {
     setShowPopout(!showPopout);
   };
 
-  
-  const mockData = [
-    {
-      id: 1,
-      movieName: 'Movie 1',
-      movieDirector: 'Director 1',
-      rooms: 3,
-      bookingDates: ['2023-09-20', '2023-09-21'],
-    },
-    {
-      id: 2,
-      movieName: 'Movie 2',
-      movieDirector: 'Director 2',
-      rooms: 2,
-      bookingDates: ['2023-09-22', '2023-09-23'],
-    },
-    
-  ];
-
-
-
+  useEffect(() => {
+    (async () => {
+      const response = await fetch('http://198.251.67.241:8080/api/getlistings');
+      const newData = await response.json();
+      console.log('newData = ', newData);
+      setData(newData);
+    })();
+  }, []);
 
     return (
       <div className = "content">
@@ -81,7 +69,7 @@ function ManageMovies() {
         </div>
 
         <div className = "table">
-          <Table data={mockData} pageType="ManageMovies" movieType={movieType}  />
+          <Table data={data} pageType="ManageMovies" movieType={movieType}  />
         </div>
         <Footer/>
       </div>

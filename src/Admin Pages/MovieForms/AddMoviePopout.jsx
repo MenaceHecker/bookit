@@ -24,7 +24,6 @@ const AddMoviePopout = ({setShowPopout }) => {
         const handleInputChange = (e) => {
           console.log('Input changed:', e.target.name, e.target.value);
           const { name, value } = e.target;
-          setFormData(prevState => ({ ...prevState })); // Dummy update to trigger re-render
           if (name === 'showDate') {
             // Handle date input
             setFormData({ ...formData, [name]: value });
