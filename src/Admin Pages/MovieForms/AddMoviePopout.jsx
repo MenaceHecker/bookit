@@ -41,6 +41,7 @@ const AddMoviePopout = ({setShowPopout }) => {
           e.preventDefault();
         
           try {
+            setShowPopout(false);
             const response = await fetch('http://198.251.67.241:8080/api/newmovie', {
               method: 'POST',
               headers: {

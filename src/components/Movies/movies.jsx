@@ -19,15 +19,12 @@ const Movies = () => {
           {moviesData.map(({ id, movieTrailerPicture, movieTitle, movieCast, movieCategory, movieTrailerVideo, movieSynopsis }) => (
               <article key={id} className='movie__item'>
                 <div className='movie__item-image'>
-                  <img className='movie_poster' src={movieTrailerPicture} alt={movieTitle} />
+                    <iframe width="560" height="315" src={movieTrailerVideo} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
                 </div>
                 <h4 className='title'>{movieTitle}</h4>
                 <h3>Cast: {movieCast}</h3>
                   <h3>{movieSynopsis}</h3>
                 <h3>{movieCategory}</h3>
-                <div className='movie__item-trailer'>
-                  <a href={movieTrailerVideo}>Watch Trailer</a>
-                </div>
               </article>
           ))}
         </div>
