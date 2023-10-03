@@ -15,7 +15,7 @@ function AdminHeader() {
             Welcome Admin!
         </div>
 
-        <div className="right">
+        <div className="right_admin">
             <button className="button">Log-out</button>
         </div>
 

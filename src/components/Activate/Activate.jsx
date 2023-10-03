@@ -35,7 +35,7 @@ function Activate() {
   return (
     <>
       <Header/>
-      <div className="center_title">Activate Account</div>
+      <div className="activate_center_title">Activate Account</div>
 
       <div className="activate_form">
         <form onSubmit={handleSubmit} className="activate_container">

@@ -9,7 +9,7 @@ const Homepage = () => {
     <Header/>
     <Home/>
     <Movies/>
-    <Footer/>
+      <Footer/>
     </>
   )
 }

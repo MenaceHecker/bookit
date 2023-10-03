@@ -9,6 +9,7 @@ const AddUserForm = ({setShowPopout }) => {
           firstName: '',
           lastName: '',
           verificationStatus: '',
+          type: '',
   
         });
       
@@ -58,6 +59,16 @@ const AddUserForm = ({setShowPopout }) => {
                   <br />
                   <input type="text" name="verificationStatus" value={formData.verificationStatus} onChange={handleInputChange} />
                 </label>
+              </div>
+
+              <div className="user_form_row">
+                <label>
+                  Type:
+                  <br />
+                  <input type="text" name="type" value={formData.type} onChange={handleInputChange} />
+                </label>
+      
+                
               </div>
 
               <div className = "user_button_row">

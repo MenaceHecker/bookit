@@ -32,6 +32,7 @@ function ManageUsers() {
           firstName: 'John',
           lastName: 'Doe',
           verificationStatus: 'verified',
+          type: 'admin',
         },
         {
             id: 2,
@@ -39,6 +40,7 @@ function ManageUsers() {
             firstName: 'Jane',
             lastName: 'Doe',
             verificationStatus: 'unverified',
+            type: 'customer',
           },
         
       ];

@@ -1,0 +1,43 @@
+.book_movie_container {
+    background-color: #f2f2f2; /* Make off white */
+    border: 2px solid red;
+    padding: 20px; /* Add padding for spacing inside the container */
+    text-align: center; /* Center the content */
+    width: 30%;
+    height: 10%;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 100px;
+    
+}
+
+.movie_detail {
+    margin-top:15px;
+    margin-bottom: 15px;
+}
+.show_day_selector {
+    margin-top:15px;
+    margin-bottom: 15px;
+}
+
+.show_time_selector {
+    margin-top:15px;
+    margin-bottom: 15px;
+}
+
+.seat_selector {
+    margin-top:15px;
+    margin-bottom: 15px;
+    
+}
+
+.age_selector {
+    margin-top:15px;
+    margin-bottom: 15px;
+}
+
+.book_movie_button {
+    border-radius: 10px;
+    margin-top:10px;
+    margin-bottom: 10px;
+}

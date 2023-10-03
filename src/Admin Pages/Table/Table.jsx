@@ -23,7 +23,15 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
     setShowPopout(false);
   };
 
-
+  const removeMovie = async (id) => {
+    try {
+      await fetch(`http://198.251.67.241:8080/api/rmmovie?id=${id}`, {
+        method: 'DELETE'
+      });
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
 
         const renderTable = () => {
           //ManageMovies.jsx
@@ -49,14 +57,14 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
                 <tbody>
                   {data.map(item => (
                     <tr key={item.id}>
-                      <td>{item.movieName}</td>
+                      <td>{item.movieTitle}</td>
                       <td>{item.movieDirector}</td>
-                      <td>{item.rooms}</td>
-                      <td>{item.bookingDates.join(', ')}</td>
+                      <td>(TODO)</td>
+                      <td>{item.movieShowDates}</td>
                       <td>      
                         <button onClick={togglePopout}>Edit</button>
                         {showPopout && <EditMoviePopout onClose={closePopout} />}
-                        <button>Remove</button>
+                        <button onClick={() => removeMovie(item.id)}>Remove</button>
                       </td>
                     </tr>
                   ))}
@@ -77,6 +85,7 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Verification Status</th>
+                    <th>Type</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -87,6 +96,7 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
                       <td>{item.firstName}</td>
                       <td>{item.lastName}</td>
                       <td>{item.verificationStatus}</td>
+                      <td>{item.type}</td>
                       <td>
                         <button>Suspend</button>
                         <button>Delete</button>
