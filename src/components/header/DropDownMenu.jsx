@@ -9,6 +9,7 @@ const DropDownMenu = () => {
           <ul>
             <li><Link to="/Login">Log In</Link></li>
             <li><Link to="/Signup">Sign Up</Link></li>
+            <li><Link to="/EditProfile">Edit Profile</Link></li>
           </ul>
     </div>
   );

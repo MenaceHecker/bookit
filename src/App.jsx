@@ -13,6 +13,7 @@ import ManageMovies from "./Admin Pages/ManageMovies";
 import ManageUsers from "./Admin Pages/ManageUsers";
 import ManagePromotions from "./Admin Pages/ManagePromotions";
 import BookingPage from "./components/BookMovie/BookingPage";
+import EditProfile from "./components/EditProfile/EditProfile";
 const App = () => {
   return (
     <>
@@ -31,6 +32,7 @@ const App = () => {
           <Route exact path='/ManageUsers' element={<ManageUsers/>}/>
           <Route exact path='/ManagePromotions' element={<ManagePromotions/>}/>
           <Route exact path='/BookingPage' element={<BookingPage/>}/>
+          <Route exact path='/EditProfile' element={<EditProfile/>}/>
         </Routes>
     </>
   );
