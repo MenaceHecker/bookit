@@ -20,7 +20,7 @@ const Movies = () => {
               <div id={'mov_cont'}>
               <article key={id} className='movie__item'>
                 <div className='movie__item-image'>
-                    <iframe width="560" height="315" src={movieTrailerVideo} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+                    <iframe width="480" height="275" src={movieTrailerVideo} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
                 </div>
                 <h4 className='title'>{movieTitle}</h4>
                 <h3>Cast:<br></br>{movieCast}</h3>
