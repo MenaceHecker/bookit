@@ -1,27 +1,20 @@
 ul li ul.dropdown li {
     display: block;
     background: red;
-    margin: 2px 0px;
+    margin: 1px 0px;
   }
   
   ul li ul.dropdown {
-    width: auto;
-    background: #00FF8C;
+    width: 200px;
     position: absolute;
-    z-index: 999;
     display: none;
   }
   
   ul li i.fa-user {
-    font-size: 18px; /* Adjust the font size as needed */
-    margin-right: 5px; /* Add some spacing to the right of the icon */
+    font-size: 18px; 
+    margin-right: 5px; 
   }
   
   ul li:hover ul.dropdown {
     display: block;
   }
-  
-  ul li a:hover {
-    background: red;
-  }
-  

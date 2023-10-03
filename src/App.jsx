@@ -12,6 +12,7 @@ import Activate from "./components/Activate/Activate";
 import ManageMovies from "./Admin Pages/ManageMovies";
 import ManageUsers from "./Admin Pages/ManageUsers";
 import ManagePromotions from "./Admin Pages/ManagePromotions";
+import Activate from "./components/Activate/Activate"
 const App = () => {
   return (
     <>
