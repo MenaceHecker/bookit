@@ -10,9 +10,7 @@ const Header = () => {
   const searchResultsRef = useRef(null);
   const searchBarId = useId();
   const searchBarKeyPress = async (event) => {
-    if (event.key === 'Enter') {
       await executeSearch();
-    }
   };
   const executeSearch = async () => {
     const response = await fetch('http://198.251.67.241:8080/api/getlistings');
