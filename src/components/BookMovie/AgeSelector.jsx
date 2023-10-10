@@ -15,7 +15,7 @@ const AgeSelector = ({ selectedSeats, setSelectedTickets }) => {
     <div className="select_tickets_row">
       <h3>Select Tickets</h3>
       <label>
-        Child Tickets:
+        Child Tickets:{' '}
         <input
           type="number"
           value={selectedSeats.child}
@@ -25,7 +25,7 @@ const AgeSelector = ({ selectedSeats, setSelectedTickets }) => {
         />
       </label>
       <label>
-        Adult Tickets:
+        Adult Tickets:{' '}
         <input
           type="number"
           value={selectedSeats.adult}
@@ -35,7 +35,7 @@ const AgeSelector = ({ selectedSeats, setSelectedTickets }) => {
         />
       </label>
       <label>
-        Senior Tickets:
+        Senior Tickets:{' '}
         <input
           type="number"
           value={selectedSeats.senior}

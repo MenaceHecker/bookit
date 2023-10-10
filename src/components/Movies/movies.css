@@ -29,6 +29,7 @@ h3.title{
     text-align: center;
     color: red;
     font-size: 30px;
+    cursor: pointer;
 }
 .movie__item-trailer{
     display: flex;
@@ -47,7 +48,7 @@ h5.title{
     color: red;
 }
 
-#mov_cont {
+.mov_cont {
     border-radius: 1.5rem;
     background-color: #2a2a2a;
     padding: 10px;
@@ -59,13 +60,13 @@ h3 {
     color: red;
 }
 
-#now_showing {
+.movie_section {
     align-content: center;
     align-items: center;
     align-self: center;
 }
 
-#button_div {
+.button_div {
     width: 480px;
     display: flex;
     justify-content: center;
@@ -73,4 +74,5 @@ h3 {
 }
 button {
     border-radius: 10px;
+    cursor: pointer;
 }

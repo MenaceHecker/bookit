@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './Signup.css';
+import './EditProfile.css';
 import Header from '../header/header';
 import Footer from "../footer/footer";
-function Signup() {
+function EditProfile() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
+    subscribe: 'off',
     password: '',
     password2: '',
   });
@@ -21,10 +22,10 @@ function Signup() {
     console.log('Form submitted:', formData);
     setFormData({
       email: '',
+      subscribe: 'off',
       password: '',
       password2: '',
     });
-    navigate('/Activate');
   };
 
   const onClose = () => {
@@ -34,11 +35,11 @@ function Signup() {
   return (
     <>
       <Header/>
-      <div className="signup_center_title">Sign Up</div>
+      <div className="edit_profile_center_title">Edit Profile</div>
 
-      <div className="signup_form">
-        <form onSubmit={handleSubmit} className="signup_container">
-          <div className="signup_form_row">
+      <div className="edit_profile_form">
+        <form onSubmit={handleSubmit} className="edit_profile_container">
+          <div className="edit_profile_form_row">
             <label>
               Email address:
               <br/>
@@ -46,25 +47,34 @@ function Signup() {
             </label>
           </div>
 
-          <div className="signup_form_row">
+          <div className="edit_profile_form_row">
             <label>
-              Password:
+              Subscribe to promotions?{' '}
+              <input type="checkbox" name="subscribe" value={formData.subscribe} onChange={handleInputChange}/>
+            </label>
+          </div>
+
+          <hr/>
+
+          <div className="edit_profile_form_row">
+            <label>
+              New password:
               <br/>
               <input type="password" name="password" value={formData.password} onChange={handleInputChange}/>
             </label>
           </div>
 
-          <div className="signup_form_row">
+          <div className="edit_profile_form_row">
             <label>
-              Confirm password:
+              Confirm new password:
               <br/>
-              <input type="password" name="password2" value={formData.password2} onChange={handleInputChange}/>
+              <input type="password" name="password" value={formData.password2} onChange={handleInputChange}/>
             </label>
           </div>
 
-          <div className="signup_button_row">
-            <button type="submit">Sign Up</button>
-            <button type="button" className="cancel_signup" onClick={onClose}>Back</button>
+          <div className="edit_profile_button_row">
+            <button type="submit">Save Changes</button>
+            <button type="button" className="cancel_edit_profile" onClick={onClose}>Exit</button>
           </div>
         </form>
       </div>
@@ -73,4 +83,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default EditProfile;

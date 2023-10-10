@@ -15,19 +15,19 @@ const SeatSelector = ({ availableSeats }) => {
   return (
     <div>
       <h3>Select Seats</h3>
-      <ul class="showcase">
+      <ul className="showcase">
         <li>
-          <div class="seat"></div>
+          <div className="seat"></div>
           <small>N/A</small>
         </li>
 
         <li>
-          <div class="seat selected"></div>
+          <div className="seat selected"></div>
           <small>Selected</small>
         </li>
 
         <li>
-          <div class="seat occupied"></div>
+          <div className="seat occupied"></div>
           <small>Occupied</small>
         </li>    
         
