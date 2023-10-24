@@ -13,38 +13,52 @@
   color: white;
 }
 
+.signup_form_title {
+  text-align: center;
+
+  font-size: 30px;
+  color: black;
+}
+
 .signup_form {
   display: flex;
   flex-direction: column;
-  align-items: center;
+ 
 }
 
 .signup_container {
   background-color: #f2f2f2;
   display: flex;
   flex-direction: column;
-  align-items: center;
+align-items: center;
   padding: 20px;
   border: 2px solid red;
-  width: 50%; /* Adjust this as needed */
+  width: 50%; 
   margin: 20px auto;
+  
 }
 
 .signup_form_row {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 40%;
+  justify-content: center; /* Center the columns */
+  width: 100%; /* Make sure it takes the full width */
+}
+
+.signup_column {
+  margin: 5px;
+  flex: 1; /* Allow the columns to grow and take equal space */
+  max-width: 200px; /* Adjust the maximum width of the columns */
 }
 
 .signup_form_row label {
   text-align: left;
-  width: 100%; /* Adjust this as needed */
+  width: 100%;
 }
 
 .signup_form_row input {
-  width: 100%; /* Adjust this as needed */
+  width: 100%;
 }
+
 
 .signup_form button {
   background-color: transparent;
@@ -81,4 +95,10 @@
 .cancel_signup {
   border-radius: 10px;
   background: #141414;
+}
+
+.sign_up_h3 {
+  text-align: center;
+  color:black;
+  padding-top: 40px;
 }
