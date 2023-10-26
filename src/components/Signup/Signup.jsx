@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 import Header from '../header/header';
 import Footer from "../footer/footer";
@@ -111,8 +111,8 @@ const Signup = () => {
             <h2 className="signup_form_title">Personal Information</h2>
             <div className="signup_form_row">
               <div className="signup_column">
-                <label>
-                  First Name:*
+                <label >
+                  First Name:<span className="asterisk">*</span>
                   <input
                     type="text"
                     name="firstName"
@@ -126,7 +126,7 @@ const Signup = () => {
               </div>
               <div className="signup_column">
                 <label>
-                  Last Name:*
+                  Last Name:<span className="asterisk">*</span>
                   <input
                     type="text"
                     name="lastName"
@@ -141,7 +141,7 @@ const Signup = () => {
             <div className="signup_form_row">
               <div className="signup_column">
                 <label>
-                  Phone Number:*
+                  Phone Number:<span className="asterisk">*</span>
                   <input
                     type="tel"
                     name="phoneNumber"
@@ -155,7 +155,7 @@ const Signup = () => {
 
               <div className="signup_column">
                 <label>
-                  Email address:*
+                  Email address:<span className="asterisk">*</span>
                   <input
                     type="text"
                     name="email"
@@ -171,7 +171,7 @@ const Signup = () => {
             <div className="signup_form_row">
               <div className="signup_column">
                 <label>
-                  Password:*
+                  Password:<span className="asterisk">*</span>
                   <input
                     type="password"
                     name="password"
@@ -184,7 +184,7 @@ const Signup = () => {
 
               <div className="signup_column">
                 <label>
-                  Confirm Password:*
+                  Confirm Password:<span className="asterisk">*</span>
                   <input
                     type="password"
                     name="confirmPassword"
@@ -207,10 +207,11 @@ const Signup = () => {
                   />
                 </label>
                </div>
+               <p className = "required_fields">* Required Fields</p>
                </div>
 
 
-            
+            <button type="button" onClick={onClose}>Close</button>
             <button type="button" onClick={nextStep}>Next</button>
           </div>
           

@@ -30,6 +30,7 @@ function Login() {
     navigate(-1);
   };
 
+
   return (
     <>
       <Header/>
@@ -51,6 +52,10 @@ function Login() {
               <br/>
               <input type="password" name="password" value={formData.password} onChange={handleInputChange}/>
             </label>
+          </div>
+
+          <div>
+            <Link to="/ForgotPassword">Forgot your Password?</Link>
           </div>
 
           <div className="login_button_row">
