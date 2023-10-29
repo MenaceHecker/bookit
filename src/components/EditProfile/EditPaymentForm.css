@@ -1,0 +1,112 @@
+
+  .edit_payment_form_center_title {
+    text-align: center;
+    padding-top: 75px;
+    font-size: 30px;
+    color: white;
+  }
+  
+  .edit_payment_form_title {
+    text-align: center;
+    font-size: 30px;
+    color: black;
+  }
+  
+  .edit_payment_form {
+    display: flex;
+    flex-direction: column;
+   
+  }
+  
+  .edit_payment_form_container {
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid red;
+    width: 100%; 
+    /* margin-bottom: 50000px;
+    margin-right: 400px;
+    position: fixed; */
+    margin-top: 10px;
+    
+   
+ 
+  }
+  
+  .edit_payment_form_row {
+    display: flex;
+    justify-content: center; /* Center the columns */
+    width: 100%; /* Make sure it takes the full width */
+  }
+  
+  .edit_payment_form_column {
+    margin: 5px;
+    flex: 1; /* Allow the columns to grow and take equal space */
+    max-width: 200px; /* Adjust the maximum width of the columns */
+  }
+  
+  .edit_payment_form_row label {
+    text-align: left;
+    width: 100%;
+  }
+  
+  .edit_payment_form_row input {
+    width: 100%;
+  }
+  
+  
+  .edit_payment_form button {
+    background-color: transparent;
+    margin: 8px ;
+    margin-left: 8px;
+    padding: 8px;
+    background-color: #141414;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .edit_payment_form button[type="button"] {
+    margin-left: 10px;
+  }
+  
+  .edit_payment_form button[type="submit"] {
+    margin-top: 8px;
+    margin-left: 8px;
+    padding: 8px;
+    background-color: #141414;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+  
+  .edit_payment_form_button_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .cancel_edit_payment_form {
+    border-radius: 10px;
+    background: #141414;
+  }
+  
+  .edit_payment_form_h3 {
+    text-align: center;
+    color:black;
+    padding-top: 40px;
+  }
+  
+  .popup_container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: none; /* No background, Make the pop-up invisible */
+  }

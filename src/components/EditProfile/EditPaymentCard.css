@@ -1,0 +1,26 @@
+.payment-card {
+    border: 1px solid red;
+    background-color: rgba(255, 0, 0, 0.1); /* Translucent red background */
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    
+  }
+  
+  .payment_card-info {
+    flex-grow: 1;
+  }
+  
+  .payment_card-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .payment_card-actions button {
+    padding: 8px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+  
