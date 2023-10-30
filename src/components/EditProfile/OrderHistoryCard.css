@@ -1,0 +1,14 @@
+.order_history_card {
+    border: 1px solid red;
+    background-color: rgba(255, 0, 0, 0.1); /* Translucent red background */
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    
+  }
+  
+  .order_history_card_info {
+    flex-grow: 1;
+  }
+ 

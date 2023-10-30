@@ -2,6 +2,7 @@
 import './EditPayment.css'
 import { useState } from 'react';
 import EditPaymentCard from './EditPaymentCard';
+import AddPaymentForm from './AddPaymentForm';
 
 const EditPayment = () => {
     // Dummy data for demonstration
@@ -16,11 +17,27 @@ const EditPayment = () => {
   
     const handleEdit = (id) => {
       // Handle edit action and open form for editing
+
     };
+
+    //Methods to handle the Form for AddPayment from AddPaymentForm.jsx
+    const [showPopout, setShowPopout] = useState(false);
+
+    const onAdd = () => {
+      setShowPopout(!showPopout);
+    };
+
   
     return (
       <div className="edit_payment_container">
+
         <div className="edit_payment_center_title">Edit Payment Information</div>
+
+        <button className = "edit_payment_button"onClick={onAdd}>Add Payment Method</button>
+        {showPopout && (<AddPaymentForm onClose={onAdd} setShowPopout={setShowPopout} />)}
+
+
+
         {dummyPaymentMethods.map((paymentMethod) => (
 
           <EditPaymentCard
