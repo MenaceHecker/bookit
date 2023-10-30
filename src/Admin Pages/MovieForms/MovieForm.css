@@ -13,7 +13,7 @@
   border: 2px solid red;
   width: 50%; /* Adjust this as needed */
   bottom: 10px;
-  position: sticky;
+  position: fixed;
 
   margin-top: 20px;
   margin-left: 233px;
