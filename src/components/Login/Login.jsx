@@ -6,11 +6,12 @@ import Footer from "../footer/footer";
 
 function Login() {
   const navigate = useNavigate();
+  const [isUp, setIsUp] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    fail: false,
   });
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -18,24 +19,17 @@ function Login() {
   const onClose = () => {
     navigate(-1);
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          email: formData.email,
-          password: formData.password,
-        }),
+      const response = await fetch('http://198.251.67.241:8080/api/login?email=' +
+          formData.email + '&password=' + formData.password, {
+        method: 'GET',
       });
   
       if (!response.ok) {
         console.error('Login failed');
-        // Handle the error case here
+        setIsUp(true);
       } else {
         const data = await response.text();
         console.log('Login successful:', data);
@@ -69,8 +63,9 @@ function Login() {
               <br/>
               <input type="password" name="password" value={formData.password} onChange={handleInputChange}/>
             </label>
-          </div>
 
+          </div>
+          <div>{isUp && <label>Invalid</label>}</div>
           <div>
             <Link to="/ForgotPassword">Forgot your Password?</Link>
           </div>

@@ -13,7 +13,7 @@ import ManageMovies from "./Admin Pages/ManageMovies";
 import ManageUsers from "./Admin Pages/ManageUsers";
 import ManagePromotions from "./Admin Pages/ManagePromotions";
 import BookingPage from "./components/BookMovie/BookingPage";
-import EditProfile from './components/Editprofile/EditProfile'
+import EditProfile from './components/EditProfile/EditProfile';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import CreateNewPassword from './components/ForgotPassword/CreateNewPassword';
 const App = () => {
