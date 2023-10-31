@@ -7,7 +7,9 @@ import Footer from "../footer/footer";
 
 const Signup = () => {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
+
     firstName: '',
     lastName: '',
     phoneNumber: '',
@@ -15,12 +17,39 @@ const Signup = () => {
     email: '',
     password: '',
     confirmPassword: '',
+   
+    //Home address
+    streetAddress: '',
+    city: '',
+    state: '',
+    zipcode: '',
+    country: '',
+
+    paymentMethods: [
+      {
+        cardFirstName: '',
+        cardLastName: '',
+        cardNumber: '',
+        expirationDate: '',
+        securityCode: '',
+        billingFirstName: '',
+        billingLastName: '',
+        billingStreetAddress: '',
+        billingCity: '',
+        billingState: '',
+        billingCountry: '',
+        billingZipCode: '',
+        billingPhoneNumber: '',
+      },
+    ],
+
   });
   //Check if this is working. 
 
   const [currentStep, setCurrentStep] = useState(1);
 
   const handleChange = (e) => {
+    console.log(e);
     const { name, value, type, checked } = e.target;
     setFormData(prevState => ({
       ...prevState,
@@ -29,32 +58,100 @@ const Signup = () => {
   };
 
 //  verification code should be sent to user's email address upon registration
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (formData.password !== formData.confirmPassword) {
-    console.log("Passwords do not match");
-    return;
-  }
-
-  try {
-    const response = await fetch('http://198.251.67.241:8080/api/add' +
-        '?firstName=' + formData.firstName + '&lastName=' + formData.lastName
-        + '&password=' + formData.password + '&email=' + formData.email + '&address=' + formData.address + '&phoneNumber=' + formData.phoneNumber, {
-      method: 'GET',
+   const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    setFormData({
+      //Personal Information
+    firstName: '',
+    lastName: ' ',
+    phoneNumber: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+   
+    //Home address
+    streetAddress: '',
+    city: '',
+    state: '',
+    zipcode: '',
+    country: '',
+    
+      paymentMethods: [
+        {
+          cardFirstName: '',
+          cardLastName: '',
+          cardNumber: '',
+          expirationDate: '',
+          securityCode: '',
+          billingFirstName: '',
+          billingLastName: '',
+          billingStreetAddress: '',
+          billingCity: '',
+          billingState: '',
+          billingCountry: '',
+          billingZipCode: '',
+          billingPhoneNumber: '',
+        },
+      ],
     });
-    if (!response.ok) {
-      console.error('Failed to add a new user');
-      // Display a toast or an alert message to inform the user that the registration failed
-    } else {
-      console.log('New user added successfully');
-      // Handle successful user registration here
-      navigate('/Activate');
-    }
-  } catch (error) {
-    console.error('An error occurred:', error);
-    // Handle the error case here
-  }
+    navigate('/Activate');
+  };
+
+const handlePaymentChange = (e, index) => {
+  console.log(e)
+  const { name, value } = e.target;
+  setFormData((prevState) => {
+    const updatedPaymentMethods = [...prevState.paymentMethods];
+    updatedPaymentMethods[index] = {
+      ...updatedPaymentMethods[index],
+      [name]: value,
+      
+    };
+
+    return {
+      
+      ...prevState,
+      paymentMethods: updatedPaymentMethods,
+    };
+  });
 };
+
+const removePaymentMethod = (index) => {
+  setFormData(prevState => {
+    const updatedPaymentMethods = [...prevState.paymentMethods];
+    updatedPaymentMethods.splice(index, 1);
+    return {
+      ...prevState,
+      paymentMethods: updatedPaymentMethods
+    };
+  });
+};
+
+const addPaymentMethod = () => {
+  setFormData(prevState => ({
+    ...prevState,
+    paymentMethods: [
+      ...prevState.paymentMethods,
+      {
+        cardFirstName: '',
+        cardLastName: '',
+        cardNumber: '',
+        expirationDate: '',
+        securityCode: '',
+        billingFirstName: '',
+        billingLastName: '',
+        billingStreetAddress: '',
+        billingCity: '',
+        billingState: '',
+        billingCountry: '',
+        billingZipCode: '',
+        billingPhoneNumber: '',
+      },
+    ],
+  }));
+};
+
 
   const nextStep = () => setCurrentStep(currentStep + 1);
   const prevStep = () => setCurrentStep(currentStep - 1);
@@ -201,162 +298,175 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
           
           )}
 
-          {currentStep === 2 && (
-            <div>
-              <h2 className="signup_form_title">Payment Information</h2>
-              
-              <h3 className="sign_up_h3">Card Information</h3>
-              <div className="signup_form_row">
-                <div className="signup_column">
-                  First Name
-                  <input
-                    type="text"
-                    name="cardFirstName"
-                    value={formData.cardFirstName}
-                    onChange={handleChange}
-                    placeholder="Card First Name"
-                  />
+        {currentStep === 2 && (
+          <div>
+            <h2 className="signup_form_title">Payment Information</h2>
+
+            {formData.paymentMethods.map((paymentMethods, index) => (
+              <div key={index}>
+                <h3 className="sign_up_h3">Payment Method #{index + 1}</h3>
+
+                {/* Card Information */}
+                <div className="signup_form_row">
+                  <div className="signup_column">
+                    First Name
+                    <input
+                      type="text"
+                      name="cardFirstName"
+                      value={paymentMethods.cardFirstName}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Card First Name"
+                    />
+                  </div>
+{/* {`cardLastName${index}`} dynamic index names are not working*/} 
+                  <div className="signup_column">
+                    Last Name
+                    <input
+                      type="text"
+                      name="cardLastName"
+                      value={paymentMethods.cardLastName}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Card Last Name"
+                    />
+                  </div>
+
+                  <div className="signup_column">
+                    Card Number
+                    <input
+                      type="text"
+                      name="cardNumber"
+                      value={paymentMethods.cardNumber}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Card Number"
+                    />
+                  </div>
+
+                  <div className="signup_column">
+                    Date
+                    <input
+                      type="date"
+                      name="expirationDate"
+                      value={paymentMethods.expirationDate}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Expiration Date"
+                    />
+                  </div>
+
+                  <div className="signup_column">
+                    Security Code
+                    <input
+                      type="text"
+                      name="securityCode"
+                      value={paymentMethods.securityCode}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Security Code"
+                    />
+                  </div>
                 </div>
 
-                
-                <div className="signup_column">
-                  Last Name
-                  <input
-                    type="text"
-                    name="cardLastName"
-                    value={formData.cardLastName}
-                    onChange={handleChange}
-                    placeholder="Card Last Name"
-                  />
-                </div>
-                
+                {/* Billing Address */}
+                <h3 className="sign_up_h3">Billing Address</h3>
+                <div className="signup_form_row">
+                  <div className="signup_column">
+                    First Name 
+                    <input
+                      type="text"
+                      name="billingFirstName"
+                      value={paymentMethods.billingFirstName}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Billing First Name"
+                    />
+                  </div>
 
-                <div className="signup_column">
-                  Card Number
-                  <input
-                    type="number"
-                    name="cardNumber"
-                    value={formData.cardNumber}
-                    onChange={handleChange}
-                    placeholder="Card Number"
-                  />
-                </div>
+                  <div className="signup_column">
+                    Last Name
+                    <input
+                      type="text"
+                      name="billingLastName"
+                      value={paymentMethods.billingLastName}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Billing Last name"
+                    />
+                  </div>
 
-                <div className="signup_column">
-                  Date
-                  <input
-                    
-                    type="date"
-                    name="expirationDate"
-                    value={formData.expirationDate}
-                    onChange={handleChange}
-                    placeholder="Expiration Date"
-                  />
-                </div>
+                  <div className="signup_column">
+                    Billing Street Address
+                    <input
+                      type="text"
+                      name="billingStreetAddress"
+                      value={paymentMethods.billingStreetAddress}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Billing Street Address"
+                    />
+                  </div>
 
-                <div className="signup_column">
-                  Security Code
-                  <input
-                    type="text"
-                    name="securityCode"
-                    value={formData.securityCode}
-                    onChange={handleChange}
-                    placeholder="Security Code"
-                  />
-                </div>
-              </div>{/* </div> sign-up form row end */}
-              
-              <h3 className="sign_up_h3">Billing Address</h3>
-              <div className="signup_form_row">
-                <div className="signup_column">
-                  First Name 
-                  <input
-                    type="text"
-                    name="billingFirstName"
-                    value={formData.billingFirstName}
-                    onChange={handleChange}
-                    placeholder="Billing First Name"
-                  />
-                </div>
+                  <div className="signup_column">
+                    Billing City
+                    <input
+                      type="text"
+                      name="billingCity"
+                      value={paymentMethods.billingCity}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Billing City"
+                    />
+                  </div>
 
-                <div className="signup_column">
-                  Last Name
-                  <input
-                    type="text"
-                    name="billingLastName"
-                    value={formData.billingLastName}
-                    onChange={handleChange}
-                    placeholder="Billing Last name"
-                  />
-                </div>
-              
-                <div className="signup_column">
-                  Billing Street Address
-                  <input
-                    type="text"
-                    name="billingStreetAddress"
-                    value={formData.address}
-                    onChange={handleChange}
-                    placeholder="Billing Street Address"
-                  />
+                  <div className="signup_column">
+                    Billing State
+                    <input
+                      type="text"
+                      name="billingState"
+                      value={paymentMethods.billingState}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Billing State"
+                    />
+                  </div>
+
+                  <div className="signup_column">
+                    Billing Zip Code
+                    <input
+                      type="text"
+                      name="billingZipCode"
+                      value={paymentMethods.billingZipCode}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Billing Zip Code"
+                    />
+                  </div>
+
+                  <div className="signup_column">
+                    Billing Phone Number
+                    <input
+                      type="text"
+                      name="billingPhoneNumber"
+                      value={paymentMethods.billingPhoneNumber}
+                      onChange={(e) => handlePaymentChange(e, index)}
+                      placeholder="Billing Phone Number"
+                    />
+                  </div>
                 </div>
 
-                <div className="signup_column">
-                  Billing City
-                  <input
-                    type="text"
-                    name=" billingCity"
-                    value={formData.billingCity}
-                    onChange={handleChange}
-                    placeholder="Billing City"
-                  />
-                </div>
+                {index > 0 && (
+                  <button type="button" onClick={() => removePaymentMethod(index)}>
+                    Remove Payment Method
+                  </button>
+                )}
               </div>
+            ))}
 
-              <div className="signup_form_row">
-                <div className="signup_column">
-                  Billing State
-                  <input
-                    type="text"
-                    name="billingState"
-                    value={formData.billingState}
-                    onChange={handleChange}
-                    placeholder="Billing State"
-                  />
-                </div>
+            <button type="button" onClick={addPaymentMethod}>
+              Add Payment Method
+            </button>
 
-                <div className="signup_column">
-                  Billing Zip Code
-                  <input
-                    type="number"
-                    name="billingZipCode"
-                    value={formData.billingZipCode}
-                    onChange={handleChange}
-                    placeholder="Billing Zip Code"
-                  />
-                </div>
+            <button type="button" onClick={prevStep}>
+              Previous
+            </button>
+            <button type="button" onClick={nextStep}>
+              Next
+            </button>
+          </div>
+        )}
 
-
-                <div className="signup_column">
-                  Billing Phone Number
-                  <input
-                    type="number"
-                    name="billingPhoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    placeholder="Billing Phone Number"
-                  />
-                </div>
-              </div>
-
-              
-              
-
-              <button type="button" onClick={prevStep}>Previous</button>
-              <button type="button" onClick={nextStep} >Next</button>
-            </div>
-          )}
-
+          
           {currentStep === 3 && (
             <div>
               <h2 className="signup_form_title">Home Address Information</h2>
