@@ -8,34 +8,11 @@ import Footer from "../footer/footer";
 const Signup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    //Personal Information
     firstName: '',
-    lastName: ' ',
-    phoneNumber: '',
+    lastName: '',
+    cellphone: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    //Payment Information/Card Info
-    cardFirstName: '',
-    cardLastName: '',
-    cardNumber: '',
-    expirationDate: '',
-    securityCode: '',
-    //Billing Address
-    billingFirstName: '',
-    billingLastName: '',
-    billingStreetAddress: '',
-    billingCity: '',
-    billingState: '',
-    billingCountry: '',
-    billingZipCode: '',
-    billingPhoneNumber: '',
-    //Home address
-    streetAddress: '',
-    city: '',
-    state: '',
-    zipcode: '',
-    country: '',
   });
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -47,51 +24,43 @@ const Signup = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
   };
-  
+
 //  verification code should be sent to user's email address upon registration
-const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
   if (formData.password !== formData.confirmPassword) {
-    // You can add an alert or a toast message to inform the user that the passwords do not match
     console.log("Passwords do not match");
     return;
   }
-  console.log('Form submitted:', formData);
-  setFormData({
-    // remaining code remains the same
-    //Personal Information
-    firstName: '',
-    lastName: ' ',
-    phoneNumber: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    //Payment Information/Card Info
-    cardFirstName: '',
-    cardLastName: '',
-    cardNumber: '',
-    expirationDate: '',
-    securityCode: '',
-    //Billing Address
-    billingFirstName: '',
-    billingLastName: '',
-    billingStreetAddress: '',
-    billingCity: '',
-    billingState: '',
-    billingCountry: '',
-    billingZipCode: '',
-    billingPhoneNumber: '',
-    //Home address
-    streetAddress: '',
-    city: '',
-    state: '',
-    zipcode: '',
-    country: '',
-  });
-  navigate('/Activate');
+
+  try {
+    const response = await fetch('http://198.251.67.241:8080/api/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstname: formData.firstName,
+        lastname: formData.lastName,
+        cell: formData.cellphone,
+        email: formData.email,
+        password: formData.password,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to add a new user');
+      // Display a toast or an alert message to inform the user that the registration failed
+    } else {
+      console.log('New user added successfully');
+      // Handle successful user registration here
+      navigate('/Activate');
+    }
+  } catch (error) {
+    console.error('An error occurred:', error);
+    // Handle the error case here
+  }
 };
-
-
 
   const nextStep = () => setCurrentStep(currentStep + 1);
   const prevStep = () => setCurrentStep(currentStep - 1);
@@ -103,20 +72,6 @@ const handleSubmit = (e) => {
   formData.password &&
   formData.confirmPassword;
 
-const isStep2Complete =
-  formData.cardFirstName &&
-  formData.cardLastName &&
-  formData.cardNumber &&
-  formData.expirationDate &&
-  formData.securityCode &&
-  formData.billingFirstName &&
-  formData.billingLastName &&
-  formData.billingStreetAddress &&
-  formData.billingCity &&
-  formData.billingState &&
-  formData.billingZipCode &&
-  formData.billingPhoneNumber;
-
 const isStep3Complete =
   formData.streetAddress &&
   formData.city &&
@@ -124,7 +79,7 @@ const isStep3Complete =
   formData.zipcode &&
   formData.country;
 
-const isFormComplete = isStep1Complete && isStep2Complete && isStep3Complete;
+const isFormComplete = isStep1Complete && isStep3Complete;
 
 
   const onClose = () => {
@@ -404,7 +359,7 @@ const isFormComplete = isStep1Complete && isStep2Complete && isStep3Complete;
               
 
               <button type="button" onClick={prevStep}>Previous</button>
-              <button type="button" onClick={nextStep} disabled={!isStep2Complete}>Next</button>
+              <button type="button" onClick={nextStep} >Next</button>
             </div>
           )}
 
