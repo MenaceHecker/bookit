@@ -24,7 +24,7 @@ function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = 'http://localhost:8080/api/login?email=bookit@example.com&password=bookit';
+    const url = 'http://198.251.67.241:8080/api/login?email=bookit@example.com&password=bookit';
     console.log('Request URL:', url); // Print the URL before making the request
     try {
       const response = await axios.post(url, {

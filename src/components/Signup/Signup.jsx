@@ -170,7 +170,7 @@ const addPaymentMethod = () => {
     formData.zipcode !== '' &&
     formData.country !== '';
 
-  const isFormComplete = isStep1Complete && isStep3Complete;
+  const isFormComplete = isStep1Complete;
 
 
   const onClose = () => {
