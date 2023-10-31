@@ -49,48 +49,83 @@ const Signup = () => {
   };
   
 //  verification code should be sent to user's email address upon registration
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    setFormData({
-       //Personal Information
-      firstName: '',
-      lastName: ' ',
-      phoneNumber: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      //Payment Information/Card Info
-      cardFirstName: '',
-      cardLastName: '',
-      cardNumber: '',
-      expirationDate: '',
-      securityCode: '',
-      //Billing Address
-      billingFirstName: '',
-      billingLastName: '',
-      billingStreetAddress: '',
-      billingCity: '',
-      billingState: '',
-      billingCountry: '',
-      billingZipCode: '',
-      billingPhoneNumber: '',
-      //Home address
-      streetAddress: '',
-      city: '',
-      state: '',
-      zipcode: '',
-      country: '',
-
-
-    });
-    navigate('/Activate');
-  };
+const handleSubmit = (e) => {
+  e.preventDefault();
+  if (formData.password !== formData.confirmPassword) {
+    // You can add an alert or a toast message to inform the user that the passwords do not match
+    console.log("Passwords do not match");
+    return;
+  }
+  console.log('Form submitted:', formData);
+  setFormData({
+    // remaining code remains the same
+    //Personal Information
+    firstName: '',
+    lastName: ' ',
+    phoneNumber: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    //Payment Information/Card Info
+    cardFirstName: '',
+    cardLastName: '',
+    cardNumber: '',
+    expirationDate: '',
+    securityCode: '',
+    //Billing Address
+    billingFirstName: '',
+    billingLastName: '',
+    billingStreetAddress: '',
+    billingCity: '',
+    billingState: '',
+    billingCountry: '',
+    billingZipCode: '',
+    billingPhoneNumber: '',
+    //Home address
+    streetAddress: '',
+    city: '',
+    state: '',
+    zipcode: '',
+    country: '',
+  });
+  navigate('/Activate');
+};
 
 
 
   const nextStep = () => setCurrentStep(currentStep + 1);
   const prevStep = () => setCurrentStep(currentStep - 1);
+  const isStep1Complete =
+  formData.firstName &&
+  formData.lastName &&
+  formData.phoneNumber &&
+  formData.email &&
+  formData.password &&
+  formData.confirmPassword;
+
+const isStep2Complete =
+  formData.cardFirstName &&
+  formData.cardLastName &&
+  formData.cardNumber &&
+  formData.expirationDate &&
+  formData.securityCode &&
+  formData.billingFirstName &&
+  formData.billingLastName &&
+  formData.billingStreetAddress &&
+  formData.billingCity &&
+  formData.billingState &&
+  formData.billingZipCode &&
+  formData.billingPhoneNumber;
+
+const isStep3Complete =
+  formData.streetAddress &&
+  formData.city &&
+  formData.state &&
+  formData.zipcode &&
+  formData.country;
+
+const isFormComplete = isStep1Complete && isStep2Complete && isStep3Complete;
+
 
   const onClose = () => {
     navigate(-1);
@@ -143,7 +178,7 @@ const Signup = () => {
                 <label>
                   Phone Number:<span className="asterisk">*</span>
                   <input
-                    type="tel"
+                    type="number"
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
@@ -157,7 +192,7 @@ const Signup = () => {
                 <label>
                   Email address:<span className="asterisk">*</span>
                   <input
-                    type="text"
+                    type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -212,7 +247,7 @@ const Signup = () => {
 
 
             <button type="button" onClick={onClose}>Close</button>
-            <button type="button" onClick={nextStep}>Next</button>
+            <button type="button" onClick={nextStep} disabled={!isStep1Complete}>Next</button>
           </div>
           
           )}
@@ -250,7 +285,7 @@ const Signup = () => {
                 <div className="signup_column">
                   Card Number
                   <input
-                    type="text"
+                    type="number"
                     name="cardNumber"
                     value={formData.cardNumber}
                     onChange={handleChange}
@@ -344,7 +379,7 @@ const Signup = () => {
                 <div className="signup_column">
                   Billing Zip Code
                   <input
-                    type="text"
+                    type="number"
                     name="billingZipCode"
                     value={formData.billingZipCode}
                     onChange={handleChange}
@@ -356,7 +391,7 @@ const Signup = () => {
                 <div className="signup_column">
                   Billing Phone Number
                   <input
-                    type="text"
+                    type="number"
                     name="billingPhoneNumber"
                     value={formData.billingPhoneNumber}
                     onChange={handleChange}
@@ -369,7 +404,7 @@ const Signup = () => {
               
 
               <button type="button" onClick={prevStep}>Previous</button>
-              <button type="button" onClick={nextStep}>Next</button>
+              <button type="button" onClick={nextStep} disabled={!isStep2Complete}>Next</button>
             </div>
           )}
 
@@ -413,7 +448,7 @@ const Signup = () => {
                 <div className="signup_column">
                   Zip Code
                   <input
-                    type="text"
+                    type="number"
                     name="zipcode"
                     value={formData.zipcode}
                     onChange={handleChange}
@@ -424,7 +459,7 @@ const Signup = () => {
                 <div className="signup_column">
                   Zip Code
                   <input
-                    type="text"
+                    type="number"
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
@@ -434,7 +469,7 @@ const Signup = () => {
 
               </div>
               <button type="button" onClick={prevStep}>Previous</button>
-              <button type="submit">Submit</button>
+              <button type="submit" disabled={!isFormComplete}>Submit</button>
             </div>
           )}
         </form>

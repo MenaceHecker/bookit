@@ -201,7 +201,7 @@ const EditPaymentForm = ({setShowPopout}) => {
                   <div className="edit_payment_form_column">
                     Billing Zip Code
                     <input
-                      type="text"
+                      type="number"
                       name="billingZipCode"
                       value={formData.billingZipCode}
                       onChange={handleChange}
@@ -213,7 +213,7 @@ const EditPaymentForm = ({setShowPopout}) => {
                   <div className="edit_payment_form_column">
                     Billing Phone Number
                     <input
-                      type="text"
+                      type="number"
                       name="billingPhoneNumber"
                       value={formData.billingPhoneNumber}
                       onChange={handleChange}
