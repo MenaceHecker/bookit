@@ -13,7 +13,9 @@ import ManageMovies from "./Admin Pages/ManageMovies";
 import ManageUsers from "./Admin Pages/ManageUsers";
 import ManagePromotions from "./Admin Pages/ManagePromotions";
 import BookingPage from "./components/BookMovie/BookingPage";
-import EditProfile from "./components/Editprofile/EditProfile";
+import EditProfile from "./components/EditProfile/EditProfile";
+import ForgotPassword from './components/ForgotPassword/ForgotPassword';
+import CreateNewPassword from './components/ForgotPassword/CreateNewPassword';
 const App = () => {
   return (
     <>
@@ -33,6 +35,8 @@ const App = () => {
           <Route exact path='/ManagePromotions' element={<ManagePromotions/>}/>
           <Route exact path='/BookingPage' element={<BookingPage/>}/>
           <Route exact path='/EditProfile' element={<EditProfile/>}/>
+          <Route exact path='/ForgotPassword' element={<ForgotPassword/>}/>
+          <Route exact path='/CreateNewPassword' element={<CreateNewPassword/>}/>
         </Routes>
     </>
   );
