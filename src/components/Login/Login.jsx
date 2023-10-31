@@ -31,10 +31,17 @@ function Login() {
         console.error('Login failed');
         setIsUp(true);
       } else {
-        const data = await response.text();
+        const data = await response
+        localStorage.setItem('sessionId', data.sid);
+        localStorage.setItem('isPriveleged', data.isPriveleged);
+        localStorage.setItem('email', formData.email)
         console.log('Login successful:', data);
         // Handle the successful case here
-        navigate('/');
+        if (formData.email === 'bookit@example.com') {
+          navigate('/ManageMovies');
+        } else {
+          navigate('/');
+        }
       }
     } catch (error) {
       console.error('An error occurred:', error);
