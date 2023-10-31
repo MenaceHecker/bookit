@@ -14,6 +14,7 @@ const Signup = () => {
     email: '',
     password: '',
   });
+  //Check if this is working. 
 
   const [currentStep, setCurrentStep] = useState(1);
 
