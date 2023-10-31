@@ -1,19 +1,18 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
-import './DropDownMenu.css';
 import { Link } from 'react-router-dom';
 
 const DropDownMenu = () => {
-  const location = useLocation();
+  // Retrieve the session ID from local storage
+  const sessionId = localStorage.getItem('sessionId');
 
-  // Determine if the user came from the login page
-  const cameFromLoginPage = location.state && location.state.from === "/Login";
+  // Check if the user is logged in
+  const isLoggedIn = sessionId !== null && sessionId !== "0";
 
   return (
     <div className="dropdown">
       <i className='fa fa-user'></i>
       <ul>
-        {cameFromLoginPage ? (
+        {isLoggedIn ? (
           <>
             <li><Link to="/">Log Out</Link></li>
             <li><Link to="/EditProfile">Edit Profile</Link></li>
@@ -27,6 +26,6 @@ const DropDownMenu = () => {
       </ul>
     </div>
   );
-}
+};
 
 export default DropDownMenu;

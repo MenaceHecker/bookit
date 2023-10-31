@@ -156,21 +156,21 @@ const addPaymentMethod = () => {
   const nextStep = () => setCurrentStep(currentStep + 1);
   const prevStep = () => setCurrentStep(currentStep - 1);
   const isStep1Complete =
-  formData.firstName != null &&
-  formData.lastName != null &&
-  formData.phoneNumber != null &&
-  formData.email != null &&
-  formData.password != null &&
-  formData.confirmPassword != null;
+    formData.firstName !== '' &&
+    formData.lastName !== '' &&
+    formData.phoneNumber !== '' &&
+    formData.email !== '' &&
+    formData.password !== '' &&
+    formData.confirmPassword !== '';
 
-const isStep3Complete =
-  formData.streetAddress != null &&
-  formData.city != null &&
-  formData.state != null &&
-  formData.zipcode != null &&
-  formData.country != null;
+  const isStep3Complete =
+    formData.streetAddress !== '' &&
+    formData.city !== '' &&
+    formData.state !== '' &&
+    formData.zipcode !== '' &&
+    formData.country !== '';
 
-const isFormComplete = isStep1Complete;// && isStep3Complete;
+  const isFormComplete = isStep1Complete && isStep3Complete;
 
 
   const onClose = () => {

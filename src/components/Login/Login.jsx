@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import Header from '../header/header';
 import Footer from "../footer/footer";
+import axios from 'axios';
 
 function Login() {
   const navigate = useNavigate();
@@ -22,25 +23,28 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/login?email=' +
-          formData.email + '&password=' + formData.password, {
-        method: 'GET',
+      const response = await axios.post('http://your_api_url/login', {
+        email,
+        password,
       });
-  
-      if (!response.ok) {
-        console.error('Login failed');
-        setIsUp(true);
-      } else {
-        const data = await response.text();
-        console.log('Login successful:', data);
-        // Handle the successful case here
-        navigate('/');
-      }
+      const sessionId = response.data;
+      // Save the session ID to local storage
+      localStorage.setItem('sessionId', sessionId);
+
+        if (!response.ok) {
+            console.error('Login failed');
+            setIsUp(true);
+        } else {
+            const data = await response.json();
+            console.log('Login successful:', data);
+            // Handle the successful case here
+            navigate('/');
+        }
     } catch (error) {
-      console.error('An error occurred:', error);
-      // Handle the error case here
+        console.error('An error occurred:', error);
+        // Handle the error case here
     }
-  };
+};
 
   return (
     <>
