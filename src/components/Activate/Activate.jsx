@@ -15,13 +15,28 @@ function Activate() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setFormData({
-      code: '',
-    });
-    navigate('/');
+
+    try {
+      const response = await fetch('http://198.251.67.241:8080/api/activate?code=' + formData.code, {
+        method: 'GET',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Account activated');
+        navigate('/');
+      } else {
+        console.error('Activation failed:', data);
+        // Handle activation failure here
+      }
+    } catch (error) {
+      //console.error('Error activating account:', error);
+      navigate('/Login');
+      // Handle error case here
+    }
   };
 
   const onClose = () => {
@@ -33,31 +48,31 @@ function Activate() {
   }
 
   return (
-    <>
-      <Header/>
-      <div className="activate_center_title">Activate Account</div>
+      <>
+        <Header/>
+        <div className="activate_center_title">Activate Account</div>
 
-      <div className="activate_form">
-        <form onSubmit={handleSubmit} className="activate_container">
-          <div>A 6-letter code has been sent to your email address.</div>
-          <div>Please enter the code to activate your account.</div>
+        <div className="activate_form">
+          <form onSubmit={handleSubmit} className="activate_container">
+            <div>A 6-letter code has been sent to your email address.</div>
+            <div>Please enter the code to activate your account.</div>
 
-          <div className="activate_form_row">
+            <div className="activate_form_row">
               <input type="text" name="code" value={formData.code} onChange={handleInputChange}/>
-          </div>
+            </div>
 
-          <div className="activate_button_row">
-            <button type="submit">Activate</button>
-            <button type="button" className="cancel_activate" onClick={onClose}>Back</button>
-          </div>
+            <div className="activate_button_row">
+              <button type="submit">Activate</button>
+              <button type="button" className="cancel_activate" onClick={onClose}>Back</button>
+            </div>
 
-          <div>
-            If you did not receive a code, then you can <a href="#" onClick={sendNewCode}>send another code</a>.
-          </div>
-        </form>
-      </div>
-      <Footer/>
-    </>
+            <div>
+              If you did not receive a code, then you can <a href="#" onClick={sendNewCode}>send another code</a>.
+            </div>
+          </form>
+        </div>
+        <Footer/>
+      </>
   );
 }
 
