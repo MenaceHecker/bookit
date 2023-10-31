@@ -1,4 +1,5 @@
 import React from 'react';
+import './DropDownMenu.css';
 import { Link } from 'react-router-dom';
 
 const DropDownMenu = () => {
@@ -26,6 +27,6 @@ const DropDownMenu = () => {
       </ul>
     </div>
   );
-};
+}
 
 export default DropDownMenu;

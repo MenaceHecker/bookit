@@ -8,6 +8,8 @@ import axios from 'axios';
 function Login() {
   const navigate = useNavigate();
   const [isUp, setIsUp] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -22,29 +24,27 @@ function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const url = 'http://localhost:8080/api/login?email=bookit@example.com&password=bookit';
+    console.log('Request URL:', url); // Print the URL before making the request
     try {
-      const response = await axios.post('http://your_api_url/login', {
+      const response = await axios.post(url, {
         email,
         password,
       });
       const sessionId = response.data;
       // Save the session ID to local storage
       localStorage.setItem('sessionId', sessionId);
-
-        if (!response.ok) {
-            console.error('Login failed');
-            setIsUp(true);
-        } else {
-            const data = await response.json();
-            console.log('Login successful:', data);
-            // Handle the successful case here
-            navigate('/');
-        }
+  
+      // Handle the successful case here
+      console.log('Login successful:', response.data);
+      navigate('/');
     } catch (error) {
-        console.error('An error occurred:', error);
-        // Handle the error case here
+      // Handle the error case here
+      console.error('An error occurred:', error);
+      setIsUp(true);
     }
-};
+  };
+  
 
   return (
     <>
