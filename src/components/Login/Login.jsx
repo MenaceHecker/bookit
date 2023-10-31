@@ -16,20 +16,34 @@ function Login() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setFormData({
-      email: '',
-      password: '',
-    });
-    navigate('/');
+    try {
+      const response = await fetch('http://198.251.67.241:8080/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        // Handle the error if the response status is not ok
+        console.error('Login failed');
+        // Handle the error case here
+      } else {
+        // Handle the successful login here
+        const data = await response.json();
+        console.log('Login successful:', data);
+        // Handle the successful login here
+        navigate('/');
+      }
+    } catch (error) {
+      // Handle api fetch error
+      console.error('An error occurred:', error);
+      // Handle the error case here
+    }
   };
-
-  const onClose = () => {
-    navigate(-1);
-  };
-
 
   return (
     <>
