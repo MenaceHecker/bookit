@@ -15,6 +15,9 @@ function Login() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  const onClose = () => {
+    navigate(-1);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,24 +25,24 @@ function Login() {
       const response = await fetch('http://198.251.67.241:8080/api/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify(formData),
+        body: new URLSearchParams({
+          email: formData.email,
+          password: formData.password,
+        }),
       });
   
       if (!response.ok) {
-        // Handle the error if the response status is not ok
         console.error('Login failed');
         // Handle the error case here
       } else {
-        // Handle the successful login here
-        const data = await response.json();
+        const data = await response.text();
         console.log('Login successful:', data);
-        // Handle the successful login here
+        // Handle the successful case here
         navigate('/');
       }
     } catch (error) {
-      // Handle api fetch error
       console.error('An error occurred:', error);
       // Handle the error case here
     }
