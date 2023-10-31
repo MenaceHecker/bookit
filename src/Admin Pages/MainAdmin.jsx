@@ -16,10 +16,9 @@ import Login from "../components/Login/Login";
 function MainAdmin() {
     return (
       <div className="MainAdmin">
-        <AdminHeader/>
+
           <Login/>
         <AdminSideBar/>
-          <Footer/>
       </div>
     );
   }

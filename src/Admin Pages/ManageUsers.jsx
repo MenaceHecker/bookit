@@ -16,14 +16,25 @@ import './ManageUsers.css';
 import AddUserForm from "./UserForms/AddUserForm";
 import { useState } from "react";
 import Footer from "../components/footer/footer";
+import { Link, useNavigate } from 'react-router-dom';
 function ManageUsers() {
-
+    const navigate = useNavigate();
     const [showPopout, setShowPopout] = useState(false);
 
     const togglePopout = () => {
       setShowPopout(!showPopout);
     };
-  
+    function joe() {
+        navigate('/')
+    }
+    if (localStorage.email !== 'bookit@example.com') {
+        return (
+            <div className={'center_title'}>
+                <h1>You are not granted access</h1>
+                <button onClick={joe}>Home</button>
+            </div>
+        );
+    }
     
     const mockData = [
         {
