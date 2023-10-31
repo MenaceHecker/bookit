@@ -15,6 +15,8 @@ const DropDownMenu = () => {
 
             if (!response.ok) {
                 console.error('Logout failed');
+                localStorage.setItem('sessionId', null);
+                localStorage.setItem('email', null)
                 navigate('/');
             } else {
                 //const data = await response.text();
@@ -33,10 +35,10 @@ const DropDownMenu = () => {
     <div className="dropdown">
           <i className='fa fa-user'></i>
           <ul>
-              {c == null && <li><Link to="/Login">Log In</Link></li>}
-              {c != null && <li onClick={logout}>Logout</li>}
-            <li><Link to="/Signup">Sign Up</Link></li>
-            <li><Link to="/EditProfile">Edit Profile</Link></li>
+              <li><Link to="/Login">Log In</Link></li>
+              <li onClick={logout}><Link to="/Login">Log out</Link></li>
+              <li><Link to="/Signup">Sign Up</Link></li>
+              <li><Link to="/EditProfile">Edit Profile</Link></li>
           </ul>
     </div>
   );
