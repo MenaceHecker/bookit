@@ -31,9 +31,10 @@ function Login() {
         console.error('Login failed');
         setIsUp(true);
       } else {
-        const data = await response
-        localStorage.setItem('sessionId', data.sid);
-        localStorage.setItem('isPriveleged', data.isPriveleged);
+        const data = await response.json();
+        console.log(data);
+        localStorage.setItem('sessionId', data.sessionId);
+        localStorage.setItem('isPriveleged', data.isPrivileged);
         localStorage.setItem('email', formData.email)
         console.log('Login successful:', data);
         // Handle the successful case here
