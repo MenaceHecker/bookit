@@ -9,40 +9,13 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-
-    //Personal Information
     firstName: '',
-    lastName: ' ',
+    lastName: '',
     phoneNumber: '',
+    address: '',
     email: '',
     password: '',
     confirmPassword: '',
-   
-    //Home address
-    streetAddress: '',
-    city: '',
-    state: '',
-    zipcode: '',
-    country: '',
-
-    paymentMethods: [
-      {
-        cardFirstName: '',
-        cardLastName: '',
-        cardNumber: '',
-        expirationDate: '',
-        securityCode: '',
-        billingFirstName: '',
-        billingLastName: '',
-        billingStreetAddress: '',
-        billingCity: '',
-        billingState: '',
-        billingCountry: '',
-        billingZipCode: '',
-        billingPhoneNumber: '',
-      },
-    ],
-
   });
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -55,105 +28,54 @@ const Signup = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
   };
-  
+
 //  verification code should be sent to user's email address upon registration
-   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    setFormData({
-      //Personal Information
-    firstName: '',
-    lastName: ' ',
-    phoneNumber: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-   
-    //Home address
-    streetAddress: '',
-    city: '',
-    state: '',
-    zipcode: '',
-    country: '',
-    
-      paymentMethods: [
-        {
-          cardFirstName: '',
-          cardLastName: '',
-          cardNumber: '',
-          expirationDate: '',
-          securityCode: '',
-          billingFirstName: '',
-          billingLastName: '',
-          billingStreetAddress: '',
-          billingCity: '',
-          billingState: '',
-          billingCountry: '',
-          billingZipCode: '',
-          billingPhoneNumber: '',
-        },
-      ],
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (formData.password !== formData.confirmPassword) {
+    console.log("Passwords do not match");
+    return;
+  }
+
+  try {
+    const response = await fetch('http://198.251.67.241:8080/api/add' +
+        '?firstName=' + formData.firstName + '&lastName=' + formData.lastName
+        + '&password=' + formData.password + '&email=' + formData.email + '&address=' + formData.address + '&phoneNumber=' + formData.phoneNumber, {
+      method: 'GET',
     });
-    navigate('/Activate');
-  };
-
-const handlePaymentChange = (e, index) => {
-  console.log(e)
-  const { name, value } = e.target;
-  setFormData((prevState) => {
-    const updatedPaymentMethods = [...prevState.paymentMethods];
-    updatedPaymentMethods[index] = {
-      ...updatedPaymentMethods[index],
-      [name]: value,
-      
-    };
-
-    return {
-      
-      ...prevState,
-      paymentMethods: updatedPaymentMethods,
-    };
-  });
+    if (!response.ok) {
+      console.error('Failed to add a new user');
+      // Display a toast or an alert message to inform the user that the registration failed
+    } else {
+      console.log('New user added successfully');
+      // Handle successful user registration here
+      navigate('/Activate');
+    }
+  } catch (error) {
+    console.error('An error occurred:', error);
+    // Handle the error case here
+  }
 };
-
-const removePaymentMethod = (index) => {
-  setFormData(prevState => {
-    const updatedPaymentMethods = [...prevState.paymentMethods];
-    updatedPaymentMethods.splice(index, 1);
-    return {
-      ...prevState,
-      paymentMethods: updatedPaymentMethods
-    };
-  });
-};
-
-const addPaymentMethod = () => {
-  setFormData(prevState => ({
-    ...prevState,
-    paymentMethods: [
-      ...prevState.paymentMethods,
-      {
-        cardFirstName: '',
-        cardLastName: '',
-        cardNumber: '',
-        expirationDate: '',
-        securityCode: '',
-        billingFirstName: '',
-        billingLastName: '',
-        billingStreetAddress: '',
-        billingCity: '',
-        billingState: '',
-        billingCountry: '',
-        billingZipCode: '',
-        billingPhoneNumber: '',
-      },
-    ],
-  }));
-};
-
 
   const nextStep = () => setCurrentStep(currentStep + 1);
   const prevStep = () => setCurrentStep(currentStep - 1);
+  const isStep1Complete =
+  formData.firstName != null &&
+  formData.lastName != null &&
+  formData.phoneNumber != null &&
+  formData.email != null &&
+  formData.password != null &&
+  formData.confirmPassword != null;
+
+const isStep3Complete =
+  formData.streetAddress != null &&
+  formData.city != null &&
+  formData.state != null &&
+  formData.zipcode != null &&
+  formData.country != null;
+
+const isFormComplete = isStep1Complete;// && isStep3Complete;
+
 
   const onClose = () => {
     navigate(-1);
@@ -206,7 +128,7 @@ const addPaymentMethod = () => {
                 <label>
                   Phone Number:<span className="asterisk">*</span>
                   <input
-                    type="tel"
+                    type="number"
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
@@ -220,7 +142,7 @@ const addPaymentMethod = () => {
                 <label>
                   Email address:<span className="asterisk">*</span>
                   <input
-                    type="text"
+                    type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -265,8 +187,8 @@ const addPaymentMethod = () => {
                   <input
                     type="checkbox"
                     name="promotions"
-                    checked={formData.promotions}
-                    onChange={handleChange}
+                    //checked={formData.promotions}
+                    //onChange={handleChange}
                   />
                 </label>
                </div>
@@ -275,7 +197,7 @@ const addPaymentMethod = () => {
 
 
             <button type="button" onClick={onClose}>Close</button>
-            <button type="button" onClick={nextStep}>Next</button>
+            <button type="button" onClick={nextStep} disabled={!isStep1Complete}>Next</button>
           </div>
           
           )}
@@ -312,16 +234,16 @@ const addPaymentMethod = () => {
                     />
                   </div>
 
-                  <div className="signup_column">
-                    Card Number
-                    <input
-                      type="text"
-                      name="cardNumber"
-                      value={paymentMethods.cardNumber}
-                      onChange={(e) => handlePaymentChange(e, index)}
-                      placeholder="Card Number"
-                    />
-                  </div>
+                <div className="signup_column">
+                  Card Number
+                  <input
+                    type="number"
+                    name="cardNumber"
+                    value={formData.cardNumber}
+                    onChange={handleChange}
+                    placeholder="Card Number"
+                  />
+                </div>
 
                   <div className="signup_column">
                     Date
@@ -360,27 +282,27 @@ const addPaymentMethod = () => {
                     />
                   </div>
 
-                  <div className="signup_column">
-                    Last Name
-                    <input
-                      type="text"
-                      name="billingLastName"
-                      value={paymentMethods.billingLastName}
-                      onChange={(e) => handlePaymentChange(e, index)}
-                      placeholder="Billing Last name"
-                    />
-                  </div>
-
-                  <div className="signup_column">
-                    Billing Street Address
-                    <input
-                      type="text"
-                      name="billingStreetAddress"
-                      value={paymentMethods.billingStreetAddress}
-                      onChange={(e) => handlePaymentChange(e, index)}
-                      placeholder="Billing Street Address"
-                    />
-                  </div>
+                <div className="signup_column">
+                  Last Name
+                  <input
+                    type="text"
+                    name="billingLastName"
+                    value={formData.billingLastName}
+                    onChange={handleChange}
+                    placeholder="Billing Last name"
+                  />
+                </div>
+              
+                <div className="signup_column">
+                  Billing Street Address
+                  <input
+                    type="text"
+                    name="billingStreetAddress"
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="Billing Street Address"
+                  />
+                </div>
 
                   <div className="signup_column">
                     Billing City
@@ -404,51 +326,38 @@ const addPaymentMethod = () => {
                     />
                   </div>
 
-                  <div className="signup_column">
-                    Billing Zip Code
-                    <input
-                      type="text"
-                      name="billingZipCode"
-                      value={paymentMethods.billingZipCode}
-                      onChange={(e) => handlePaymentChange(e, index)}
-                      placeholder="Billing Zip Code"
-                    />
-                  </div>
-
-                  <div className="signup_column">
-                    Billing Phone Number
-                    <input
-                      type="text"
-                      name="billingPhoneNumber"
-                      value={paymentMethods.billingPhoneNumber}
-                      onChange={(e) => handlePaymentChange(e, index)}
-                      placeholder="Billing Phone Number"
-                    />
-                  </div>
+                <div className="signup_column">
+                  Billing Zip Code
+                  <input
+                    type="number"
+                    name="billingZipCode"
+                    value={formData.billingZipCode}
+                    onChange={handleChange}
+                    placeholder="Billing Zip Code"
+                  />
                 </div>
 
-                {index > 0 && (
-                  <button type="button" onClick={() => removePaymentMethod(index)}>
-                    Remove Payment Method
-                  </button>
-                )}
+
+                <div className="signup_column">
+                  Billing Phone Number
+                  <input
+                    type="number"
+                    name="billingPhoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    placeholder="Billing Phone Number"
+                  />
+                </div>
               </div>
-            ))}
 
-            <button type="button" onClick={addPaymentMethod}>
-              Add Payment Method
-            </button>
+              
+              
 
-            <button type="button" onClick={prevStep}>
-              Previous
-            </button>
-            <button type="button" onClick={nextStep}>
-              Next
-            </button>
-          </div>
-        )}
+              <button type="button" onClick={prevStep}>Previous</button>
+              <button type="button" onClick={nextStep} >Next</button>
+            </div>
+          )}
 
-          
           {currentStep === 3 && (
             <div>
               <h2 className="signup_form_title">Home Address Information</h2>
@@ -489,7 +398,7 @@ const addPaymentMethod = () => {
                 <div className="signup_column">
                   Zip Code
                   <input
-                    type="text"
+                    type="number"
                     name="zipcode"
                     value={formData.zipcode}
                     onChange={handleChange}
@@ -500,7 +409,7 @@ const addPaymentMethod = () => {
                 <div className="signup_column">
                   Zip Code
                   <input
-                    type="text"
+                    type="number"
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
@@ -510,7 +419,7 @@ const addPaymentMethod = () => {
 
               </div>
               <button type="button" onClick={prevStep}>Previous</button>
-              <button type="submit">Submit</button>
+              <button type="submit" disabled={!isFormComplete}>Submit</button>
             </div>
           )}
         </form>

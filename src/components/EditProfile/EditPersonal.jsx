@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EditPersonal.css';
-
+import axios from 'axios';
 function EditPersonal() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    subscribe: 'off',
+    subscribe: '',
     password: '',
     password2: '',
   });
@@ -18,9 +18,30 @@ function EditPersonal() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
+    try {
+      const response = await fetch('http://198.251.67.241:8080/api/mpc?email=' +
+          formData.email + '&sid=' + localStorage.sid + '&pChange=' + formData.password2 + '&ufChange='
+          + formData.firstName + '&ulChange=' + formData.lastName + '&wantsPromotions=' + formData.subscribe,
+          {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        console.error('joe');
+      } else {
+        const sid = await response.text();
+        console.log('joe', sid);
+
+        // Handle the successful case here
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      // Handle the error case here
+    }
     setFormData({
       email: '',
       subscribe: 'off',

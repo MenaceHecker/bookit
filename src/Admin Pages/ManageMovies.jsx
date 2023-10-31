@@ -18,9 +18,13 @@ import AddMoviePopout from './MovieForms/AddMoviePopout';
 import { useEffect, useState } from 'react';
 import './MovieForms/MovieForm.css'
 import Footer from "../components/footer/footer";
+import { Link, useNavigate } from 'react-router-dom';
 
 function ManageMovies() {
-
+    const navigate = useNavigate();
+    if (localStorage.email !== 'bookit@example.com') {
+        navigate('/');
+    }
   const [movieType, setMovieType] = useState('currentlyShowing'); //This will allow the admin to switch between the "Currently Showing" movies and the "Coming soon" movies
   //different data from the database will be fetched depending on state
   const [data, setData] = useState([]);
