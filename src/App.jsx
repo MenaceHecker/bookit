@@ -37,6 +37,7 @@ const App = () => {
           <Route exact path='/EditProfile' element={<EditProfile/>}/>
           <Route exact path='/ForgotPassword' element={<ForgotPassword/>}/>
           <Route exact path='/CreateNewPassword' element={<CreateNewPassword/>}/>
+          <Route exact path='/' element={<Homepage/>}/>
         </Routes>
     </>
   );
