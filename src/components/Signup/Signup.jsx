@@ -205,11 +205,11 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
         {currentStep === 2 && (
           <div>
             <h2 className="signup_form_title">Payment Information</h2>
-
+{/* 
             {formData.paymentMethods.map((paymentMethods, index) => (
-              <div key={index}>
-                <h3 className="sign_up_h3">Payment Method #{index + 1}</h3>
-
+              <div key={index}> */}
+                {/* <h3 className="sign_up_h3">Payment Method #{index + 1}</h3> */}
+                <h3 className="sign_up_h3">Payment Method </h3>
                 {/* Card Information */}
                 <div className="signup_form_row">
                   <div className="signup_column">
@@ -217,8 +217,8 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
                     <input
                       type="text"
                       name="cardFirstName"
-                      value={paymentMethods.cardFirstName}
-                      onChange={(e) => handlePaymentChange(e, index)}
+                      value={formData.cardFirstName}
+                    onChange={handleChange}
                       placeholder="Card First Name"
                     />
                   </div>
@@ -228,8 +228,8 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
                     <input
                       type="text"
                       name="cardLastName"
-                      value={paymentMethods.cardLastName}
-                      onChange={(e) => handlePaymentChange(e, index)}
+                      value={formData.cardLastName}
+                      onChange={handleChange}
                       placeholder="Card Last Name"
                     />
                   </div>
@@ -250,8 +250,8 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
                     <input
                       type="date"
                       name="expirationDate"
-                      value={paymentMethods.expirationDate}
-                      onChange={(e) => handlePaymentChange(e, index)}
+                      value={formData.expirationDate}
+                      onChange={handleChange}
                       placeholder="Expiration Date"
                     />
                   </div>
@@ -261,8 +261,8 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
                     <input
                       type="text"
                       name="securityCode"
-                      value={paymentMethods.securityCode}
-                      onChange={(e) => handlePaymentChange(e, index)}
+                      value={formData.securityCode}
+                      onChange={handleChange}
                       placeholder="Security Code"
                     />
                   </div>
@@ -276,8 +276,8 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
                     <input
                       type="text"
                       name="billingFirstName"
-                      value={paymentMethods.billingFirstName}
-                      onChange={(e) => handlePaymentChange(e, index)}
+                      value={formData.billingFirstName}
+                      onChange={handleChange}
                       placeholder="Billing First Name"
                     />
                   </div>
@@ -309,8 +309,8 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
                     <input
                       type="text"
                       name="billingCity"
-                      value={paymentMethods.billingCity}
-                      onChange={(e) => handlePaymentChange(e, index)}
+                      value={formData.billingCity}
+                      onChange={handleChange}
                       placeholder="Billing City"
                     />
                   </div>
@@ -320,8 +320,8 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
                     <input
                       type="text"
                       name="billingState"
-                      value={paymentMethods.billingState}
-                      onChange={(e) => handlePaymentChange(e, index)}
+                      value={formData.billingState}
+                      onChange={handleChange}
                       placeholder="Billing State"
                     />
                   </div>
@@ -350,6 +350,10 @@ const isFormComplete = isStep1Complete;// && isStep3Complete;
                 </div>
               </div>
 
+            
+            
+            
+        
               
               
 
