@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EditPersonal.css';
-import axios from 'axios';
+
 function EditPersonal() {
   const navigate = useNavigate();
 
@@ -15,44 +15,40 @@ function EditPersonal() {
     password2: '',
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://198.251.67.241:8080/api/getCurrentUser?` +
+          '&sid=' + localStorage.sessionId);
+  
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+  
+        const userData = await response.json();
+  
+        // Update the placeholder text with data from the backend
+        document.getElementById('firstNameInput').placeholder = userData.firstName;
+        document.getElementById('lastNameInput').placeholder = userData.lastName;
+  
+        setFormData({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          subscribe: userData.wantsPromotions,
+        });
+  
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  // + '&wantsPromotions=' + formData.subscribe
-
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   console.log('Form submitted:', formData);
-  //   try {
-  //     const response = await fetch('http://198.251.67.241:8080/api/mpc' + '?email=' +
-  //     localStorage.email + '&sid=' + localStorage.sessionId + '&pChange=' + formData.password2 + '&ufChange='
-  //         + formData.firstName + '&ulChange=' + formData.lastName,
-  //         {
-  //       method: 'GET',
-  //     });
-
-  //     if (!response.ok) {
-  //       console.error('joe');
-  //     } else {
-  //       const sid = await response.text();
-  //       console.log('joe', sid);
-
-  //       // Handle the successful case here
-  //       navigate('/');
-  //     }
-  //   } catch (error) {
-  //     console.error('An error occurred:', error);
-  //     // Handle the error case here
-  //   }
-  //   // setFormData({
-  //   //   email: '',
-  //   //   subscribe: 'off',
-  //   //   password: '',
-  //   //   password2: '',
-  //   // });
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -133,7 +129,7 @@ function EditPersonal() {
             <label>
               First Name:
               <br/>
-              <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange}/>
+              <input type="text" name="firstName"  id="firstNameInput" onChange={handleInputChange}/>
             </label>
           </div>
 
@@ -141,7 +137,7 @@ function EditPersonal() {
             <label>
               Last Name:
               <br/>
-              <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange}/>
+              <input type="text" name="lastName" id="lastNameInput" onChange={handleInputChange}/>
             </label>
           </div>
 
