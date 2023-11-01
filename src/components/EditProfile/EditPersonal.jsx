@@ -9,7 +9,7 @@ function EditPersonal() {
     // api/mpc
     firstName: '',
     lastName: '',
-    subscribe: '',
+    subscribe: false,
     // api/updatePassword
     password: '',
     password2: '',
@@ -129,7 +129,7 @@ function EditPersonal() {
             <label>
               First Name:
               <br/>
-              <input type="text" name="firstName"  id="firstNameInput" onChange={handleInputChange}/>
+              <input type="text" name="firstName"  id="firstNameInput" value={formData.firstName} onChange={handleInputChange}/>
             </label>
           </div>
 
@@ -137,14 +137,14 @@ function EditPersonal() {
             <label>
               Last Name:
               <br/>
-              <input type="text" name="lastName" id="lastNameInput" onChange={handleInputChange}/>
+              <input type="text" name="lastName" id="lastNameInput" value={formData.lastName} onChange={handleInputChange}/>
             </label>
           </div>
 
           <div className="edit_personal_form_row">
             <label>
               Subscribe/Unsubscribe to promotions?
-              <input type="checkbox" name="subscribe" value={formData.subscribe} onChange={handleInputChange}/>
+              <input type="checkbox" name="subscribe" checked={formData.subscribe} onChange={handleInputChange}/>
             </label>
           </div>
 
