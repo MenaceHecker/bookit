@@ -9,7 +9,7 @@ const DropDownMenu = () => {
     async function logout() {
         try {
             const response = await fetch('http://198.251.67.241:8080/api/logout?' +
-                'email=' + localStorage.getItem('email') + '&sessionId=' + localStorage.getItem('sessionId'), {
+                'sessionId=' + localStorage.getItem('sessionId'), {
                 method: 'GET',
             });
 
