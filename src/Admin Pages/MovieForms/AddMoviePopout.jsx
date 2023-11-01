@@ -19,6 +19,7 @@ const AddMoviePopout = ({setShowPopout }) => {
           movieMpaaRating: '',
           movieShowDates: '',
           movieShowTimes: '',
+          sid: localStorage.getItem('sessionId'),
         });
       
         const handleInputChange = (e) => {
@@ -47,7 +48,7 @@ const AddMoviePopout = ({setShowPopout }) => {
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify(formData)
+              body: formData,
             });
         
             if (response.ok) {
