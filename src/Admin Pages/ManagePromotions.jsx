@@ -5,11 +5,11 @@ import './ManagePromotions.css';
 import Table from "./Table/Table";
 import { useState } from "react";
 import Footer from "../components/footer/footer";
-
+import { Link, useNavigate } from 'react-router-dom';
 
 function ManagePromotions() {
     const [showPopout, setShowPopout] = useState(false);
-
+    const navigate = useNavigate();
     const togglePopout = () => {
       setShowPopout(!showPopout);
     };
@@ -36,7 +36,17 @@ function ManagePromotions() {
       ];
 
 
-
+    function joe() {
+        navigate('/')
+    }
+    if (localStorage.email !== 'bookit@example.com') {
+        return (
+            <div className={'center_title'}>
+                <h1>You are not granted access</h1>
+                <button onClick={joe}>Home</button>
+            </div>
+        );
+    }
 
     return (
         <div>

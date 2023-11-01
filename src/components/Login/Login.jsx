@@ -24,20 +24,29 @@ function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = 'http://198.251.67.241:8080/api/login?email=bookit@example.com&password=bookit';
-    console.log('Request URL:', url); // Print the URL before making the request
     try {
-      const response = await axios.post(url, {
-        email,
-        password,
+      const response = await fetch('http://198.251.67.241:8080/api/login?email=' +
+          formData.email + '&password=' + formData.password, {
+        method: 'GET',
       });
-      const sessionId = response.data;
-      // Save the session ID to local storage
-      localStorage.setItem('sessionId', sessionId);
   
-      // Handle the successful case here
-      console.log('Login successful:', response.data);
-      navigate('/');
+      if (!response.ok) {
+        console.error('Login failed');
+        setIsUp(true);
+      } else {
+        const data = await response.json();
+        console.log(data);
+        localStorage.setItem('sessionId', data.sessionId);
+        localStorage.setItem('isPriveleged', data.isPrivileged);
+        localStorage.setItem('email', formData.email)
+        console.log('Login successful:', data);
+        // Handle the successful case here
+        if (formData.email === 'bookit@example.com') {
+          navigate('/ManageMovies');
+        } else {
+          navigate('/');
+        }
+      }
     } catch (error) {
       // Handle the error case here
       console.error('An error occurred:', error);
