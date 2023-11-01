@@ -29,8 +29,18 @@ const EditPayment = () => {
       updatePayments();
     }, []);
 
-    const handleDelete = (id) => {
-      // Handle delete action
+    const handleDelete = async (id) => {
+      const url = new URL('http://198.251.67.241:8080/api/deleteCard');
+      url.searchParams.append('sid', localStorage.getItem('sessionId'));
+      url.searchParams.append('cardId', id);
+      try {
+        const response = await fetch(url);
+        if (!response.ok)
+          console.error(await response.text());
+        updatePayments();
+      } catch (err) {
+        console.error(err);
+      }
     };
   
     const handleEdit = (id) => {
@@ -63,8 +73,8 @@ const EditPayment = () => {
             lastName={paymentMethod.lastName}
             lastFourDigits={paymentMethod.lastFourDigits}
             expirationDate={paymentMethod.expirationDate}
-            onDelete={() => handleDelete(paymentMethod.id)}
-            onEdit={() => handleEdit(paymentMethod.id)}
+            onDelete={() => handleDelete(paymentMethod.cardId)}
+            onEdit={() => handleEdit(paymentMethod.cardId)}
           />
         ))}
 
