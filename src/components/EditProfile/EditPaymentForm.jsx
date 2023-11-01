@@ -6,9 +6,9 @@ import { useState } from 'react';
 
 
 const EditPaymentForm = ({setShowPopout}) => {
-   
 
-    
+
+
 
     const [formData, setFormData] = useState({
       //Payment Information/Card Info
@@ -39,7 +39,7 @@ const EditPaymentForm = ({setShowPopout}) => {
     };
 
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
       console.log('Form submitted:', formData);
       setFormData({
@@ -59,6 +59,28 @@ const EditPaymentForm = ({setShowPopout}) => {
         billingZipCode: '',
         billingPhoneNumber: '',
       });
+
+      try {
+        const response = await fetch('http://198.251.67.241:8080/api/addCard?sid=' + localStorage.getItem('sessionId')
+            + '&cardNumber=' + formData.cardNumber
+            + '&firstName=' + formData.cardFirstName
+            + '&lastName=' + formData.cardLastName
+            + '&securityCode=' + formData.securityCode
+            + '&billingAddress=' + [formData.billingStreetAddress, formData.billingCity, formData.billingState, formData.billingZipCode].join(' ')
+            + '&expirationDate=' + formData.expirationDate,
+            {
+          method: 'GET',
+        });
+        if (response.ok) {
+          const payments = await response.json();
+          console.log('Form submitted successfully!', payments);
+          onClose();
+        } else {
+          console.error('Error submitting form:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
     };
 
   

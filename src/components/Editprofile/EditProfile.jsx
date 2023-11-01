@@ -31,16 +31,33 @@ function EditProfile() {
   //     password2: '',
   //   });
   // };
-
   // const onClose = () => {
   //   navigate(-1);
-  // };
+  // };\
+    let payments = [];
+    const handleGetter = async () => {
+        try {
+            const response = await fetch('http://198.251.67.241:8080/api/listCards?sid=' + localStorage.getItem('sessionId'), {
+                method: 'GET',
+            });
+
+            if (response.ok) {
+                payments = await response.json();
+                console.log('Form submitted successfully!', payments);
+            } else {
+                console.error('Error submitting form:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    handleGetter();
 
   return (
     <>
       <Header/>
       <EditPersonal/>
-      <EditPayment/>
+      <EditPayment payments={payments}/>
       <OrderHistory/>
       <Footer/>
     </>
