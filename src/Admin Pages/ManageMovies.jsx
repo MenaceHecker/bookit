@@ -18,13 +18,13 @@ import AddMoviePopout from './MovieForms/AddMoviePopout';
 import { useEffect, useState } from 'react';
 import './MovieForms/MovieForm.css'
 import Footer from "../components/footer/footer";
+import { Link, useNavigate } from 'react-router-dom';
 
 function ManageMovies() {
-
+    const navigate = useNavigate();
   const [movieType, setMovieType] = useState('currentlyShowing'); //This will allow the admin to switch between the "Currently Showing" movies and the "Coming soon" movies
   //different data from the database will be fetched depending on state
   const [data, setData] = useState([]);
-
   const handleMovieTypeChange = (type) => {
     setMovieType(type);
   };
@@ -51,6 +51,18 @@ function ManageMovies() {
       })
       .catch(error => console.error('Error:', error));
   }
+
+    function joe() {
+        navigate('/')
+    }
+    if (localStorage.email !== 'bookit@example.com') {
+        return (
+            <div className={'center_title'}>
+                <h1>You are not granted access</h1>
+                <button onClick={joe}>Home</button>
+            </div>
+        );
+    }
 
   return (
     <div className="content">

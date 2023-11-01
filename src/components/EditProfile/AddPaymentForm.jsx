@@ -1,31 +1,31 @@
 import React from 'react';
-import './EditPaymentForm.css';
+import './AddPaymentForm.css';
 
 import { useState } from 'react';
 
 
 
-const EditPaymentForm = ({setShowPopout}) => {
+const AddPaymentForm = ({setShowPopout, updatePayments}) => {
+   
 
-
-
+    
 
     const [formData, setFormData] = useState({
       //Payment Information/Card Info
-      cardFirstName: '',
-      cardLastName: '',
-      cardNumber: '',
+      // cardFirstName: '',
+      // cardLastName: '',
+       cardNumber: '',
       expirationDate: '',
-      securityCode: '',
+      //securityCode: '',
       //Billing Address
-      billingFirstName: '',
-      billingLastName: '',
+      // billingFirstName: '',
+      // billingLastName: '',
       billingStreetAddress: '',
-      billingCity: '',
-      billingState: '',
-      billingCountry: '',
-      billingZipCode: '',
-      billingPhoneNumber: '',
+      // billingCity: '',
+      // billingState: '',
+      // billingCountry: '',
+      // billingZipCode: '',
+      // billingPhoneNumber: '',
  
     });
   
@@ -39,70 +39,78 @@ const EditPaymentForm = ({setShowPopout}) => {
     };
 
     
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      console.log('Form submitted:', formData);
-      setFormData({
-        //Payment Information/Card Info
-        cardFirstName: '',
-        cardLastName: '',
-        cardNumber: '',
-        expirationDate: '',
-        securityCode: '',
-        //Billing Address
-        billingFirstName: '',
-        billingLastName: '',
-        billingStreetAddress: '',
-        billingCity: '',
-        billingState: '',
-        billingCountry: '',
-        billingZipCode: '',
-        billingPhoneNumber: '',
-      });
-
+    // const handleSubmit = (e) => {
+    //   e.preventDefault();
+    //   console.log('Form submitted:', formData);
+    //   setFormData({
+    //     //Payment Information/Card Info
+    //     cardFirstName: '',
+    //     cardLastName: '',
+    //     cardNumber: '',
+    //     expirationDate: '',
+    //     securityCode: '',
+    //     //Billing Address
+    //     billingFirstName: '',
+    //     billingLastName: '',
+    //     billingStreetAddress: '',
+    //     billingCity: '',
+    //     billingState: '',
+    //     billingCountry: '',
+    //     billingZipCode: '',
+    //     billingPhoneNumber: '',
+    //   });
+    // };
+    // @GetMapping(path="/addCard")
+    // public @ResponseBody ResponseEntity<String> addCard(@RequestParam String sid, @RequestParam String cardNumber,
+    //                         @RequestParam String billingAddress, @RequestParam String expirationDate)
+  
+    const addCard = async (card) => {
+      const url = new URL('http://198.251.67.241:8080/api/addCard');
+      url.searchParams.append('sid', localStorage.getItem('sessionId'));
+      for (const prop of ['cardNumber', 'firstName', 'lastName', 'securityCode', 'expirationDate'])
+        url.searchParams.append(prop, card[prop]);
+      url.searchParams.append('billingAddress', card.billingStreetAddress);
       try {
-        const response = await fetch('http://198.251.67.241:8080/api/addCard?sid=' + localStorage.getItem('sessionId')
-            + '&cardNumber=' + formData.cardNumber
-            + '&firstName=' + formData.cardFirstName
-            + '&lastName=' + formData.cardLastName
-            + '&securityCode=' + formData.securityCode
-            + '&billingAddress=' + [formData.billingStreetAddress, formData.billingCity, formData.billingState, formData.billingZipCode].join(' ')
-            + '&expirationDate=' + formData.expirationDate,
-            {
-          method: 'GET',
+        const response = await fetch(url);
+        if (!response.ok)
+          console.error(await response.text());
+       setFormData({
+         email: '',
+         subscribe: 'off',
+         password: '',
+         password2: '',
         });
-        if (response.ok) {
-          const payments = await response.json();
-          console.log('Form submitted successfully!', payments);
-          onClose();
-        } else {
-          console.error('Error submitting form:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error:', error);
+        setShowPopout(false);
+        updatePayments();
+      } catch (err) {
+        console.error(err);
       }
     };
 
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      console.log('Form submitted:', formData);
+      addCard(formData);
+    };
   
-
     const onClose = () => {
-      setShowPopout(false); // Call the setShowPopout function from EditPaymentCard.jsx
+      setShowPopout(false); // Call the setShowPopout function from 
     };
   
     return (
       <>
       <div className="popup_container">
-        <div className="edit_payment_form " >
-          <form onSubmit={handleSubmit} className="edit_payment_form_container" >
+        <div className="add_payment_form " >
+          <form onSubmit={handleSubmit} className="add_payment_form_container" >
           
               <div>
-                <h2 className="edit_payment_form_title">Edit Payment Information</h2>
+                <h2 className="add_payment_form_title">Add Payment Information</h2>
                 
-                <h3 className="edit_payment_form_h3">Edit Card Information</h3>
+                <h3 className="add_payment_form_h3">Add Card Information</h3>
 
-                <div className="edit_payment_form_row">
+                <div className="add_payment_form_row">
 
-                  <div className="edit_payment_form_column">
+                  <div className="add_payment_form_column">
                     First Name
                     <input
                       type="text"
@@ -114,7 +122,7 @@ const EditPaymentForm = ({setShowPopout}) => {
                   </div>
   
                   
-                  <div className="edit_payment_form_column">
+                  <div className="add_payment_form_column">
                     Last Name
                     <input
                       type="text"
@@ -126,7 +134,7 @@ const EditPaymentForm = ({setShowPopout}) => {
                   </div>
                   
   
-                  <div className="edit_payment_form_column">
+                  <div className="add_payment_form_column">
                     Card Number
                     <input
                       type="text"
@@ -137,7 +145,7 @@ const EditPaymentForm = ({setShowPopout}) => {
                     />
                   </div>
   
-                  <div className="edit_payment_form_column">
+                  <div className="add_payment_form_column">
                     Date
                     <input
                       
@@ -149,7 +157,7 @@ const EditPaymentForm = ({setShowPopout}) => {
                     />
                   </div>
   
-                  <div className="edit_payment_form_column">
+                  <div className="add_payment_form_column">
                     Security Code
                     <input
                       type="text"
@@ -161,9 +169,9 @@ const EditPaymentForm = ({setShowPopout}) => {
                   </div>
                 </div>{/* </div> sign-up form row end */}
                 
-                <h3 className="edit_payment_form_h3">Edit Billing Address</h3>
-                <div className="edit_payment_form_row">
-                  <div className="edit_payment_form_column">
+                <h3 className="add_payment_form_h3">Add Billing Address</h3>
+                <div className="add_payment_form_row">
+                  <div className="add_payment_form_column">
                     First Name 
                     <input
                       type="text"
@@ -174,7 +182,7 @@ const EditPaymentForm = ({setShowPopout}) => {
                     />
                   </div>
   
-                  <div className="edit_payment_form_column">
+                  <div className="add_payment_form_column">
                     Last Name
                     <input
                       type="text"
@@ -185,18 +193,21 @@ const EditPaymentForm = ({setShowPopout}) => {
                     />
                   </div>
                 
-                  <div className="edit_payment_form_column">
-                    Billing Street Address
-                    <input
+                  <div className="add_payment_form_column">
+                    Billing Address
+                    <textarea
                       type="text"
                       name="billingStreetAddress"
+                      rows="3"
+                      cols="40"
                       value={formData.billingStreetAddress}
                       onChange={handleChange}
-                      placeholder="Billing Street Address"
+                      placeholder="Billing Address"
                     />
                   </div>
   
-                  <div className="edit_payment_form_column">
+                  {/*
+                  <div className="add_payment_form_column">
                     Billing City
                     <input
                       type="text"
@@ -208,8 +219,8 @@ const EditPaymentForm = ({setShowPopout}) => {
                   </div>
                 </div>
   
-                <div className="edit_payment_form_row">
-                  <div className="edit_payment_form_column">
+                <div className="add_payment_form_row">
+                  <div className="add_payment_form_column">
                     Billing State
                     <input
                       type="text"
@@ -220,10 +231,10 @@ const EditPaymentForm = ({setShowPopout}) => {
                     />
                   </div>
   
-                  <div className="edit_payment_form_column">
+                  <div className="add_payment_form_column">
                     Billing Zip Code
                     <input
-                      type="number"
+                      type="text"
                       name="billingZipCode"
                       value={formData.billingZipCode}
                       onChange={handleChange}
@@ -232,16 +243,17 @@ const EditPaymentForm = ({setShowPopout}) => {
                   </div>
   
   
-                  <div className="edit_payment_form_column">
+                  <div className="add_payment_form_column">
                     Billing Phone Number
                     <input
-                      type="number"
+                      type="text"
                       name="billingPhoneNumber"
                       value={formData.billingPhoneNumber}
                       onChange={handleChange}
                       placeholder="Billing Phone Number"
                     />
                   </div>
+                  */}
                 </div>
   
                 
@@ -249,11 +261,11 @@ const EditPaymentForm = ({setShowPopout}) => {
                 <button className="close-button" onClick={onClose}>Close</button>
               </div>
           </form>
-        </div> {/* End of edit_payment_form*/}
+        </div> {/* End of add_payment_form*/}
       </div> {/* End of popup_container */}
       </>
     );
   };
   
-  export default EditPaymentForm;
+  export default AddPaymentForm;
   

@@ -42,12 +42,12 @@ const AddMoviePopout = ({setShowPopout }) => {
         
           try {
             setShowPopout(false);
-            const response = await fetch('http://198.251.67.241:8080/api/newmovie', {
+            const response = await fetch('http://198.251.67.241:8080/api/newmovie?sid=' + localStorage.getItem('sessionId'), {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify(formData)
+              body: JSON.stringify(formData),
             });
         
             if (response.ok) {

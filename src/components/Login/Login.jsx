@@ -6,30 +6,49 @@ import Footer from "../footer/footer";
 
 function Login() {
   const navigate = useNavigate();
+  const [isUp, setIsUp] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    fail: false,
   });
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    setFormData({
-      email: '',
-      password: '',
-    });
-    navigate('/');
-  };
-
   const onClose = () => {
     navigate(-1);
   };
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://198.251.67.241:8080/api/login?email=' +
+          formData.email + '&password=' + formData.password, {
+        method: 'GET',
+      });
+  
+      if (!response.ok) {
+        console.error('Login failed');
+        setIsUp(true);
+      } else {
+        const data = await response.json();
+        console.log(data);
+        localStorage.setItem('sessionId', data.sessionId);
+        localStorage.setItem('isPriveleged', data.isPrivileged);
+        localStorage.setItem('email', formData.email)
+        console.log('Login successful:', data);
+        // Handle the successful case here
+        if (formData.email === 'bookit@example.com') {
+          navigate('/ManageMovies');
+        } else {
+          navigate('/');
+        }
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      // Handle the error case here
+    }
+  };
 
   return (
     <>
@@ -52,8 +71,9 @@ function Login() {
               <br/>
               <input type="password" name="password" value={formData.password} onChange={handleInputChange}/>
             </label>
-          </div>
 
+          </div>
+          <div>{isUp && <label>Invalid</label>}</div>
           <div>
             <Link to="/ForgotPassword">Forgot your Password?</Link>
           </div>

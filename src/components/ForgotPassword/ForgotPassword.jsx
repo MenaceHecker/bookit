@@ -16,9 +16,22 @@ function ForgotPassword() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const sendPasswordToken = async (email) => {
+    const url = new URL('http://198.251.67.241:8080/api/sendPasswordToken');
+    url.searchParams.append('email', email);
+    try {
+      const response = await fetch(url);
+      if (!response.ok)
+        console.error(await response.text());
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
+    sendPasswordToken(formData.email);
     setFormData({
       email: '',
     });

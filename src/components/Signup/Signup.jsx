@@ -7,90 +7,75 @@ import Footer from "../footer/footer";
 
 const Signup = () => {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    //Personal Information
     firstName: '',
-    lastName: ' ',
+    lastName: '',
     phoneNumber: '',
+    address: '',
     email: '',
     password: '',
     confirmPassword: '',
-    //Payment Information/Card Info
-    cardFirstName: '',
-    cardLastName: '',
-    cardNumber: '',
-    expirationDate: '',
-    securityCode: '',
-    //Billing Address
-    billingFirstName: '',
-    billingLastName: '',
-    billingStreetAddress: '',
-    billingCity: '',
-    billingState: '',
-    billingCountry: '',
-    billingZipCode: '',
-    billingPhoneNumber: '',
-    //Home address
-    streetAddress: '',
-    city: '',
-    state: '',
-    zipcode: '',
-    country: '',
   });
 
   const [currentStep, setCurrentStep] = useState(1);
 
   const handleChange = (e) => {
+    console.log(e);
     const { name, value, type, checked } = e.target;
     setFormData(prevState => ({
       ...prevState,
       [name]: type === 'checkbox' ? checked : value
     }));
   };
-  
+
 //  verification code should be sent to user's email address upon registration
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    setFormData({
-       //Personal Information
-      firstName: '',
-      lastName: ' ',
-      phoneNumber: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      //Payment Information/Card Info
-      cardFirstName: '',
-      cardLastName: '',
-      cardNumber: '',
-      expirationDate: '',
-      securityCode: '',
-      //Billing Address
-      billingFirstName: '',
-      billingLastName: '',
-      billingStreetAddress: '',
-      billingCity: '',
-      billingState: '',
-      billingCountry: '',
-      billingZipCode: '',
-      billingPhoneNumber: '',
-      //Home address
-      streetAddress: '',
-      city: '',
-      state: '',
-      zipcode: '',
-      country: '',
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (formData.password !== formData.confirmPassword) {
+    console.log("Passwords do not match");
+    return;
+  }
 
-
+  try {
+    const response = await fetch('http://198.251.67.241:8080/api/add' +
+        '?firstName=' + formData.firstName + '&lastName=' + formData.lastName
+        + '&password=' + formData.password + '&email=' + formData.email + '&address=' + formData.address + '&phoneNumber=' + formData.phoneNumber, {
+      method: 'GET',
     });
-    navigate('/Activate');
-  };
-
-
+    if (!response.ok) {
+      console.error('Failed to add a new user');
+      // Display a toast or an alert message to inform the user that the registration failed
+    } else {
+      console.log('New user added successfully');
+      // Handle successful user registration here
+      navigate('/Activate');
+    }
+  } catch (error) {
+    console.error('An error occurred:', error);
+    // Handle the error case here
+  }
+};
 
   const nextStep = () => setCurrentStep(currentStep + 1);
   const prevStep = () => setCurrentStep(currentStep - 1);
+  const isStep1Complete =
+  formData.firstName != null &&
+  formData.lastName != null &&
+  formData.phoneNumber != null &&
+  formData.email != null &&
+  formData.password != null &&
+  formData.confirmPassword != null;
+
+const isStep3Complete =
+  formData.streetAddress != null &&
+  formData.city != null &&
+  formData.state != null &&
+  formData.zipcode != null &&
+  formData.country != null;
+
+const isFormComplete = isStep1Complete;// && isStep3Complete;
+
 
   const onClose = () => {
     navigate(-1);
@@ -143,7 +128,7 @@ const Signup = () => {
                 <label>
                   Phone Number:<span className="asterisk">*</span>
                   <input
-                    type="tel"
+                    type="number"
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
@@ -157,7 +142,7 @@ const Signup = () => {
                 <label>
                   Email address:<span className="asterisk">*</span>
                   <input
-                    type="text"
+                    type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -202,8 +187,8 @@ const Signup = () => {
                   <input
                     type="checkbox"
                     name="promotions"
-                    checked={formData.promotions}
-                    onChange={handleChange}
+                    //checked={formData.promotions}
+                    //onChange={handleChange}
                   />
                 </label>
                </div>
@@ -212,45 +197,47 @@ const Signup = () => {
 
 
             <button type="button" onClick={onClose}>Close</button>
-            <button type="button" onClick={nextStep}>Next</button>
+            <button type="button" onClick={nextStep} disabled={!isStep1Complete}>Next</button>
           </div>
           
           )}
 
-          {currentStep === 2 && (
-            <div>
-              <h2 className="signup_form_title">Payment Information</h2>
-              
-              <h3 className="sign_up_h3">Card Information</h3>
-              <div className="signup_form_row">
-                <div className="signup_column">
-                  First Name
-                  <input
-                    type="text"
-                    name="cardFirstName"
-                    value={formData.cardFirstName}
+        {currentStep === 2 && (
+          <div>
+            <h2 className="signup_form_title">Payment Information</h2>
+{/* 
+            {formData.paymentMethods.map((paymentMethods, index) => (
+              <div key={index}> */}
+                {/* <h3 className="sign_up_h3">Payment Method #{index + 1}</h3> */}
+                <h3 className="sign_up_h3">Payment Method </h3>
+                {/* Card Information */}
+                <div className="signup_form_row">
+                  <div className="signup_column">
+                    First Name
+                    <input
+                      type="text"
+                      name="cardFirstName"
+                      value={formData.cardFirstName}
                     onChange={handleChange}
-                    placeholder="Card First Name"
-                  />
-                </div>
-
-                
-                <div className="signup_column">
-                  Last Name
-                  <input
-                    type="text"
-                    name="cardLastName"
-                    value={formData.cardLastName}
-                    onChange={handleChange}
-                    placeholder="Card Last Name"
-                  />
-                </div>
-                
+                      placeholder="Card First Name"
+                    />
+                  </div>
+{/* {`cardLastName${index}`} dynamic index names are not working*/} 
+                  <div className="signup_column">
+                    Last Name
+                    <input
+                      type="text"
+                      name="cardLastName"
+                      value={formData.cardLastName}
+                      onChange={handleChange}
+                      placeholder="Card Last Name"
+                    />
+                  </div>
 
                 <div className="signup_column">
                   Card Number
                   <input
-                    type="text"
+                    type="number"
                     name="cardNumber"
                     value={formData.cardNumber}
                     onChange={handleChange}
@@ -258,42 +245,42 @@ const Signup = () => {
                   />
                 </div>
 
-                <div className="signup_column">
-                  Date
-                  <input
-                    
-                    type="date"
-                    name="expirationDate"
-                    value={formData.expirationDate}
-                    onChange={handleChange}
-                    placeholder="Expiration Date"
-                  />
+                  <div className="signup_column">
+                    Date
+                    <input
+                      type="date"
+                      name="expirationDate"
+                      value={formData.expirationDate}
+                      onChange={handleChange}
+                      placeholder="Expiration Date"
+                    />
+                  </div>
+
+                  <div className="signup_column">
+                    Security Code
+                    <input
+                      type="text"
+                      name="securityCode"
+                      value={formData.securityCode}
+                      onChange={handleChange}
+                      placeholder="Security Code"
+                    />
+                  </div>
                 </div>
 
-                <div className="signup_column">
-                  Security Code
-                  <input
-                    type="text"
-                    name="securityCode"
-                    value={formData.securityCode}
-                    onChange={handleChange}
-                    placeholder="Security Code"
-                  />
-                </div>
-              </div>{/* </div> sign-up form row end */}
-              
-              <h3 className="sign_up_h3">Billing Address</h3>
-              <div className="signup_form_row">
-                <div className="signup_column">
-                  First Name 
-                  <input
-                    type="text"
-                    name="billingFirstName"
-                    value={formData.billingFirstName}
-                    onChange={handleChange}
-                    placeholder="Billing First Name"
-                  />
-                </div>
+                {/* Billing Address */}
+                <h3 className="sign_up_h3">Billing Address</h3>
+                <div className="signup_form_row">
+                  <div className="signup_column">
+                    First Name 
+                    <input
+                      type="text"
+                      name="billingFirstName"
+                      value={formData.billingFirstName}
+                      onChange={handleChange}
+                      placeholder="Billing First Name"
+                    />
+                  </div>
 
                 <div className="signup_column">
                   Last Name
@@ -311,40 +298,38 @@ const Signup = () => {
                   <input
                     type="text"
                     name="billingStreetAddress"
-                    value={formData.billingStreetAddress}
+                    value={formData.address}
                     onChange={handleChange}
                     placeholder="Billing Street Address"
                   />
                 </div>
 
-                <div className="signup_column">
-                  Billing City
-                  <input
-                    type="text"
-                    name=" billingCity"
-                    value={formData.billingCity}
-                    onChange={handleChange}
-                    placeholder="Billing City"
-                  />
-                </div>
-              </div>
+                  <div className="signup_column">
+                    Billing City
+                    <input
+                      type="text"
+                      name="billingCity"
+                      value={formData.billingCity}
+                      onChange={handleChange}
+                      placeholder="Billing City"
+                    />
+                  </div>
 
-              <div className="signup_form_row">
-                <div className="signup_column">
-                  Billing State
-                  <input
-                    type="text"
-                    name="billingState"
-                    value={formData.billingState}
-                    onChange={handleChange}
-                    placeholder="Billing State"
-                  />
-                </div>
+                  <div className="signup_column">
+                    Billing State
+                    <input
+                      type="text"
+                      name="billingState"
+                      value={formData.billingState}
+                      onChange={handleChange}
+                      placeholder="Billing State"
+                    />
+                  </div>
 
                 <div className="signup_column">
                   Billing Zip Code
                   <input
-                    type="text"
+                    type="number"
                     name="billingZipCode"
                     value={formData.billingZipCode}
                     onChange={handleChange}
@@ -356,20 +341,24 @@ const Signup = () => {
                 <div className="signup_column">
                   Billing Phone Number
                   <input
-                    type="text"
+                    type="number"
                     name="billingPhoneNumber"
-                    value={formData.billingPhoneNumber}
+                    value={formData.phoneNumber}
                     onChange={handleChange}
                     placeholder="Billing Phone Number"
                   />
                 </div>
               </div>
 
+            
+            
+            
+        
               
               
 
               <button type="button" onClick={prevStep}>Previous</button>
-              <button type="button" onClick={nextStep}>Next</button>
+              <button type="button" onClick={nextStep} >Next</button>
             </div>
           )}
 
@@ -413,7 +402,7 @@ const Signup = () => {
                 <div className="signup_column">
                   Zip Code
                   <input
-                    type="text"
+                    type="number"
                     name="zipcode"
                     value={formData.zipcode}
                     onChange={handleChange}
@@ -424,7 +413,7 @@ const Signup = () => {
                 <div className="signup_column">
                   Zip Code
                   <input
-                    type="text"
+                    type="number"
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
@@ -434,7 +423,7 @@ const Signup = () => {
 
               </div>
               <button type="button" onClick={prevStep}>Previous</button>
-              <button type="submit">Submit</button>
+              <button type="submit" disabled={!isFormComplete}>Submit</button>
             </div>
           )}
         </form>

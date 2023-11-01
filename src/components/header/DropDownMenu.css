@@ -2,11 +2,11 @@ div.dropdown ul li {
   display: block;
   background: red;
   margin: 2px 0px;
+  padding: 0px 20px;
 }
 
 div.dropdown ul {
   width: auto;
-  background: #00FF8C;
   position: absolute;
   z-index: 999;
   display: none;
