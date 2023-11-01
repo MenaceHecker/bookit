@@ -24,3 +24,6 @@ div.dropdown:hover ul {
 div.dropdown a:hover {
   background: red;
 }
+.logout-link {
+  cursor: pointer;
+}
