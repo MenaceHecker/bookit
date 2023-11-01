@@ -6,9 +6,11 @@ function EditPersonal() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    // api/mpc
     firstName: '',
     lastName: '',
-    //subscribe: '',
+    subscribe: '',
+    // api/updatePassword
     password: '',
     password2: '',
   });
@@ -55,6 +57,8 @@ function EditPersonal() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
+
+    //update password
     try {
       const response = await fetch('http://198.251.67.241:8080/api/updatePassword?' + '&sid=' + localStorage.sessionId + '&oldPassword=' + formData.password + '&newPassword='
           + formData.password2 ,
@@ -63,18 +67,43 @@ function EditPersonal() {
       });
 
       if (!response.ok) {
-        console.error('error');
+        console.error('error with password');
       } else {
         const sid = await response.text();
         console.log('error', sid);
 
         // Handle the successful case here
-        navigate('/');
+        // navigate('/');
       }
     } catch (error) {
       console.error('An error occurred:', error);
       // Handle the error case here
     }
+
+    //update first name, last name, and subscription.
+    try {
+      const response = await fetch('http://198.251.67.241:8080/api/mpc?' + '&email=' + localStorage.email + '&sid=' + localStorage.sessionId + '&ufChange=' + formData.firstName + '&ulChange='
+          + formData.lastName + '&wantsPromotions=' + formData.subscribe,
+          {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        console.error('error with mpc');
+      } else {
+        const sid = await response.text();
+        console.log('error', sid);
+
+        // Handle the successful case here
+        // navigate('/');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      // Handle the error case here
+    }
+
+
+
     // setFormData({
     //   email: '',
     //   subscribe: 'off',
