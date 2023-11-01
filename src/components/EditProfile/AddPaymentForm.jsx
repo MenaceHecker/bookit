@@ -12,20 +12,20 @@ const AddPaymentForm = ({setShowPopout}) => {
 
     const [formData, setFormData] = useState({
       //Payment Information/Card Info
-      cardFirstName: '',
-      cardLastName: '',
-      cardNumber: '',
+      // cardFirstName: '',
+      // cardLastName: '',
+       cardNumber: '',
       expirationDate: '',
-      securityCode: '',
+      //securityCode: '',
       //Billing Address
-      billingFirstName: '',
-      billingLastName: '',
+      // billingFirstName: '',
+      // billingLastName: '',
       billingStreetAddress: '',
-      billingCity: '',
-      billingState: '',
-      billingCountry: '',
-      billingZipCode: '',
-      billingPhoneNumber: '',
+      // billingCity: '',
+      // billingState: '',
+      // billingCountry: '',
+      // billingZipCode: '',
+      // billingPhoneNumber: '',
  
     });
   
@@ -39,30 +39,62 @@ const AddPaymentForm = ({setShowPopout}) => {
     };
 
     
-    const handleSubmit = (e) => {
+    // const handleSubmit = (e) => {
+    //   e.preventDefault();
+    //   console.log('Form submitted:', formData);
+    //   setFormData({
+    //     //Payment Information/Card Info
+    //     cardFirstName: '',
+    //     cardLastName: '',
+    //     cardNumber: '',
+    //     expirationDate: '',
+    //     securityCode: '',
+    //     //Billing Address
+    //     billingFirstName: '',
+    //     billingLastName: '',
+    //     billingStreetAddress: '',
+    //     billingCity: '',
+    //     billingState: '',
+    //     billingCountry: '',
+    //     billingZipCode: '',
+    //     billingPhoneNumber: '',
+    //   });
+    // };
+    // @GetMapping(path="/addCard")
+    // public @ResponseBody ResponseEntity<String> addCard(@RequestParam String sid, @RequestParam String cardNumber,
+    //                         @RequestParam String billingAddress, @RequestParam String expirationDate)
+  
+    const handleSubmit = async (e) => {
       e.preventDefault();
       console.log('Form submitted:', formData);
-      setFormData({
-        //Payment Information/Card Info
-        cardFirstName: '',
-        cardLastName: '',
-        cardNumber: '',
-        expirationDate: '',
-        securityCode: '',
-        //Billing Address
-        billingFirstName: '',
-        billingLastName: '',
-        billingStreetAddress: '',
-        billingCity: '',
-        billingState: '',
-        billingCountry: '',
-        billingZipCode: '',
-        billingPhoneNumber: '',
-      });
-    };
-
+      try {
+        const response = await fetch('http://198.251.67.241:8080/api/addCard?' + '&sid=' + localStorage.sessionId + '&cardNumber=' + formData.cardNumber + '&billingAddress='
+            + formData.billingStreetAddress + '&expirationDate=' + formData.expirationDate ,
+            {
+          method: 'GET',
+        });
   
-
+        if (!response.ok) {
+          console.error('joe');
+        } else {
+          const sid = await response.text();
+          console.log('joe', sid);
+  
+          // Handle the successful case here
+          // navigate('/');
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+        // Handle the error case here
+      }
+      // setFormData({
+      //   email: '',
+      //   subscribe: 'off',
+      //   password: '',
+      //   password2: '',
+      // });
+    };
+  
     const onClose = () => {
       setShowPopout(false); // Call the setShowPopout function from 
     };

@@ -5,6 +5,7 @@ import Header from '../header/header';
 import Footer from "../footer/footer";
 import EditPersonal from './EditPersonal';
 import EditPayment from './EditPayment';
+import OrderHistory from './OrderHistory';
 
 function EditProfile() {
   // const navigate = useNavigate();
@@ -40,6 +41,7 @@ function EditProfile() {
       <Header/>
       <EditPersonal/>
       <EditPayment/>
+      <OrderHistory/>
       <Footer/>
     </>
   );
