@@ -19,7 +19,7 @@ function EditPersonal() {
     const fetchData = async () => {
       try {
         const response = await fetch(`http://198.251.67.241:8080/api/getCurrentUser?` +
-          '&sid=' + localStorage.sessionId);
+          'sid=' + localStorage.sessionId);
   
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -56,7 +56,7 @@ function EditPersonal() {
 
     //update password
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/updatePassword?' + '&sid=' + localStorage.sessionId + '&oldPassword=' + formData.password + '&newPassword='
+      const response = await fetch('http://198.251.67.241:8080/api/updatePassword?' + 'sid=' + localStorage.sessionId + '&oldPassword=' + formData.password + '&newPassword='
           + formData.password2 ,
           {
         method: 'GET',
@@ -78,7 +78,7 @@ function EditPersonal() {
 
     //update first name, last name, and subscription.
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/mpc?' + '&email=' + localStorage.email + '&sid=' + localStorage.sessionId + '&ufChange=' + formData.firstName + '&ulChange='
+      const response = await fetch('http://198.251.67.241:8080/api/mpc?' + 'email=' + localStorage.email + '&sid=' + localStorage.sessionId + '&ufChange=' + formData.firstName + '&ulChange='
           + formData.lastName + '&wantsPromotions=' + formData.subscribe,
           {
         method: 'GET',
