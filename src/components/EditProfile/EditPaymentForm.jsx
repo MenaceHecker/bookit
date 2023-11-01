@@ -6,9 +6,9 @@ import { useState } from 'react';
 
 
 const EditPaymentForm = ({setShowPopout}) => {
-   
 
-    
+
+
 
     const [formData, setFormData] = useState({
       //Payment Information/Card Info
@@ -61,8 +61,7 @@ const EditPaymentForm = ({setShowPopout}) => {
       });
 
       try {
-        const response = await fetch('http://198.251.67.241:8080/api/addCard?sid='
-            + localStorage.getItem('sessionId')
+        const response = await fetch('http://198.251.67.241:8080/api/addCard?sid=' + localStorage.getItem('sessionId')
             + '&cardNumber=' + formData.cardNumber
             + '&firstName=' + formData.cardFirstName
             + '&lastName=' + formData.cardLastName
