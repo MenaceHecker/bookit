@@ -4,20 +4,15 @@ import { useState } from 'react';
 import EditPaymentCard from './EditPaymentCard';
 import AddPaymentForm from './AddPaymentForm';
 
-const EditPayment = () => {
+const EditPayment = (props) => {
     // Dummy data for demonstration
-    const dummyPaymentMethods = [
-      { id: 1, firstName: 'John', lastName: 'Doe', lastFourDigits: '1234', expirationDate: '12/24' },
-      { id: 2, firstName: 'Jane', lastName: 'Doe', lastFourDigits: '5678', expirationDate: '06/23' },
-    ];
-  
+    const {payments} = props;
     const handleDelete = (id) => {
       // Handle delete action
     };
   
     const handleEdit = (id) => {
       // Handle edit action and open form for editing
-
     };
 
     //Methods to handle the Form for AddPayment from AddPaymentForm.jsx
@@ -38,13 +33,13 @@ const EditPayment = () => {
 
 
 
-        {dummyPaymentMethods.map((paymentMethod) => (
+        {payments.map((paymentMethod) => (
 
           <EditPaymentCard
             key={paymentMethod.id}
             firstName={paymentMethod.firstName}
             lastName={paymentMethod.lastName}
-            lastFourDigits={paymentMethod.lastFourDigits}
+            lastFourDigits={paymentMethod.cardNumber}
             expirationDate={paymentMethod.expirationDate}
             onDelete={() => handleDelete(paymentMethod.id)}
             onEdit={() => handleEdit(paymentMethod.id)}
