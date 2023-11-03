@@ -1,18 +1,16 @@
+import { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './AdminHeader.css';
 import Logo from '../../assets/bookit-high-resolution-logo-colo.png'
-//import {Link} from 'react-router-dom'
-import {Link, useNavigate } from 'react-router-dom';
+import { APIContext } from '../../utils/API';
 
 // Pressing logo should bring admin back to MainAdmin page, which features basic dashboard
 function AdminHeader() {
+    const api = useContext(APIContext);
     const navigate = useNavigate();
     async function logout() {
         try {
-            const response = await fetch('http://198.251.67.241:8080/api/logout?' +
-                'email=' + localStorage.email + '&sessionId=' + localStorage.sessionId, {
-                method: 'GET',
-            });
-
+            const response = await api.logout();
             if (!response.ok) {
                 console.error('Login failed');
                 navigate('/');
