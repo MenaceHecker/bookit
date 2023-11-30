@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import Header from '../header/header';
-import Footer from "../footer/footer";
+import Footer from '../footer/footer';
+import { APIContext } from '../../utils/API';
 
 function Login() {
+  const api = useContext(APIContext);
   const navigate = useNavigate();
   const [isUp, setIsUp] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,20 +24,16 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/login?email=' +
-          formData.email + '&password=' + formData.password, {
-        method: 'GET',
-      });
-  
+      const response = await api.login(formData.email, formData.password);
       if (!response.ok) {
         console.error('Login failed');
         setIsUp(true);
       } else {
-        const data = await response.json();
+        const data = response.data;
         console.log(data);
         localStorage.setItem('sessionId', data.sessionId);
         localStorage.setItem('isPriveleged', data.isPrivileged);
-        localStorage.setItem('email', formData.email)
+        localStorage.setItem('email', formData.email);
         console.log('Login successful:', data);
         // Handle the successful case here
         if (formData.email === 'bookit@example.com') {

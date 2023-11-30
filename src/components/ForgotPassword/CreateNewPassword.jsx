@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './CreateNewPassword.css';
 import Header from '../header/header';
-import Footer from "../footer/footer";
+import Footer from '../footer/footer';
+import { APIContext } from '../../utils/API';
 
 function CreateNewPassword() {
+  const api = useContext(APIContext);
   const navigate = useNavigate();
   const { search } = useLocation();
   
@@ -18,17 +20,14 @@ function CreateNewPassword() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const resetPasswordWithToken = async (token, newPassword) => {
-    const url = new URL('http://198.251.67.241:8080/api/resetPasswordWithToken');
-    url.searchParams.append('token', token);
-    url.searchParams.append('newPassword', newPassword);
+  const loginWithPasswordToken = async (token, newPassword) => {
     try {
-      const response = await fetch(url);
+      const response = await api.loginWithPasswordToken(token, newPassword);
       if (!response.ok) {
-        console.error(await response.text());
+        console.error(response.message);
         return;        
       }
-      const data = await response.json();
+      const data = await response.data;
       setFormData({
         newPassword: '',
         confirmNewPassword:'',
@@ -57,7 +56,7 @@ function CreateNewPassword() {
       console.error('Missing token in URL');
       return;
     }
-    resetPasswordWithToken(token, formData.newPassword);
+    loginWithPasswordToken(token, formData.newPassword);
   };
 
   const onClose = () => {
