@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 import Header from '../header/header';
-import Footer from "../footer/footer";
+import Footer from '../footer/footer';
+import { APIContext } from '../../utils/API';
 
 
 const Signup = () => {
+  const api = useContext(APIContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -38,11 +40,7 @@ const handleSubmit = async (e) => {
   }
 
   try {
-    const response = await fetch('http://198.251.67.241:8080/api/add' +
-        '?firstName=' + formData.firstName + '&lastName=' + formData.lastName
-        + '&password=' + formData.password + '&email=' + formData.email + '&address=' + formData.address + '&phoneNumber=' + formData.phoneNumber, {
-      method: 'GET',
-    });
+    const response = await api.createCustomer(formData);
     if (!response.ok) {
       console.error('Failed to add a new user');
       // Display a toast or an alert message to inform the user that the registration failed

@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EditPersonal.css';
+import { APIContext } from '../../utils/API';
 
 function EditPersonal() {
+  const api = useContext(APIContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     // api/mpc
     firstName: '',
     lastName: '',
-    subscribe: false,
+    wantsPromotions: false,
     // api/updatePassword
     password: '',
     password2: '',
@@ -18,14 +20,13 @@ function EditPersonal() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://198.251.67.241:8080/api/getCurrentUser?` +
-          'sid=' + localStorage.sessionId);
-  
+        const response = await api.getCurrentUser();
+
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
   
-        const userData = await response.json();
+        const userData = response.data;
   
         // Update the placeholder text with data from the backend
         document.getElementById('firstNameInput').placeholder = userData.firstName;
@@ -34,7 +35,7 @@ function EditPersonal() {
         setFormData({
           firstName: userData.firstName,
           lastName: userData.lastName,
-          subscribe: userData.wantsPromotions,
+          wantsPromotions: userData.wantsPromotions,
         });
   
       } catch (error) {
@@ -46,7 +47,8 @@ function EditPersonal() {
   }, []);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { type, name } = e.target;
+    const value = type === 'checkbox' ? e.target.checked : e.target.value;
     setFormData({ ...formData, [name]: value });
   };
 
@@ -56,16 +58,12 @@ function EditPersonal() {
 
     //update password
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/updatePassword?' + 'sid=' + localStorage.sessionId + '&oldPassword=' + formData.password + '&newPassword='
-          + formData.password2 ,
-          {
-        method: 'GET',
-      });
+      const response = await api.updatePassword(formData.password, formData.password2);
 
       if (!response.ok) {
         console.error('error with password');
       } else {
-        const sid = await response.text();
+        const sid = response.message;
         console.log('error', sid);
 
         // Handle the successful case here
@@ -78,16 +76,12 @@ function EditPersonal() {
 
     //update first name, last name, and subscription.
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/mpc?' + 'email=' + localStorage.email + '&sid=' + localStorage.sessionId + '&ufChange=' + formData.firstName + '&ulChange='
-          + formData.lastName + '&wantsPromotions=' + formData.subscribe,
-          {
-        method: 'GET',
-      });
+      const response = await api.updateProfile(formData, localStorage.getItem('email'));
 
       if (!response.ok) {
         console.error('error with mpc');
       } else {
-        const sid = await response.text();
+        const sid = response.message;
         console.log('error', sid);
 
         // Handle the successful case here
@@ -144,7 +138,7 @@ function EditPersonal() {
           <div className="edit_personal_form_row">
             <label>
               Subscribe/Unsubscribe to promotions?
-              <input type="checkbox" name="subscribe" checked={formData.subscribe} onChange={handleInputChange}/>
+              <input type="checkbox" name="wantsPromotions" checked={formData.wantsPromotions} onChange={handleInputChange}/>
             </label>
           </div>
 

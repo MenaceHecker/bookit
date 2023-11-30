@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ForgotPassword.css';
 import Header from '../header/header';
-import Footer from "../footer/footer";
+import Footer from '../footer/footer';
+import { APIContext } from '../../utils/API';
 
 function ForgotPassword() {
+  const api = useContext(APIContext);
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -17,12 +19,10 @@ function ForgotPassword() {
   };
 
   const sendPasswordToken = async (email) => {
-    const url = new URL('http://198.251.67.241:8080/api/sendPasswordToken');
-    url.searchParams.append('email', email);
     try {
-      const response = await fetch(url);
+      const response = await api.sendPasswordToken(email);
       if (!response.ok)
-        console.error(await response.text());
+        console.error(response.message);
     } catch (err) {
       console.error(err);
     }

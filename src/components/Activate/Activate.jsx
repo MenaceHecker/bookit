@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Activate.css';
 import Header from '../header/header';
-import Footer from "../footer/footer";
+import Footer from '../footer/footer';
+import { APIContext } from '../../utils/API';
 
 function Activate() {
+  const api = useContext(APIContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     code: '',
@@ -19,11 +21,8 @@ function Activate() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/activate?code=' + formData.code, {
-        method: 'GET',
-      });
-
-      const data = await response.json();
+      const response = await api.activateCustomer(formData.code);
+      const data = response.data;
 
       if (response.ok) {
         console.log('Account activated');
