@@ -74,7 +74,7 @@ export class API {
     for (const prop of props)
       url.searchParams.append(prop, customerData[prop]);
     if ('wantsPromotions' in customerData)
-      url.searchParams.append(prop, customerData.wantsPromotions);
+      url.searchParams.append('wantsPromotions', customerData.wantsPromotions);
     const response = await getResponseJson(fetch(url, { method: 'GET' }));
     if (!response.ok)
       return response;
@@ -147,13 +147,6 @@ export class API {
     if (response.data !== 0)
       return { ok: false, message: 'Could not delete movie' };
     return { ok: true, message: 'Success' };
-  }
-
-  async updateCard(cardData) {
-    const url = new URL('api/updateCard', this.#baseUrl);
-    url.searchParams.append('sid', this.#getSessionId());
-    url.searchParams.append('cardId', cardData.);
-    url.searchParams.append('newPassword', newPassword);
   }
 }
 
