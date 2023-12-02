@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 import Header from '../header/header';
-import Footer from "../footer/footer";
+import Footer from '../footer/footer';
+import { APIContext } from '../../utils/API';
 
 
 const Signup = () => {
+  const api = useContext(APIContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -17,7 +19,6 @@ const Signup = () => {
     password: '',
     confirmPassword: '',
   });
-  //Check if this is working. 
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -39,11 +40,7 @@ const handleSubmit = async (e) => {
   }
 
   try {
-    const response = await fetch('http://198.251.67.241:8080/api/add' +
-        '?firstName=' + formData.firstName + '&lastName=' + formData.lastName
-        + '&password=' + formData.password + '&email=' + formData.email + '&address=' + formData.address + '&phoneNumber=' + formData.phoneNumber, {
-      method: 'GET',
-    });
+    const response = await api.createCustomer(formData);
     if (!response.ok) {
       console.error('Failed to add a new user');
       // Display a toast or an alert message to inform the user that the registration failed
@@ -61,21 +58,21 @@ const handleSubmit = async (e) => {
   const nextStep = () => setCurrentStep(currentStep + 1);
   const prevStep = () => setCurrentStep(currentStep - 1);
   const isStep1Complete =
-    formData.firstName !== '' &&
-    formData.lastName !== '' &&
-    formData.phoneNumber !== '' &&
-    formData.email !== '' &&
-    formData.password !== '' &&
-    formData.confirmPassword !== '';
+  formData.firstName != null &&
+  formData.lastName != null &&
+  formData.phoneNumber != null &&
+  formData.email != null &&
+  formData.password != null &&
+  formData.confirmPassword != null;
 
-  const isStep3Complete =
-    formData.streetAddress !== '' &&
-    formData.city !== '' &&
-    formData.state !== '' &&
-    formData.zipcode !== '' &&
-    formData.country !== '';
+const isStep3Complete =
+  formData.streetAddress != null &&
+  formData.city != null &&
+  formData.state != null &&
+  formData.zipcode != null &&
+  formData.country != null;
 
-  const isFormComplete = isStep1Complete;
+const isFormComplete = isStep1Complete;// && isStep3Complete;
 
 
   const onClose = () => {

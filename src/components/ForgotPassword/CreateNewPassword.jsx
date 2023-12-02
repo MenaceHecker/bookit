@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './CreateNewPassword.css';
 import Header from '../header/header';
-import Footer from "../footer/footer";
+import Footer from '../footer/footer';
+import { APIContext } from '../../utils/API';
 
 function CreateNewPassword() {
+  const api = useContext(APIContext);
   const navigate = useNavigate();
+  const { search } = useLocation();
   
   const [formData, setFormData] = useState({
-    email: '',
     newPassword: '',
     confirmNewPassword:'',
   });
@@ -18,15 +20,43 @@ function CreateNewPassword() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const loginWithPasswordToken = async (token, newPassword) => {
+    try {
+      const response = await api.loginWithPasswordToken(token, newPassword);
+      if (!response.ok) {
+        console.error(response.message);
+        return;        
+      }
+      const data = await response.data;
+      setFormData({
+        newPassword: '',
+        confirmNewPassword:'',
+      });
+      localStorage.setItem('sessionId', data.sessionId);
+      localStorage.setItem('isPriveleged', data.isPrivileged);
+      if (data.isPrivileged) {
+        navigate('/ManageMovies');
+      } else {
+        navigate('/');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    setFormData({
-        email: '',
-        newPassword: '',
-        confirmNewPassword:'',
-    });
-    navigate('/Login');
+    if (formData.newPassword != formData.confirmNewPassword) {
+      console.error("Passwords don't match");
+      return;
+    }
+    const token = new URLSearchParams(search).get('token');
+    if (token == null) {
+      console.error('Missing token in URL');
+      return;
+    }
+    loginWithPasswordToken(token, formData.newPassword);
   };
 
   const onClose = () => {
@@ -36,19 +66,11 @@ function CreateNewPassword() {
   return (
     <>
       <Header/>
-            <div className="create_password_center_title">Create New Password</div>
+            <div className="create_password_center_title">Reset Password</div>
             <div className="create_password_form">
                 <form onSubmit={handleSubmit} className="create_password_container">
 
 
-                    <div className="create_password_form_row">
-                        <label>
-                            Email:
-                            <br/>
-                            <input type="text" name="email" value={formData.email} onChange={handleInputChange}/>
-                        </label>
-                    </div>
-                
                     <div className="create_password_form_row">
                         <label>
                             New Password:

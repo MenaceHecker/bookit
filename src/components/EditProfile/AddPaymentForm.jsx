@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 
 
-const AddPaymentForm = ({setShowPopout}) => {
+const AddPaymentForm = ({setShowPopout, updatePayments}) => {
    
 
     
@@ -64,35 +64,33 @@ const AddPaymentForm = ({setShowPopout}) => {
     // public @ResponseBody ResponseEntity<String> addCard(@RequestParam String sid, @RequestParam String cardNumber,
     //                         @RequestParam String billingAddress, @RequestParam String expirationDate)
   
+    const addCard = async (card) => {
+      const url = new URL('http://198.251.67.241:8080/api/addCard');
+      url.searchParams.append('sid', localStorage.getItem('sessionId'));
+      for (const prop of ['cardNumber', 'firstName', 'lastName', 'securityCode', 'expirationDate'])
+        url.searchParams.append(prop, card[prop]);
+      url.searchParams.append('billingAddress', card.billingStreetAddress);
+      try {
+        const response = await fetch(url);
+        if (!response.ok)
+          console.error(await response.text());
+       setFormData({
+         email: '',
+         subscribe: 'off',
+         password: '',
+         password2: '',
+        });
+        setShowPopout(false);
+        updatePayments();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     const handleSubmit = async (e) => {
       e.preventDefault();
       console.log('Form submitted:', formData);
-      try {
-        const response = await fetch('http://198.251.67.241:8080/api/addCard?' + '&sid=' + localStorage.sessionId + '&cardNumber=' + formData.cardNumber + '&billingAddress='
-            + formData.billingStreetAddress + '&expirationDate=' + formData.expirationDate ,
-            {
-          method: 'GET',
-        });
-  
-        if (!response.ok) {
-          console.error('joe');
-        } else {
-          const sid = await response.text();
-          console.log('joe', sid);
-  
-          // Handle the successful case here
-          // navigate('/');
-        }
-      } catch (error) {
-        console.error('An error occurred:', error);
-        // Handle the error case here
-      }
-      // setFormData({
-      //   email: '',
-      //   subscribe: 'off',
-      //   password: '',
-      //   password2: '',
-      // });
+      addCard(formData);
     };
   
     const onClose = () => {
@@ -196,16 +194,19 @@ const AddPaymentForm = ({setShowPopout}) => {
                   </div>
                 
                   <div className="add_payment_form_column">
-                    Billing Street Address
-                    <input
+                    Billing Address
+                    <textarea
                       type="text"
                       name="billingStreetAddress"
+                      rows="3"
+                      cols="40"
                       value={formData.billingStreetAddress}
                       onChange={handleChange}
-                      placeholder="Billing Street Address"
+                      placeholder="Billing Address"
                     />
                   </div>
   
+                  {/*
                   <div className="add_payment_form_column">
                     Billing City
                     <input
@@ -252,6 +253,7 @@ const AddPaymentForm = ({setShowPopout}) => {
                       placeholder="Billing Phone Number"
                     />
                   </div>
+                  */}
                 </div>
   
                 

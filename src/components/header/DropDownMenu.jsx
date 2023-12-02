@@ -1,18 +1,16 @@
-import React from 'react';
+import { useContext } from 'react';
 import './DropDownMenu.css';
-import { Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { APIContext } from '../../utils/API';
 
 const DropDownMenu = () => {
+    const api = useContext(APIContext);
     const c = localStorage.getItem('sessionId');
     const navigate = useNavigate();
     async function logout() {
         try {
-            const response = await fetch('http://198.251.67.241:8080/api/logout?' +
-                'email=' + localStorage.getItem('email') + '&sessionId=' + localStorage.getItem('sessionId'), {
-                method: 'GET',
-            });
-
+            const response = await api.logout();
             if (!response.ok) {
                 console.error('Logout failed');
                 console.log(localStorage.getItem('sessionId'))
@@ -37,7 +35,7 @@ const DropDownMenu = () => {
             <ul>
                 {typeof c === "string" && c !== 'null' ? (
                     <>
-                        <li className="logout-link"  onClick={logout}>Log Out</li>
+                        <li onClick={logout}>Log out</li>
                         <li><Link to="/EditProfile">Edit Profile</Link></li>
                     </>
                 ) : (

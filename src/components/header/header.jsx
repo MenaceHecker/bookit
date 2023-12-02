@@ -4,6 +4,7 @@ import './header.css';
 import Logo from '../../assets/bookit-high-resolution-logo-colo.png';
 import DropDownMenu from './DropDownMenu';
 
+
 const Header = () => {
   const [Mobile, setMobile] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
@@ -45,7 +46,7 @@ const Header = () => {
                 <a href='/'>Home</a>
               </li>
               <li>
-                <a href='#movies'>Movies</a>
+                <a href='#moviesNowShowing'>Movies</a>
               </li>
               <li>
                 <Link to='/TrailerPage'>Test</Link>
@@ -54,7 +55,7 @@ const Header = () => {
                 <Link to='/MainAdmin'>Admin</Link>
               </li>
               <li>
-                <a href='/'>Contact Us</a>
+                <a href='#footer'>Contact Us</a>
               </li>
             </ul>
             <button className='toggle' onClick={() => setMobile(!Mobile)}>
