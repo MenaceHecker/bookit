@@ -10,7 +10,11 @@ const DropDownMenu = () => {
     const navigate = useNavigate();
     async function logout() {
         try {
-            const response = await api.logout();
+            const response = await fetch('http://198.251.67.241:8080/api/logout?' +
+                'sessionId=' + localStorage.getItem('sessionId'), {
+                method: 'GET',
+            });
+
             if (!response.ok) {
                 console.error('Logout failed');
                 console.log(localStorage.getItem('sessionId'))

@@ -19,10 +19,12 @@ function ForgotPassword() {
   };
 
   const sendPasswordToken = async (email) => {
+    const url = new URL('http://198.251.67.241:8080/api/sendPasswordToken');
+    url.searchParams.append('email', email);
     try {
-      const response = await api.sendPasswordToken(email);
+      const response = await fetch(url);
       if (!response.ok)
-        console.error(response.message);
+        console.error(await response.text());
     } catch (err) {
       console.error(err);
     }

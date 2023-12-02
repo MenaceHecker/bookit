@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './CreateNewPassword.css';
 import Header from '../header/header';
@@ -20,14 +20,17 @@ function CreateNewPassword() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const loginWithPasswordToken = async (token, newPassword) => {
+  const resetPasswordWithToken = async (token, newPassword) => {
+    const url = new URL('http://198.251.67.241:8080/api/resetPasswordWithToken');
+    url.searchParams.append('token', token);
+    url.searchParams.append('newPassword', newPassword);
     try {
-      const response = await api.loginWithPasswordToken(token, newPassword);
+      const response = await fetch(url);
       if (!response.ok) {
-        console.error(response.message);
+        console.error(await response.text());
         return;        
       }
-      const data = await response.data;
+      const data = await response.json();
       setFormData({
         newPassword: '',
         confirmNewPassword:'',
@@ -56,7 +59,7 @@ function CreateNewPassword() {
       console.error('Missing token in URL');
       return;
     }
-    loginWithPasswordToken(token, formData.newPassword);
+    resetPasswordWithToken(token, formData.newPassword);
   };
 
   const onClose = () => {

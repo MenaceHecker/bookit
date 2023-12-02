@@ -11,7 +11,7 @@ function EditPersonal() {
     // api/mpc
     firstName: '',
     lastName: '',
-    wantsPromotions: false,
+    subscribe: false,
     // api/updatePassword
     password: '',
     password2: '',
@@ -20,8 +20,9 @@ function EditPersonal() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.getCurrentUser();
-
+        const response = await fetch(`http://198.251.67.241:8080/api/getCurrentUser?` +
+          'sid=' + localStorage.sessionId);
+  
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -58,7 +59,11 @@ function EditPersonal() {
 
     //update password
     try {
-      const response = await api.updatePassword(formData.password, formData.password2);
+      const response = await fetch('http://198.251.67.241:8080/api/updatePassword?' + 'sid=' + localStorage.sessionId + '&oldPassword=' + formData.password + '&newPassword='
+          + formData.password2 ,
+          {
+        method: 'GET',
+      });
 
       if (!response.ok) {
         console.error('error with password');
@@ -76,7 +81,11 @@ function EditPersonal() {
 
     //update first name, last name, and subscription.
     try {
-      const response = await api.updateProfile(formData, localStorage.getItem('email'));
+      const response = await fetch('http://198.251.67.241:8080/api/mpc?' + 'email=' + localStorage.email + '&sid=' + localStorage.sessionId + '&ufChange=' + formData.firstName + '&ulChange='
+          + formData.lastName + '&wantsPromotions=' + formData.subscribe,
+          {
+        method: 'GET',
+      });
 
       if (!response.ok) {
         console.error('error with mpc');
@@ -138,7 +147,7 @@ function EditPersonal() {
           <div className="edit_personal_form_row">
             <label>
               Subscribe/Unsubscribe to promotions?
-              <input type="checkbox" name="wantsPromotions" checked={formData.wantsPromotions} onChange={handleInputChange}/>
+              <input type="checkbox" name="subscribe" checked={formData.subscribe} onChange={handleInputChange}/>
             </label>
           </div>
 
