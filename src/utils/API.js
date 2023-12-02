@@ -105,10 +105,9 @@ export class API {
     return await getResponseText(fetch(url, { method: 'GET' }));
   }
 
-  async updateProfile(profileData, email) { // TODO: remove email parameter
+  async updateProfile(profileData) {
     const url = new URL('api/mpc', this.#baseUrl);
     url.searchParams.append('sid', this.#getSessionId());
-    url.searchParams.append('email', email);
     if ('firstName' in profileData)
       url.searchParams.append('ufChange', profileData.firstName);
     if ('lastName' in profileData)
@@ -167,11 +166,10 @@ export class API {
   async updateCard(cardData) {
     const url = new URL('api/updateCard', this.#baseUrl);
     url.searchParams.append('sid', this.#getSessionId());
-    url.searchParams.append('cardId', cardData.cardId);
-    if ('cardNumber' in cardData)
-      url.searchParams.append('cardNumber', cardData.cardNumber);
-    url.searchParams.append('billingAddress', cardData.billingAddress);
-    url.searchParams.append('expirationDate', cardData.expirationDate);
+    const props = ['cardId', 'cardNumber', 'billingAddress', 'expirationDate'];
+    for (const prop of props)
+      if (prop in cardData)
+        url.searchParams.append(prop, cardData[prop]);
     return await getResponseText(fetch(url, { method: 'GET' }));
   }
 

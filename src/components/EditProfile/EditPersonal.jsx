@@ -76,7 +76,7 @@ function EditPersonal() {
 
     //update first name, last name, and subscription.
     try {
-      const response = await api.updateProfile(formData, localStorage.getItem('email'));
+      const response = await api.updateProfile(formData);
 
       if (!response.ok) {
         console.error('error with mpc');
