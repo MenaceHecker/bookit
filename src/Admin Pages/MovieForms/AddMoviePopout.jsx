@@ -1,11 +1,12 @@
 // AddMoviePopup.js
 import '../Table/Table.css';
 import './MovieForm.css';
-import React, { useState } from 'react';
+import { useContext, useState } from 'react';
+import { APIContext } from '../../utils/API';
 
+const AddMoviePopout = ({ setShowPopout }) => {
+  const api = useContext(APIContext);
 
-const AddMoviePopout = ({setShowPopout }) => {
-    
         const [formData, setFormData] = useState({
           movieTitle: '',
           movieCategory: '',
@@ -35,34 +36,27 @@ const AddMoviePopout = ({setShowPopout }) => {
             setFormData({ ...formData, [name]: value });
           }
         };
-        
-      
-        const handleSubmit = async (e) => {
-          e.preventDefault();
-        
-          try {
-            setShowPopout(false);
-            const response = await fetch('http://198.251.67.241:8080/api/newmovie?sid=' + localStorage.getItem('sessionId'), {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(formData),
-            });
-        
-            if (response.ok) {
-              const data = await response.json(); // This line parses the response body as JSON
-              // Handle success, e.g., show a success message
-              console.log('Form submitted successfully!', data);
-            } else {
-              // Handle errors, e.g., show an error message
-              console.error('Error submitting form:', response.statusText);
-            }
-          } catch (error) {
-            console.error('Error:', error);
-          }
-        };
-        
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setShowPopout(false);
+      const response = await api.createMovie(formData);
+
+      if (response.ok) {
+        const data = response.message;
+        // Handle success, e.g., show a success message
+        console.log('Form submitted successfully!', data);
+      } else {
+        // Handle errors, e.g., show an error message
+        console.error('Error submitting form:', response.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
       //http://198.251.67.241:8080/api/newmovie
       const handleClose = () => {
         setShowPopout(false); // Call the setShowPopout function from ManageMovies

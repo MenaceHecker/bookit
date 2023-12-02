@@ -15,13 +15,15 @@ import './ManageMovies.css'
 import AdminHeader from "./AdminHeader/AdminHeader";
 import AdminSideBar from "./AdminSideBar/AdminSideBar";
 import AddMoviePopout from './MovieForms/AddMoviePopout';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './MovieForms/MovieForm.css'
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { APIContext } from '../utils/API';
 
 function ManageMovies() {
-    const navigate = useNavigate();
+  const api = useContext(APIContext);
+  const navigate = useNavigate();
   const [movieType, setMovieType] = useState('currentlyShowing'); //This will allow the admin to switch between the "Currently Showing" movies and the "Coming soon" movies
   //different data from the database will be fetched depending on state
   const [data, setData] = useState([]);
@@ -29,28 +31,24 @@ function ManageMovies() {
     setMovieType(type);
   };
 
+  const updateMovies = async () => {
+    try {
+      const response = await api.listMovies();
+      if (response.ok)
+        setData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const [showPopout, setShowPopout] = useState(false);
 
   const togglePopout = () => {
-    fetchData();
     setShowPopout(!showPopout);
+    updateMovies();
   };
-  useEffect(() => {
-    (async () => {
-      const response = await fetch('http://198.251.67.241:8080/api/getlistings');
-      const newData = await response.json();
-      setData(newData);
-    })();
-  }, []);
-  var input = 'http://198.251.67.241:8080/api/getlistings';
-  function fetchData() {
-    fetch(input)
-      .then(response => response.json())
-      .then(data => {
-        setData(data);
-      })
-      .catch(error => console.error('Error:', error));
-  }
+
+  useEffect(() => { updateMovies(); }, []);
 
     function joe() {
         navigate('/')

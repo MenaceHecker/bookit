@@ -1,7 +1,8 @@
 import EditMoviePopout from '../MovieForms/EditMoviePopout';
 import './Table.css'
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
+import { APIContext } from '../../utils/API';
 
 
 //For ManageMovies.jsx: Movie name, Movie director, Rooms, Booking Date(s), Action buttons (add, remove, edit)
@@ -10,8 +11,9 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
     //Add new user button?
 
 
-    const Table = ({ data, pageType}) => {
-      const [showPopout, setShowPopout] = useState(false);
+const Table = ({ data, pageType }) => {
+  const api = useContext(APIContext);
+  const [showPopout, setShowPopout] = useState(false);
 
       const togglePopout = () => {
         setShowPopout(!showPopout);
@@ -25,9 +27,7 @@ import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
 
   const removeMovie = async (id) => {
     try {
-      await fetch(`http://198.251.67.241:8080/api/rmmovie?id=${id}`, {
-        method: 'DELETE'
-      });
+      await api.deleteMovie(id);
     } catch (error) {
       console.log('Error:', error);
     }

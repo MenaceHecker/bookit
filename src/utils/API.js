@@ -117,6 +117,35 @@ export class API {
         url.searchParams.append(prop, profileData[prop]);
     return await getResponseText(fetch(url, { method: 'GET' }));
   }
+
+  async createMovie(movieData) {
+    const url = new URL('api/newmovie', this.#baseUrl);
+    url.searchParams.append('sid', this.#getSessionId());
+    return await getResponseText(fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(movieData)
+    }));
+  }
+
+  async listMovies() {
+    const url = new URL('api/getlistings', this.#baseUrl);
+    return await getResponseJson(fetch(url, { method: 'GET' }));
+  }
+
+  async deleteMovie(id) {
+    const url = new URL('api/rmmovie', this.#baseUrl);
+    url.searchParams.append('sid', this.#getSessionId());
+    url.searchParams.append('id', id);
+    const response = await getResponseJson(fetch(url, { method: 'DELETE' }));
+    if (!response.ok)
+      return response;
+    if (typeof response.data !== 'number')
+      throw new Error('Unexpected response');
+    if (response.data !== 0)
+      return { ok: false, message: 'Could not delete movie' };
+    return { ok: true, message: 'Success' };
+  }
 }
 
 export const APIContext = createContext(null);
