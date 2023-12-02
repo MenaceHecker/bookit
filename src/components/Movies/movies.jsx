@@ -17,6 +17,9 @@ const Movies = () => {
   const bookNow = () => {
     navigate('/BookingPage');
   };
+  const navMovie = (movieTitle) => {
+    navigate('/' + movieTitle);
+  }
 
   const displayMovie = ({ id, movieTrailerPicture, movieTitle, movieCast, movieCategory, movieTrailerVideo, movieSynopsis }) => (
     <div key={id} className='mov_cont'>
@@ -24,7 +27,7 @@ const Movies = () => {
       <div className='movie__item-image'>
           <iframe width="480" height="275" src={movieTrailerVideo + '&autoplay=1&mute=1'} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
       </div>
-      <h4 className='title' onClick={bookNow}>{movieTitle}</h4>
+      <h4 className='title' onClick={() => navMovie(movieTitle)}>{movieTitle}</h4>
       <h3>Cast:<br></br>{movieCast}</h3>
         <h3>Description:<br></br>{movieSynopsis}</h3>
       <h3>Category:<br></br>{movieCategory}</h3>

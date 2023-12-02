@@ -54,6 +54,10 @@ export class API {
     url.searchParams.append('sessionId', this.#getSessionId());
     return await getResponseText(fetch(url, { method: 'GET' }));
   }
+  async getListings() {
+    const url = new URL('api/getlistings', this.#baseUrl);
+    return await getResponseJson(fetch(url, { method: 'GET' }));
+  }
 
   async sendPasswordToken(email) {
     const url = new URL('api/sendPasswordToken', this.#baseUrl);

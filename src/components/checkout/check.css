@@ -80,9 +80,7 @@ footer {
     padding: 25px;
     background: #141414;
 }
-footer:hover {
-    background: #940702;
-}
+
 #checkout_cont {
     padding: 100px;
     height: 1200px;
