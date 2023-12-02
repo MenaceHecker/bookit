@@ -148,6 +148,39 @@ export class API {
       return { ok: false, message: 'Could not delete movie' };
     return { ok: true, message: 'Success' };
   }
+
+  async createCard(cardData) {
+    const url = new URL('api/addCard', this.#baseUrl);
+    url.searchParams.append('sid', this.#getSessionId());
+    const props = ['cardNumber', 'firstName', 'lastName', 'securityCode', 'billingAddress', 'expirationDate'];
+    for (const prop of props)
+      url.searchParams.append(prop, cardData[prop]);
+    return await getResponseText(fetch(url, { method: 'GET' }));
+  }
+
+  async listCards() {
+    const url = new URL('api/listCards', this.#baseUrl);
+    url.searchParams.append('sid', this.#getSessionId());
+    return await getResponseJson(fetch(url, { method: 'GET' }));
+  }
+
+  async updateCard(cardData) {
+    const url = new URL('api/updateCard', this.#baseUrl);
+    url.searchParams.append('sid', this.#getSessionId());
+    url.searchParams.append('cardId', cardData.cardId);
+    if ('cardNumber' in cardData)
+      url.searchParams.append('cardNumber', cardData.cardNumber);
+    url.searchParams.append('billingAddress', cardData.billingAddress);
+    url.searchParams.append('expirationDate', cardData.expirationDate);
+    return await getResponseText(fetch(url, { method: 'GET' }));
+  }
+
+  async deleteCard(cardId) {
+    const url = new URL('api/deleteCard', this.#baseUrl);
+    url.searchParams.append('sid', this.#getSessionId());
+    url.searchParams.append('cardId', cardId);
+    return await getResponseText(fetch(url, { method: 'GET' }));
+  }
 }
 
 export const APIContext = createContext(null);

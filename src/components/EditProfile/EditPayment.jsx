@@ -1,10 +1,12 @@
-
 import './EditPayment.css'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import EditPaymentCard from './EditPaymentCard';
 import AddPaymentForm from './AddPaymentForm';
+import { APIContext } from '../../utils/API';
 
 const EditPayment = () => {
+  const api = useContext(APIContext);
+
     const getCards = async () => {
 
     };
@@ -13,13 +15,12 @@ const EditPayment = () => {
     console.log(payments);
 
     const updatePayments = async () => {
-      const url = new URL('http://198.251.67.241:8080/api/listCards');
-      url.searchParams.append('sid', localStorage.getItem('sessionId'));
       try {
-        const response = await fetch(url);
-        if (!response.ok)
-          console.error(await response.text());
-        setPayments(await response.json());
+        const response = await api.listCards();
+        if (response.ok)
+          setPayments(response.data);
+        else
+          console.error(response.message);
       } catch (err) {
         console.error(err);
       }
@@ -30,13 +31,10 @@ const EditPayment = () => {
     }, []);
 
     const handleDelete = async (id) => {
-      const url = new URL('http://198.251.67.241:8080/api/deleteCard');
-      url.searchParams.append('sid', localStorage.getItem('sessionId'));
-      url.searchParams.append('cardId', id);
       try {
-        const response = await fetch(url);
+        const response = await api.deleteCard(id);
         if (!response.ok)
-          console.error(await response.text());
+          console.error(response.message);
         updatePayments();
       } catch (err) {
         console.error(err);
