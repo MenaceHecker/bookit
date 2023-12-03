@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 async function getResponseText(promise) {
   try {
@@ -16,7 +16,7 @@ async function getResponseJson(promise) {
   try {
     const response = await promise;
     if (!response.ok)
-      throw { ok: false, message: await response.text() };
+      return { ok: false, message: await response.text() };
     return { ok: true, data: await response.json() };
   } catch (err) {
     switch (err.name) {
@@ -46,10 +46,6 @@ export class API {
     this.#baseUrl = baseUrl;
   }
 
-  getBaseUrl() {
-    return this.#baseUrl;
-  }
-
   addOptions(fetchOptions) {
     return fetchOptions;
   }
@@ -77,6 +73,10 @@ export class API {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }));
+  }
+
+  withSignal(abortSignal) {
+    return new AbortableAPI(this.#baseUrl, abortSignal);
   }
 
   async login(email, password) {
@@ -147,7 +147,7 @@ export class API {
 
   async createMovie(movieData) {
     const url = this.#newSessionUrl('api/newmovie');
-    return await getResponseText(fetchPostJson(url, movieData));
+    return await getResponseText(this.#fetchPostJson(url, movieData));
   }
 
   async listMovies() {
@@ -196,7 +196,7 @@ export class API {
 
   async createBooking(bookingData) {
     const url = this.#newSessionUrl('api/createBooking');
-    return await getResponseText(fetchPostJson(url, bookingData));
+    return await getResponseText(this.#fetchPostJson(url, bookingData));
   }
 
   async listBookings() {
@@ -223,17 +223,32 @@ export class API {
   }
 }
 
-export const APIContext = createContext(null);
-
 class AbortableAPI extends API {
   #abortSignal;
 
-  constructor(api, abortSignal) {
-    super(api.getBaseUrl());
+  constructor(baseUrl, abortSignal) {
+    super(baseUrl);
     this.#abortSignal = abortSignal;
   }
 
   addOptions(fetchOptions) {
     return { signal: this.#abortSignal, ...fetchOptions };
   }
+}
+
+export const APIContext = createContext(null);
+
+export function useApiData(callback, deps = []) {
+  const api = useContext(APIContext);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const memoCallback = useMemo(callback, deps);
+  const [needsRefresh, setNeedsRefresh] = useState(true);
+  useEffect(() => {
+    if (needsRefresh) {
+      const controller = new AbortController();
+      memoCallback(api.withSignal(controller.signal));
+      return () => { controller.abort(); };
+    }
+  }, [needsRefresh, memoCallback, api]);
+  return () => { setNeedsRefresh(true); };
 }
