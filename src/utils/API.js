@@ -54,16 +54,12 @@ export class API {
     this.#baseUrl = baseUrl;
   }
 
-  #getSessionId() {
+  #newSessionUrl(path, prop = 'sid') {
     const sessionId = localStorage.getItem('sessionId');
     if (sessionId === null)
       throw new Error('Not logged in');
-    return sessionId;
-  }
-
-  #newSessionUrl(path) {
     const url = new URL(path, this.#baseUrl);
-    url.searchParams.append('sid', this.#getSessionId());
+    url.searchParams.append(prop, sessionId);
     return url;
   }
 
@@ -75,8 +71,7 @@ export class API {
   }
 
   async logout() {
-    const url = new URL('api/logout', this.#baseUrl);
-    url.searchParams.append('sessionId', this.#getSessionId());
+    const url = this.#newSessionUrl('api/logout', 'sessionId');
     return await getResponseText(fetch(url, { method: 'GET' }));
   }
 
@@ -160,7 +155,6 @@ export class API {
 
   async listCards() {
     const url = this.#newSessionUrl('api/listCards');
-    url.searchParams.append('sid', this.#getSessionId());
     return await getResponseJson(fetch(url, { method: 'GET' }));
   }
 
