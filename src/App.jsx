@@ -30,7 +30,7 @@ export default function App() {
 
                 const listings = data.map(listing => ({
                     path: '/' + listing.movieTitle,
-                    element: <Listing movieTitle={listing.movieTitle} />
+                    element: <Listing {...listing} />
                 }));
                 setDynamicRoutes(listings);
             } catch (error) {

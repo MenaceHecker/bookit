@@ -19,7 +19,7 @@ const Header = () => {
     const results = allMovies
       .filter(({ movieTitle }) => movieTitle.toLowerCase().includes(query))
       .slice(0, 10)
-      .map(({ movieTitle }, i) => <li key={i}><Link to="/BookingPage">{movieTitle}</Link></li>);
+      .map(({ movieTitle }, i) => <li key={i}><Link to={`/${movieTitle}`}>{movieTitle}</Link></li>);
     const clickHandler = (event) => {
       if (searchResultsRef.current && !searchResultsRef.current.contains(event.target)) {
         document.removeEventListener('click', clickHandler);
@@ -68,7 +68,6 @@ const Header = () => {
               {searchResults}
             </div>
             <DropDownMenu/>
-            <button className="btn_book">Book Now</button>
           </div>
         </div>
       </header>

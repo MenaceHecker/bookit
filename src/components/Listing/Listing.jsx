@@ -1,15 +1,53 @@
 import React from 'react';
 import './Listing.css';
+import Header from "../header/header";
+import Footer from "../footer/footer";
+import { useNavigate } from 'react-router-dom';
+import bookMovie from "../BookMovie/BookMovie";
 const Listing = (props) => {
-    // Access the argument using props
-    const { movieTitle } = props;
-
+    const navigate = useNavigate();
+    const {
+        movieTitle,
+        movieCategory,
+        movieCast,
+        movieDirector,
+        movieProducer,
+        movieSynopsis,
+        movieReviews,
+        movieTrailerPicture,
+        movieTrailerVideo,
+        movieMpaaRating,
+        movieShowDates,
+        movieShowTimes,
+    } = props;
+    const bookNow = () => {
+        navigate('/BookingPage');
+    };
     return (
-        <div>
-            <h2>{movieTitle}</h2>
-            <p>Testing</p>
-            {/* Additional rendering logic */}
-        </div>
+        <>
+            <Header/>
+            <div id={'list_cont'}>
+                <div id={'list_right'}>
+                    <iframe width='800' height='600' src={movieTrailerVideo + '&autoplay=1&mute=1'} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+                </div>
+                <div id={'list_left'}>
+                <h2>{movieTitle}</h2>
+                <p><strong>Category:</strong> {movieCategory}</p>
+                <p><strong>Cast:</strong> {movieCast}</p>
+                <p><strong>Director:</strong> {movieDirector}</p>
+                <p><strong>Producer:</strong> {movieProducer}</p>
+                <p><strong>Synopsis:</strong> {movieSynopsis}</p>
+                <p><strong>Reviews:</strong> {movieReviews}</p>
+                {/* Add more details as needed */}
+                    {/*<img src={movieTrailerPicture} alt="Movie Trailer" />*/}
+                <p><strong>MPAA Rating:</strong> {movieMpaaRating}</p>
+                <p><strong>Show Dates:</strong> {movieShowDates}</p>
+                <p><strong>Show Times:</strong> {movieShowTimes}</p>
+                    <button className="btn_book" onClick={bookNow}>Book Now</button>
+                </div>
+            </div>
+            <Footer/>
+        </>
     );
 };
 
