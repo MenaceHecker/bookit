@@ -1,15 +1,9 @@
-import React from 'react';
 import './EditPaymentForm.css';
-
-import { useState } from 'react';
-
-
+import { useContext, useState } from 'react';
+import { APIContext } from '../../utils/API';
 
 const EditPaymentForm = ({setShowPopout}) => {
-
-
-
-
+  const api = useContext(APIContext);
     const [formData, setFormData] = useState({
       //Payment Information/Card Info
       cardFirstName: '',
@@ -61,22 +55,22 @@ const EditPaymentForm = ({setShowPopout}) => {
       });
 
       try {
-        const response = await fetch('http://198.251.67.241:8080/api/addCard?sid=' + localStorage.getItem('sessionId')
-            + '&cardNumber=' + formData.cardNumber
-            + '&firstName=' + formData.cardFirstName
-            + '&lastName=' + formData.cardLastName
-            + '&securityCode=' + formData.securityCode
-            + '&billingAddress=' + [formData.billingStreetAddress, formData.billingCity, formData.billingState, formData.billingZipCode].join(' ')
-            + '&expirationDate=' + formData.expirationDate,
-            {
-          method: 'GET',
-        });
+        const billingAddress = [formData.billingStreetAddress, formData.billingCity, formData.billingState, formData.billingZipCode].join(' ');
+        const cardData = {
+          cardNumber: formData.cardNumber,
+          firstName: formData.cardFirstName,
+          lastName: formData.cardLastName,
+          securityCode: formData.securityCode,
+          billingAddress,
+          expirationData: formData.expirationDate
+        };
+        const response = api.createCard(cardData);
         if (response.ok) {
-          const payments = await response.json();
+          const payments = response.message;
           console.log('Form submitted successfully!', payments);
           onClose();
         } else {
-          console.error('Error submitting form:', response.statusText);
+          console.error('Error submitting form:', response.message);
         }
       } catch (error) {
         console.error('Error:', error);

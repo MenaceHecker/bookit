@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './movies.css';
-import '../../logo.svg'
+import '../../logo.svg';
+import { useApiData } from '../../utils/API';
+
 const Movies = () => {
   const [moviesData, setMoviesData] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const input = 'http://198.251.67.241:8080/api/getlistings';
-    fetch(input)
-        .then(response => response.json())
-        .then(data => setMoviesData(data))
-        .catch(error => console.error('Error:', error));
-  }, []);
+  useApiData(async (api, tools) => {
+    try {
+      const response = await api.listMovies();
+      if (response.ok)
+        setMoviesData(response.data);
+      tools.refreshOnTimeout(60000);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  });
 
   const bookNow = () => {
     navigate('/BookingPage');

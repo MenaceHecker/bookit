@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EditPersonal.css';
-import { APIContext } from '../../utils/API';
+import { APIContext, useApiData } from '../../utils/API';
 
 function EditPersonal() {
   const api = useContext(APIContext);
@@ -17,34 +17,29 @@ function EditPersonal() {
     password2: '',
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.getCurrentUser();
+  useApiData(async (api) => {
+    try {
+      const response = await api.getCurrentUser();
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-  
-        const userData = response.data;
-  
-        // Update the placeholder text with data from the backend
-        document.getElementById('firstNameInput').placeholder = userData.firstName;
-        document.getElementById('lastNameInput').placeholder = userData.lastName;
-  
-        setFormData({
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          wantsPromotions: userData.wantsPromotions,
-        });
-  
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    };
-  
-    fetchData();
-  }, []);
+
+      const userData = response.data;
+
+      // Update the placeholder text with data from the backend
+      document.getElementById('firstNameInput').placeholder = userData.firstName;
+      document.getElementById('lastNameInput').placeholder = userData.lastName;
+
+      setFormData({
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        wantsPromotions: userData.wantsPromotions,
+      });
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  });
 
   const handleInputChange = (e) => {
     const { type, name } = e.target;
@@ -76,7 +71,7 @@ function EditPersonal() {
 
     //update first name, last name, and subscription.
     try {
-      const response = await api.updateProfile(formData, localStorage.getItem('email'));
+      const response = await api.updateProfile(formData);
 
       if (!response.ok) {
         console.error('error with mpc');

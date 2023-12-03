@@ -15,13 +15,14 @@ import './ManageMovies.css'
 import AdminHeader from "./AdminHeader/AdminHeader";
 import AdminSideBar from "./AdminSideBar/AdminSideBar";
 import AddMoviePopout from './MovieForms/AddMoviePopout';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './MovieForms/MovieForm.css'
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { useApiData } from '../utils/API';
 
 function ManageMovies() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [movieType, setMovieType] = useState('currentlyShowing'); //This will allow the admin to switch between the "Currently Showing" movies and the "Coming soon" movies
   //different data from the database will be fetched depending on state
   const [data, setData] = useState([]);
@@ -29,33 +30,28 @@ function ManageMovies() {
     setMovieType(type);
   };
 
+  const [refreshMovies] = useApiData(async (api) => {
+    try {
+      const response = await api.listMovies();
+      if (response.ok)
+        setData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
   const [showPopout, setShowPopout] = useState(false);
 
   const togglePopout = () => {
-    fetchData();
+    console.log('toggling popout!');
     setShowPopout(!showPopout);
+    refreshMovies();
   };
-  useEffect(() => {
-    (async () => {
-      const response = await fetch('http://198.251.67.241:8080/api/getlistings');
-      const newData = await response.json();
-      setData(newData);
-    })();
-  }, []);
-  var input = 'http://198.251.67.241:8080/api/getlistings';
-  function fetchData() {
-    fetch(input)
-      .then(response => response.json())
-      .then(data => {
-        setData(data);
-      })
-      .catch(error => console.error('Error:', error));
-  }
 
     function joe() {
         navigate('/')
     }
-    if (localStorage.email !== 'bookit@example.com') {
+    if (+localStorage.getItem('isPrivileged') !== 1) {
         return (
             <div className={'center_title'}>
                 <h1>You are not granted access</h1>
@@ -80,7 +76,7 @@ function ManageMovies() {
 
       <div className="add_button">
         <button onClick={togglePopout}>Add Movie</button>
-        {showPopout && <AddMoviePopout mode="add" onClose={togglePopout} setShowPopout={setShowPopout} />}
+        {showPopout && <AddMoviePopout mode="add" onClose={togglePopout}/>}
       </div>
 
       <div className="table">

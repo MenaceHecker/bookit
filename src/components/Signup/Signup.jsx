@@ -58,19 +58,19 @@ const handleSubmit = async (e) => {
   const nextStep = () => setCurrentStep(currentStep + 1);
   const prevStep = () => setCurrentStep(currentStep - 1);
   const isStep1Complete =
-  formData.firstName != null &&
-  formData.lastName != null &&
-  formData.phoneNumber != null &&
-  formData.email != null &&
-  formData.password != null &&
-  formData.confirmPassword != null;
+  formData.firstName !== null &&
+  formData.lastName !== null &&
+  formData.phoneNumber !== null &&
+  formData.email !== null &&
+  formData.password !== null &&
+  formData.confirmPassword !== null;
 
 const isStep3Complete =
-  formData.streetAddress != null &&
-  formData.city != null &&
-  formData.state != null &&
-  formData.zipcode != null &&
-  formData.country != null;
+  formData.streetAddress !== null &&
+  formData.city !== null &&
+  formData.state !== null &&
+  formData.zipcode !== null &&
+  formData.country !== null;
 
 const isFormComplete = isStep1Complete;// && isStep3Complete;
 

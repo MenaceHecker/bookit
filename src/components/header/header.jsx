@@ -1,10 +1,12 @@
-import React, { useId, useRef, useState } from 'react';
+import { useContext, useId, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './header.css';
 import Logo from '../../assets/bookit-high-resolution-logo-colo.png';
 import DropDownMenu from './DropDownMenu';
+import { APIContext } from '../../utils/API';
 
 const Header = () => {
+  const api = useContext(APIContext);
   const [Mobile, setMobile] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
   const searchResultsRef = useRef(null);
@@ -13,8 +15,8 @@ const Header = () => {
       await executeSearch();
   };
   const executeSearch = async () => {
-    const response = await fetch('http://198.251.67.241:8080/api/getlistings');
-    const allMovies = await response.json();
+    const response = await api.listMovies();
+    const allMovies = response.data;
     const query = document.getElementById(searchBarId).value.toLowerCase();
     const results = allMovies
       .filter(({ movieTitle }) => movieTitle.toLowerCase().includes(query))

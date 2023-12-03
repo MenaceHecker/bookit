@@ -1,15 +1,9 @@
-import React from 'react';
 import './AddPaymentForm.css';
+import { useContext, useState } from 'react';
+import { APIContext } from '../../utils/API';
 
-import { useState } from 'react';
-
-
-
-const AddPaymentForm = ({setShowPopout, updatePayments}) => {
-   
-
-    
-
+const AddPaymentForm = ({ setShowPopout, refreshPayments }) => {
+  const api = useContext(APIContext);
     const [formData, setFormData] = useState({
       //Payment Information/Card Info
       // cardFirstName: '',
@@ -64,28 +58,23 @@ const AddPaymentForm = ({setShowPopout, updatePayments}) => {
     // public @ResponseBody ResponseEntity<String> addCard(@RequestParam String sid, @RequestParam String cardNumber,
     //                         @RequestParam String billingAddress, @RequestParam String expirationDate)
   
-    const addCard = async (card) => {
-      const url = new URL('http://198.251.67.241:8080/api/addCard');
-      url.searchParams.append('sid', localStorage.getItem('sessionId'));
-      for (const prop of ['cardNumber', 'firstName', 'lastName', 'securityCode', 'expirationDate'])
-        url.searchParams.append(prop, card[prop]);
-      url.searchParams.append('billingAddress', card.billingStreetAddress);
-      try {
-        const response = await fetch(url);
-        if (!response.ok)
-          console.error(await response.text());
-       setFormData({
-         email: '',
-         subscribe: 'off',
-         password: '',
-         password2: '',
-        });
-        setShowPopout(false);
-        updatePayments();
-      } catch (err) {
-        console.error(err);
-      }
-    };
+  const addCard = async (card) => {
+    try {
+      const response = await api.createCard(card);
+      if (!response.ok)
+        console.error(response.message);
+      setFormData({
+        email: '',
+        subscribe: 'off',
+        password: '',
+        password2: '',
+      });
+      setShowPopout(false);
+      refreshPayments();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
     const handleSubmit = async (e) => {
       e.preventDefault();

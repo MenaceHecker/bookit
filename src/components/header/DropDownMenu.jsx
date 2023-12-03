@@ -17,8 +17,6 @@ const DropDownMenu = () => {
                 navigate('/');
             } else {
                 //const data = await response.text();
-                localStorage.setItem('sessionId', null);
-                localStorage.setItem('email', null)
                 console.log('Logout successful:');
                 localStorage.clear();
                 // Handle the successful case here
