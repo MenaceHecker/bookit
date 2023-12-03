@@ -2,7 +2,7 @@ import './AddPaymentForm.css';
 import { useContext, useState } from 'react';
 import { APIContext } from '../../utils/API';
 
-const AddPaymentForm = ({ setShowPopout, updatePayments }) => {
+const AddPaymentForm = ({ setShowPopout, refreshPayments }) => {
   const api = useContext(APIContext);
     const [formData, setFormData] = useState({
       //Payment Information/Card Info
@@ -70,7 +70,7 @@ const AddPaymentForm = ({ setShowPopout, updatePayments }) => {
         password2: '',
       });
       setShowPopout(false);
-      updatePayments();
+      refreshPayments();
     } catch (err) {
       console.error(err);
     }
