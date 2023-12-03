@@ -10,7 +10,7 @@ const EditPayment = () => {
   const [payments, setPayments] = useState([]);
   console.log(payments);
 
-  const refreshPayments = useApiData(async (api) => {
+  const [refreshPayments] = useApiData(async (api) => {
     try {
       const response = await api.listCards();
       if (response.ok)

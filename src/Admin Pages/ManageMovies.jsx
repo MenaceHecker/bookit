@@ -30,7 +30,7 @@ function ManageMovies() {
     setMovieType(type);
   };
 
-  const refreshMovies = useApiData(async (api) => {
+  const [refreshMovies] = useApiData(async (api) => {
     try {
       const response = await api.listMovies();
       if (response.ok)

@@ -254,5 +254,6 @@ export function useApiData(callback, deps = []) {
       }
     }
   }, [refreshLevel, memoCallback, api]);
-  return () => { setRefreshLevel((level) => level + 1); };
+  const refresh = () => { setRefreshLevel((level) => level + 1); };
+  return [refresh];
 }
