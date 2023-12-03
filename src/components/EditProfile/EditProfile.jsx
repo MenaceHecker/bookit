@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './EditProfile.css';
+//import './EditProfile.css';
 import Header from '../header/header';
 import Footer from "../footer/footer";
 import EditPersonal from './EditPersonal';

@@ -14,14 +14,72 @@ const Header = () => {
   const searchBarKeyPress = async (event) => {
       await executeSearch();
   };
+
+
+  // const executeSearch = async () => {
+  //   const response = await api.listMovies();
+  //   const allMovies = response.data;
+  //   const query = document.getElementById(searchBarId).value.toLowerCase();
+  //   const results = allMovies
+  //     .filter(({ movieTitle }) => movieTitle.toLowerCase().includes(query))
+  //     .slice(0, 10)
+  //     .map(({ movieTitle }, i) => <li key={i}><Link to={`/${movieTitle}`}>{movieTitle}</Link></li>);
+
+  const showDatesCurrent = (dates) => {
+    const firstDate = dates.split(',')[0];
+    const startTime = Date.parse(firstDate + 'T00:00:00');
+    return isNaN(startTime) || Date.now() >= startTime;
+  };
+
   const executeSearch = async () => {
     const response = await api.listMovies();
     const allMovies = response.data;
     const query = document.getElementById(searchBarId).value.toLowerCase();
-    const results = allMovies
-      .filter(({ movieTitle }) => movieTitle.toLowerCase().includes(query))
-      .slice(0, 10)
-      .map(({ movieTitle }, i) => <li key={i}><Link to={`/${movieTitle}`}>{movieTitle}</Link></li>);
+
+    const isCategorySearch = query.startsWith('category:'); // Check if it's a category search
+
+    const isStatusSearch = query.toLowerCase() === 'comingsoon:' || query.toLowerCase() === 'currentlyshowing:'; //Check if it's searching by showtime
+
+
+    let results;
+    if (isCategorySearch) { //Search by Category
+      const categoryQuery = query.replace('category:', '').trim();
+      results = allMovies
+        .filter(({ movieCategory }) => movieCategory.toLowerCase().includes(categoryQuery))
+        .slice(0, 10)
+        .map(({ movieTitle }, i) => (
+          <li key={i}>
+            <Link to={`/${movieTitle}`}>{movieTitle}</Link>
+          </li>
+        ));
+        
+    } else if (isStatusSearch) { //Search by either "currently showing" or "coming soon"
+        const statusQuery = query.toLowerCase();
+        const filteredByStatus = allMovies.filter(({ movieShowDates }) =>
+          statusQuery === 'comingsoon:'
+            ? !showDatesCurrent(movieShowDates)
+            : showDatesCurrent(movieShowDates)
+        );
+        results = filteredByStatus
+          .slice(0, 10)
+          .map(({ movieTitle }, i) => (
+            <li key={i}>
+              <Link to={`/${movieTitle}`}>{movieTitle}</Link>
+            </li>
+          ));
+          
+    } else { //Search by Title, Default 
+        results = allMovies
+        .filter(({ movieTitle }) => movieTitle.toLowerCase().includes(query))
+        .slice(0, 10)
+        .map(({ movieTitle }, i) => (
+          <li key={i}>
+            <Link to={`/${movieTitle}`}>{movieTitle}</Link>
+          </li>
+        ));
+    }
+
+
     const clickHandler = (event) => {
       if (searchResultsRef.current && !searchResultsRef.current.contains(event.target)) {
         document.removeEventListener('click', clickHandler);
@@ -31,6 +89,8 @@ const Header = () => {
     document.addEventListener('click', clickHandler);
     setSearchResults(<ul className="search-results" ref={searchResultsRef}>{results}</ul>);
   };
+
+
   return (
     <>
       <header>
