@@ -8,11 +8,12 @@ const Movies = () => {
   const [moviesData, setMoviesData] = useState([]);
   const navigate = useNavigate();
 
-  useApiData(async (api) => {
+  useApiData(async (api, tools) => {
     try {
       const response = await api.listMovies();
       if (response.ok)
         setMoviesData(response.data);
+      tools.refreshOnTimeout(60000);
     } catch (error) {
       console.error('Error:', error);
     }

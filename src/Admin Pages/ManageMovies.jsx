@@ -15,7 +15,7 @@ import './ManageMovies.css'
 import AdminHeader from "./AdminHeader/AdminHeader";
 import AdminSideBar from "./AdminSideBar/AdminSideBar";
 import AddMoviePopout from './MovieForms/AddMoviePopout';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './MovieForms/MovieForm.css'
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';

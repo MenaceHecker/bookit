@@ -224,40 +224,55 @@ export class API {
 }
 
 class AbortableAPI extends API {
-  #abortSignal;
+  #signal;
 
   constructor(baseUrl, abortSignal) {
     super(baseUrl);
-    this.#abortSignal = abortSignal;
+    this.#signal = abortSignal;
   }
 
   addOptions(fetchOptions) {
-    return { signal: this.#abortSignal, ...fetchOptions };
+    return { ...fetchOptions, signal: this.#signal };
   }
 }
 
 export const APIContext = createContext(null);
 
+class APITools {
+  #setRefreshToken;
+  #signal;
+
+  constructor(setRefreshToken, abortSignal) {
+    this.#setRefreshToken = setRefreshToken;
+    this.#signal = abortSignal;
+  }
+
+  get signal() { return this.#signal; }
+
+  refresh() { this.#setRefreshToken(Symbol()); }
+
+  refreshOnTimeout(delay) {
+    const listener = () => { clearTimeout(timeoutId); };
+    const timeoutId = setTimeout(() => {
+      this.refresh();
+      this.#signal.removeEventListener('abort', listener);
+    }, delay);
+    this.#signal.addEventListener('abort', listener);
+  }
+}
+
 export function useApiData(callback, deps = []) {
   const api = useContext(APIContext);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const memoCallback = useCallback(callback, deps);
-  const [refreshLevel, setRefreshLevel] = useState(1);
+  const [refreshToken, setRefreshToken] = useState(Symbol());
   useEffect(() => {
-    switch (refreshLevel) {
-      case 2: setRefreshLevel(1);
-      case 1: {
-        const controller = new AbortController();
-        const signal = controller.signal;
-        memoCallback(api.withSignal(signal))
-          .finally(() => {
-            if (!signal.aborted)
-              setRefreshLevel(0);
-          });
-        return () => { controller.abort(); };
-      }
-    }
-  }, [refreshLevel, memoCallback, api]);
-  const refresh = () => { setRefreshLevel((level) => level + 1); };
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const tools = new APITools(setRefreshToken, signal);
+    memoCallback(api.withSignal(signal), tools);
+    return () => { controller.abort(); };
+  }, [refreshToken, memoCallback, api]);
+  const refresh = () => { setRefreshToken(Symbol()); };
   return [refresh];
 }
