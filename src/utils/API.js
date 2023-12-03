@@ -1,13 +1,5 @@
 import { createContext } from 'react';
 
-function fetchPostJson(url, data) {
-  return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-}
-
 async function getResponseText(promise) {
   try {
     const response = await promise;
@@ -54,6 +46,14 @@ export class API {
     this.#baseUrl = baseUrl;
   }
 
+  getBaseUrl() {
+    return this.#baseUrl;
+  }
+
+  addOptions(fetchOptions) {
+    return fetchOptions;
+  }
+
   #newSessionUrl(path, prop = 'sid') {
     const sessionId = localStorage.getItem('sessionId');
     if (sessionId === null)
@@ -63,29 +63,45 @@ export class API {
     return url;
   }
 
+  #fetchGet(url) {
+    return fetch(url, this.addOptions({ method: 'GET' }));
+  }
+
+  #fetchDelete(url) {
+    return fetch(url, this.addOptions({ method: 'DELETE' }));
+  }
+
+  #fetchPostJson(url, data) {
+    return fetch(url, this.addOptions({
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }));
+  }
+
   async login(email, password) {
     const url = new URL('api/login', this.#baseUrl);
     url.searchParams.append('email', email);
     url.searchParams.append('password', password);
-    return await getResponseJson(fetch(url, { method: 'GET' }));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async logout() {
     const url = this.#newSessionUrl('api/logout', 'sessionId');
-    return await getResponseText(fetch(url, { method: 'GET' }));
+    return await getResponseText(this.#fetchGet(url));
   }
 
   async sendPasswordToken(email) {
     const url = new URL('api/sendPasswordToken', this.#baseUrl);
     url.searchParams.append('email', email);
-    return await getResponseText(fetch(url, { method: 'GET' }));
+    return await getResponseText(this.#fetchGet(url));
   }
 
   async loginWithPasswordToken(token, newPassword) {
     const url = new URL('api/resetPasswordWithToken', this.#baseUrl);
     url.searchParams.append('token', token);
     url.searchParams.append('newPassword', newPassword);
-    return await getResponseJson(fetch(url, { method: 'GET' }));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async createCustomer(customerData) {
@@ -95,25 +111,25 @@ export class API {
       url.searchParams.append(prop, customerData[prop]);
     if ('wantsPromotions' in customerData)
       url.searchParams.append('wantsPromotions', customerData.wantsPromotions);
-    return await getResponseNum(fetch(url, { method: 'GET' }), 'Could not create user');
+    return await getResponseNum(this.#fetchGet(url), 'Could not create user');
   }
 
   async activateCustomer(activationCode) {
     const url = new URL('api/activate', this.#baseUrl);
     url.searchParams.append('code', activationCode);
-    return await getResponseText(fetch(url, { method: 'GET' }));
+    return await getResponseText(this.#fetchGet(url));
   }
 
   async getCurrentUser() {
     const url = this.#newSessionUrl('api/getCurrentUser');
-    return await getResponseJson(fetch(url, { method: 'GET' }));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async updatePassword(oldPassword, newPassword) {
     const url = this.#newSessionUrl('api/updatePassword');
     url.searchParams.append('oldPassword', oldPassword);
     url.searchParams.append('newPassword', newPassword);
-    return await getResponseText(fetch(url, { method: 'GET' }));
+    return await getResponseText(this.#fetchGet(url));
   }
 
   async updateProfile(profileData) {
@@ -126,7 +142,7 @@ export class API {
     for (const prop of props)
       if (prop in profileData)
         url.searchParams.append(prop, profileData[prop]);
-    return await getResponseText(fetch(url, { method: 'GET' }));
+    return await getResponseText(this.#fetchGet(url));
   }
 
   async createMovie(movieData) {
@@ -136,13 +152,13 @@ export class API {
 
   async listMovies() {
     const url = new URL('api/getlistings', this.#baseUrl);
-    return await getResponseJson(fetch(url, { method: 'GET' }));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async deleteMovie(id) {
     const url = this.#newSessionUrl('api/rmmovie');
     url.searchParams.append('id', id);
-    return await getResponseNum(fetch(url, { method: 'DELETE' }), 'Could not delete movie');
+    return await getResponseNum(this.#fetchDelete(url), 'Could not delete movie');
   }
 
   async createCard(cardData) {
@@ -150,12 +166,12 @@ export class API {
     const props = ['cardNumber', 'firstName', 'lastName', 'securityCode', 'billingAddress', 'expirationDate'];
     for (const prop of props)
       url.searchParams.append(prop, cardData[prop]);
-    return await getResponseText(fetch(url, { method: 'GET' }));
+    return await getResponseText(this.#fetchGet(url));
   }
 
   async listCards() {
     const url = this.#newSessionUrl('api/listCards');
-    return await getResponseJson(fetch(url, { method: 'GET' }));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async updateCard(cardData) {
@@ -164,18 +180,18 @@ export class API {
     for (const prop of props)
       if (prop in cardData)
         url.searchParams.append(prop, cardData[prop]);
-    return await getResponseText(fetch(url, { method: 'GET' }));
+    return await getResponseText(this.#fetchGet(url));
   }
 
   async deleteCard(cardId) {
     const url = this.#newSessionUrl('api/deleteCard');
     url.searchParams.append('cardId', cardId);
-    return await getResponseText(fetch(url, { method: 'GET' }));
+    return await getResponseText(this.#fetchGet(url));
   }
 
   async listTicketTypes() {
     const url = new URL('api/listTicketTypes', this.#baseUrl);
-    return await getResponseJson(fetch(url, { method: 'GET' }));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async createBooking(bookingData) {
@@ -185,26 +201,39 @@ export class API {
 
   async listBookings() {
     const url = this.#newSessionUrl('api/listBookings');
-    return await getResponseJson(fetch(url, { method: 'GET' }));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async getBooking(bookingId) {
     const url = this.#newSessionUrl('api/listBookings');
     url.searchParams.append('bookingId', bookingId);
-    return await getResponseJson(fetch(url, { method: 'GET' }));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async deleteBooking(bookingId) {
     const url = this.#newSessionUrl('api/deleteBooking');
     url.searchParams.append('bookingId', bookingId);
-    return await getResponseText(fetch(url, { method: 'DELETE' }));
+    return await getResponseText(this.#fetchDelete(url));
   }
 
   async getTicket(ticketId) {
     const url = this.#newSessionUrl('api/getTicket');
     url.searchParams.append('ticketId', ticketId);
-    return await getResponseJson(fetch(url, { method: 'GET' }));
+    return await getResponseJson(this.#fetchGet(url));
   }
 }
 
 export const APIContext = createContext(null);
+
+class AbortableAPI extends API {
+  #abortSignal;
+
+  constructor(api, abortSignal) {
+    super(api.getBaseUrl());
+    this.#abortSignal = abortSignal;
+  }
+
+  addOptions(fetchOptions) {
+    return { signal: this.#abortSignal, ...fetchOptions };
+  }
+}
