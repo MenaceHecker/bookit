@@ -4,7 +4,7 @@ import './MovieForm.css';
 import { useContext, useState } from 'react';
 import { APIContext } from '../../utils/API';
 
-const AddMoviePopout = ({ setShowPopout }) => {
+const AddMoviePopout = ({ onClose }) => {
   const api = useContext(APIContext);
 
         const [formData, setFormData] = useState({
@@ -41,7 +41,6 @@ const AddMoviePopout = ({ setShowPopout }) => {
     e.preventDefault();
 
     try {
-      setShowPopout(false);
       const response = await api.createMovie(formData);
 
       if (response.ok) {
@@ -52,6 +51,7 @@ const AddMoviePopout = ({ setShowPopout }) => {
         // Handle errors, e.g., show an error message
         console.error('Error submitting form:', response.message);
       }
+      onClose();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -59,7 +59,7 @@ const AddMoviePopout = ({ setShowPopout }) => {
 
       //http://198.251.67.241:8080/api/newmovie
       const handleClose = () => {
-        setShowPopout(false); // Call the setShowPopout function from ManageMovies
+        onClose(); // Call the onClose function from ManageMovies
       };
     
         return (

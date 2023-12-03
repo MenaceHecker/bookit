@@ -15,14 +15,13 @@ import './ManageMovies.css'
 import AdminHeader from "./AdminHeader/AdminHeader";
 import AdminSideBar from "./AdminSideBar/AdminSideBar";
 import AddMoviePopout from './MovieForms/AddMoviePopout';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './MovieForms/MovieForm.css'
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
-import { APIContext } from '../utils/API';
+import { useApiData } from '../utils/API';
 
 function ManageMovies() {
-  const api = useContext(APIContext);
   const navigate = useNavigate();
   const [movieType, setMovieType] = useState('currentlyShowing'); //This will allow the admin to switch between the "Currently Showing" movies and the "Coming soon" movies
   //different data from the database will be fetched depending on state
@@ -31,7 +30,7 @@ function ManageMovies() {
     setMovieType(type);
   };
 
-  const updateMovies = async () => {
+  const refreshMovies = useApiData(async (api) => {
     try {
       const response = await api.listMovies();
       if (response.ok)
@@ -39,16 +38,15 @@ function ManageMovies() {
     } catch (error) {
       console.error(error);
     }
-  };
+  });
 
   const [showPopout, setShowPopout] = useState(false);
 
   const togglePopout = () => {
+    console.log('toggling popout!');
     setShowPopout(!showPopout);
-    updateMovies();
+    refreshMovies();
   };
-
-  useEffect(() => { updateMovies(); }, []);
 
     function joe() {
         navigate('/')
@@ -78,7 +76,7 @@ function ManageMovies() {
 
       <div className="add_button">
         <button onClick={togglePopout}>Add Movie</button>
-        {showPopout && <AddMoviePopout mode="add" onClose={togglePopout} setShowPopout={setShowPopout} />}
+        {showPopout && <AddMoviePopout mode="add" onClose={togglePopout}/>}
       </div>
 
       <div className="table">

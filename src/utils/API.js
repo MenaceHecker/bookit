@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 async function getResponseText(promise) {
   try {
@@ -241,12 +241,13 @@ export const APIContext = createContext(null);
 export function useApiData(callback, deps = []) {
   const api = useContext(APIContext);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const memoCallback = useMemo(callback, deps);
+  const memoCallback = useCallback(callback, deps);
   const [needsRefresh, setNeedsRefresh] = useState(true);
   useEffect(() => {
     if (needsRefresh) {
       const controller = new AbortController();
-      memoCallback(api.withSignal(controller.signal));
+      memoCallback(api.withSignal(controller.signal))
+        .finally(() => { setNeedsRefresh(false); });
       return () => { controller.abort(); };
     }
   }, [needsRefresh, memoCallback, api]);
