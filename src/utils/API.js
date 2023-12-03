@@ -242,14 +242,17 @@ export function useApiData(callback, deps = []) {
   const api = useContext(APIContext);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const memoCallback = useCallback(callback, deps);
-  const [needsRefresh, setNeedsRefresh] = useState(true);
+  const [refreshLevel, setRefreshLevel] = useState(1);
   useEffect(() => {
-    if (needsRefresh) {
-      const controller = new AbortController();
-      memoCallback(api.withSignal(controller.signal))
-        .finally(() => { setNeedsRefresh(false); });
-      return () => { controller.abort(); };
+    switch (refreshLevel) {
+      case 2: setRefreshLevel(1);
+      case 1: {
+        const controller = new AbortController();
+        memoCallback(api.withSignal(controller.signal))
+          .finally(() => { setRefreshLevel(0); });
+        return () => { controller.abort(); };
+      }
     }
-  }, [needsRefresh, memoCallback, api]);
-  return () => { setNeedsRefresh(true); };
+  }, [refreshLevel, memoCallback, api]);
+  return () => { setRefreshLevel((level) => level + 1); };
 }
