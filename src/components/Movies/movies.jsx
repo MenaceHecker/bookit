@@ -1,15 +1,14 @@
-import { useContext, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './movies.css';
 import '../../logo.svg';
-import { APIContext } from '../../utils/API';
+import { useApiData } from '../../utils/API';
 
 const Movies = () => {
-  const api = useContext(APIContext);
   const [moviesData, setMoviesData] = useState([]);
   const navigate = useNavigate();
 
-  const updateMovies = async () => {
+  useApiData(async (api) => {
     try {
       const response = await api.listMovies();
       if (response.ok)
@@ -17,11 +16,7 @@ const Movies = () => {
     } catch (error) {
       console.error('Error:', error);
     }
-  };
-
-  useEffect(() => {
-    updateMovies();
-  }, []);
+  });
 
   const bookNow = () => {
     navigate('/BookingPage');
