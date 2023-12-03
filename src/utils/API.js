@@ -179,6 +179,11 @@ export class API {
     return await getResponseText(fetch(url, { method: 'GET' }));
   }
 
+  async listTicketTypes() {
+    const url = new URL('api/listTicketTypes', this.#baseUrl);
+    return await getResponseJson(fetch(url, { method: 'GET' }));
+  }
+
   async createBooking(showingId, promoCode, tickets) {
     const url = this.#newSessionUrl('api/createBooking');
     return await getResponseText(fetchPostJson(url, { showingId, promoCode, tickets }));
