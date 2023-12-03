@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 import MainAdmin from './Admin Pages/MainAdmin';
@@ -17,55 +17,56 @@ import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import TrailerPage from './components/TrailerPage/TrailerPage';
 import Listing from './components/Listing/Listing';
-import { API, APIContext } from './utils/API';
-export default function App() {
-    const api = new API('http://198.251.67.241:8080');
-    const [dynamicRoutes, setDynamicRoutes] = useState([]);
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await api.listMovies();
-                const data = response.data;
-                console.log(data);
+import { API, APIContext, useApiData } from './utils/API';
 
-                const listings = data.map(listing => ({
-                    path: '/' + listing.movieTitle,
-                    element: <Listing {...listing} />
-                }));
-                setDynamicRoutes(listings);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        fetchData();
-    }, [api]);
-    const staticRoutes = [
-        { path: '/', element: <Homepage /> },
-        { path: '/Activate', element: <Activate /> },
-        { path: '/admin', element: <MainAdmin /> },
-        { path: '/BookingPage', element: <BookingPage /> },
-        { path: '/Checkout', element: <Checkout /> },
-        { path: '/CreateNewPassword', element: <CreateNewPassword /> },
-        { path: '/EditProfile', element: <EditProfile /> },
-        { path: '/ForgotPassword', element: <ForgotPassword /> },
-        { path: '/Homepage', element: <Homepage /> },
-        { path: '/Login', element: <Login /> },
-        { path: '/MainAdmin', element: <MainAdmin /> },
-        { path: '/ManageMovies', element: <ManageMovies /> },
-        { path: '/ManagePromotions', element: <ManagePromotions /> },
-        { path: '/ManageUsers', element: <ManageUsers /> },
-        { path: '/OrderConfirmation', element: <OF /> },
-        { path: '/Signup', element: <Signup /> },
-        { path: '/TrailerPage', element: <TrailerPage /> },
-    ];
-    const allRoutes = [...staticRoutes, ...dynamicRoutes];
-    return (
-        <APIContext.Provider value={api}>
-            <Routes>
-                {allRoutes.map((route, index) => (
-                    <Route key={index} path={route.path} element={route.element} />
-                ))}
-            </Routes>
-        </APIContext.Provider>
-    );
+export default function App() {
+  const api = useMemo(() => new API('http://198.251.67.241:8080'), []);
+  const [dynamicRoutes, setDynamicRoutes] = useState([]);
+
+  useApiData(async (api) => {
+    try {
+      const response = await api.listMovies();
+      const data = response.data;
+      console.log(data);
+
+      const listings = data.map(listing => ({
+        path: '/' + listing.movieTitle,
+        element: <Listing {...listing} />
+      }));
+      setDynamicRoutes(listings);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }, { api });
+
+  const staticRoutes = [
+    { path: '/', element: <Homepage /> },
+    { path: '/Activate', element: <Activate /> },
+    { path: '/admin', element: <MainAdmin /> },
+    { path: '/BookingPage', element: <BookingPage /> },
+    { path: '/Checkout', element: <Checkout /> },
+    { path: '/CreateNewPassword', element: <CreateNewPassword /> },
+    { path: '/EditProfile', element: <EditProfile /> },
+    { path: '/ForgotPassword', element: <ForgotPassword /> },
+    { path: '/Homepage', element: <Homepage /> },
+    { path: '/Login', element: <Login /> },
+    { path: '/MainAdmin', element: <MainAdmin /> },
+    { path: '/ManageMovies', element: <ManageMovies /> },
+    { path: '/ManagePromotions', element: <ManagePromotions /> },
+    { path: '/ManageUsers', element: <ManageUsers /> },
+    { path: '/OrderConfirmation', element: <OF /> },
+    { path: '/Signup', element: <Signup /> },
+    { path: '/TrailerPage', element: <TrailerPage /> },
+  ];
+  const allRoutes = [...staticRoutes, ...dynamicRoutes];
+
+  return (
+    <APIContext.Provider value={api}>
+      <Routes>
+        {allRoutes.map((route, index) => (
+          <Route key={index} path={route.path} element={route.element} />
+        ))}
+      </Routes>
+    </APIContext.Provider>
+  );
 }
