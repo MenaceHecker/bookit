@@ -24,7 +24,7 @@ export default function App() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.getMovies();
+                const response = await api.listMovies();
                 const data = response.data;
                 console.log(data);
 
