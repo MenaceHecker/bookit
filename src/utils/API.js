@@ -90,10 +90,6 @@ export class API {
     const url = this.#newSessionUrl('api/logout', 'sessionId');
     return await getResponseText(this.#fetchGet(url));
   }
-  async getListings() {
-    const url = new URL('api/getlistings', this.#baseUrl);
-    return await getResponseJson(fetch(url, { method: 'GET' }));
-  }
 
   async sendPasswordToken(email) {
     const url = new URL('api/sendPasswordToken', this.#baseUrl);
