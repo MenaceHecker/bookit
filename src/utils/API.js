@@ -248,8 +248,12 @@ export function useApiData(callback, deps = []) {
       case 2: setRefreshLevel(1);
       case 1: {
         const controller = new AbortController();
-        memoCallback(api.withSignal(controller.signal))
-          .finally(() => { setRefreshLevel(0); });
+        const signal = controller.signal;
+        memoCallback(api.withSignal(signal))
+          .finally(() => {
+            if (!signal.aborted)
+              setRefreshLevel(0);
+          });
         return () => { controller.abort(); };
       }
     }
