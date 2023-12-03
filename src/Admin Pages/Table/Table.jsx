@@ -107,7 +107,7 @@ const Table = ({ data, pageType }) => {
               </table>
             </div>
             );
-          } else if (pageType == 'ManagePromotions') {
+          } else if (pageType === 'ManagePromotions') {
             return (
               <div className="table-container">
               <table>

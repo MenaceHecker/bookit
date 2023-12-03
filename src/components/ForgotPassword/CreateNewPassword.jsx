@@ -47,12 +47,12 @@ function CreateNewPassword() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    if (formData.newPassword != formData.confirmNewPassword) {
+    if (formData.newPassword !== formData.confirmNewPassword) {
       console.error("Passwords don't match");
       return;
     }
     const token = new URLSearchParams(search).get('token');
-    if (token == null) {
+    if (token === null) {
       console.error('Missing token in URL');
       return;
     }
