@@ -53,7 +53,7 @@ function ManageMovies() {
     function joe() {
         navigate('/')
     }
-    if (localStorage.email !== 'bookit@example.com') {
+    if (+localStorage.getItem('isPrivileged') !== 1) {
         return (
             <div className={'center_title'}>
                 <h1>You are not granted access</h1>

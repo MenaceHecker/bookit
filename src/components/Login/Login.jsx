@@ -32,8 +32,7 @@ function Login() {
         const data = response.data;
         console.log(data);
         localStorage.setItem('sessionId', data.sessionId);
-        localStorage.setItem('isPriveleged', data.isPrivileged);
-        localStorage.setItem('email', formData.email);
+        localStorage.setItem('isPrivileged', +data.isPrivileged);
         console.log('Login successful:', data);
         // Handle the successful case here
         if (formData.email === 'bookit@example.com') {

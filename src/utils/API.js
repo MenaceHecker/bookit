@@ -184,9 +184,9 @@ export class API {
     return await getResponseJson(fetch(url, { method: 'GET' }));
   }
 
-  async createBooking(cardData) {
+  async createBooking(bookingData) {
     const url = this.#newSessionUrl('api/createBooking');
-    return await getResponseText(fetchPostJson(url, cardData));
+    return await getResponseText(fetchPostJson(url, bookingData));
   }
 
   async listBookings() {

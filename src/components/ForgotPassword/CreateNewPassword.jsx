@@ -33,7 +33,7 @@ function CreateNewPassword() {
         confirmNewPassword:'',
       });
       localStorage.setItem('sessionId', data.sessionId);
-      localStorage.setItem('isPriveleged', data.isPrivileged);
+      localStorage.setItem('isPrivileged', +data.isPrivileged);
       if (data.isPrivileged) {
         navigate('/ManageMovies');
       } else {
