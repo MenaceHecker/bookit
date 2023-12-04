@@ -275,6 +275,6 @@ export function useApiData(callback, options = {}) {
     memoCallback(api.withSignal(signal), tools);
     return () => { controller.abort(); };
   }, [refreshToken, memoCallback, api]);
-  const refresh = () => { setRefreshToken(Symbol()); };
+  const refresh = useCallback(() => { setRefreshToken(Symbol()); }, []);
   return [refresh];
 }

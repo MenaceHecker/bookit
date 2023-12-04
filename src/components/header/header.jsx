@@ -21,7 +21,10 @@ const Header = () => {
     const results = allMovies
       .filter(({ movieTitle }) => movieTitle.toLowerCase().includes(query))
       .slice(0, 10)
-      .map(({ movieTitle }, i) => <li key={i}><Link to={`/${movieTitle}`}>{movieTitle}</Link></li>);
+      .map(({ id, movieTitle }) =>
+        <li key={id}>
+          <Link to={`/Listing/${id}/${encodeURIComponent(movieTitle.slice(0, 16))}`}>{movieTitle}</Link>
+        </li>);
     const clickHandler = (event) => {
       if (searchResultsRef.current && !searchResultsRef.current.contains(event.target)) {
         document.removeEventListener('click', clickHandler);
