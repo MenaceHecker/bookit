@@ -261,8 +261,13 @@ class APITools {
   }
 }
 
-export function useApiData(callback, deps = []) {
-  const api = useContext(APIContext);
+export function useApiData(callback, options = {}) {
+  let api = useContext(APIContext);
+  let deps = options.deps ?? [];
+  if ('api' in options) {
+    api = options.api;
+    deps = [...deps, api];
+  }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const memoCallback = useCallback(callback, deps);
   const [refreshToken, setRefreshToken] = useState(Symbol());
