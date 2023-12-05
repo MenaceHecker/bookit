@@ -1,9 +1,8 @@
 import React from 'react';
 import './Listing.css';
-import Header from "../header/header";
-import Footer from "../footer/footer";
 import { useNavigate } from 'react-router-dom';
 import bookMovie from "../BookMovie/BookMovie";
+
 const Listing = (props) => {
     const navigate = useNavigate();
     const {
@@ -25,7 +24,6 @@ const Listing = (props) => {
     };
     return (
         <>
-            <Header/>
             <div id={'list_cont'}>
                 <div id={'list_right'}>
                     <iframe width='800' height='600' src={movieTrailerVideo + '&autoplay=1&mute=1'} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
@@ -46,7 +44,6 @@ const Listing = (props) => {
                     <button className="btn_book" onClick={bookNow}>Book Now</button>
                 </div>
             </div>
-            <Footer/>
         </>
     );
 };
