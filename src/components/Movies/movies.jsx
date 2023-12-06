@@ -3,6 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import './movies.css';
 import '../../logo.svg';
 
+const showDatesCurrent = (dates) => {
+  const firstDate = dates.split(',')[0];
+  const startTime = Date.parse(firstDate + 'T00:00:00');
+  const threeWeeksLater = new Date(startTime);
+  threeWeeksLater.setDate(threeWeeksLater.getDate() + 21); // Adding 21 days for "coming soon"
+
+  return isNaN(startTime) || (Date.now() >= startTime && Date.now() < threeWeeksLater);
+};
+
 const Movies = ({ movies, refreshMovies }) => {
   const navigate = useNavigate();
 
@@ -33,15 +42,6 @@ const Movies = ({ movies, refreshMovies }) => {
     </div>
   );
 
-  const showDatesCurrent = (dates) => {
-    const firstDate = dates.split(',')[0];
-    const startTime = Date.parse(firstDate + 'T00:00:00');
-    const threeWeeksLater = new Date(startTime);
-    threeWeeksLater.setDate(threeWeeksLater.getDate() + 21); // Adding 21 days for "coming soon"
-  
-    return isNaN(startTime) || (Date.now() >= startTime && Date.now() < threeWeeksLater);
-  };
-
   return (
     <>
       <section className="movie_section">
@@ -60,4 +60,5 @@ const Movies = ({ movies, refreshMovies }) => {
   );
 };
 
+export {showDatesCurrent};
 export default Movies;
