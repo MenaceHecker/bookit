@@ -1,40 +1,19 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './movies.css';
 import '../../logo.svg';
-import { useApiData } from '../../utils/API';
 
-
-// Fix this
-const showDatesCurrent = (dates) => {
-  const firstDate = dates.split(',')[0];
-  const startTime = Date.parse(firstDate + 'T00:00:00');
-  const threeWeeksLater = new Date(startTime);
-  threeWeeksLater.setDate(threeWeeksLater.getDate() + 21); // Adding 21 days for "coming soon"
-
-  return isNaN(startTime) || (Date.now() >= startTime && Date.now() < threeWeeksLater);
-};
-
-const Movies = () => {
-  const [moviesData, setMoviesData] = useState([]);
+const Movies = ({ movies, refreshMovies }) => {
   const navigate = useNavigate();
 
-  useApiData(async (api, tools) => {
-    try {
-      const response = await api.listMovies();
-      if (response.ok)
-        setMoviesData(response.data);
-      tools.refreshOnTimeout(60000);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  });
+  useEffect(() => { refreshMovies(); }, [refreshMovies]);
 
   const bookNow = () => {
     navigate('/BookingPage');
   };
-  const navMovie = (movieTitle) => {
-    navigate('/' + movieTitle);
+  const navMovie = (id, movieTitle) => {
+    const shortTitle = movieTitle.slice(0, 16);
+    navigate(`/Listing/${id}/${encodeURIComponent(shortTitle)}`);
   }
 
   const displayMovie = ({ id, movieTrailerPicture, movieTitle, movieCast, movieCategory, movieTrailerVideo, movieSynopsis }) => (
@@ -43,7 +22,7 @@ const Movies = () => {
       <div className='movie__item-image'>
           <iframe width="480" height="275" src={movieTrailerVideo + '&autoplay=1&mute=1'} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
       </div>
-      <h4 className='title' onClick={() => navMovie(movieTitle)}>{movieTitle}</h4>
+      <h4 className='title' onClick={() => navMovie(id, movieTitle)}>{movieTitle}</h4>
       <h3>Cast:<br></br>{movieCast}</h3>
         <h3>Description:<br></br>{movieSynopsis}</h3>
       <h3>Category:<br></br>{movieCategory}</h3>
@@ -54,23 +33,31 @@ const Movies = () => {
     </div>
   );
 
+  const showDatesCurrent = (dates) => {
+    const firstDate = dates.split(',')[0];
+    const startTime = Date.parse(firstDate + 'T00:00:00');
+    const threeWeeksLater = new Date(startTime);
+    threeWeeksLater.setDate(threeWeeksLater.getDate() + 21); // Adding 21 days for "coming soon"
+  
+    return isNaN(startTime) || (Date.now() >= startTime && Date.now() < threeWeeksLater);
+  };
+
   return (
     <>
       <section className="movie_section">
         <h5 className='title'>Now Showing</h5>
         <div className='container movie__container'>
-          {moviesData.filter(({ movieShowDates }) => showDatesCurrent(movieShowDates)).map(displayMovie)}
+          {movies.filter(({ movieShowDates }) => showDatesCurrent(movieShowDates)).map(displayMovie)}
         </div>
       </section>
       <section className="movie_section">
         <h5 className='title'>Coming Soon</h5>
         <div className='container movie__container'>
-          {moviesData.filter(({ movieShowDates }) => !showDatesCurrent(movieShowDates)).map(displayMovie)}
+          {movies.filter(({ movieShowDates }) => !showDatesCurrent(movieShowDates)).map(displayMovie)}
         </div>
       </section>
     </>
   );
 };
 
-export { showDatesCurrent };
 export default Movies;

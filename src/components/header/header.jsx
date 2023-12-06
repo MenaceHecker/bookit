@@ -21,6 +21,15 @@ const Header = () => {
   const [showOnlyCurrentlyShowing, setShowOnlyCurrentlyShowing] = useState(false); 
   const [showOnlyComingSoon, setShowOnlyComingSoon] = useState(false); 
 
+  const showDatesCurrent = (dates) => {
+    const firstDate = dates.split(',')[0];
+    const startTime = Date.parse(firstDate + 'T00:00:00');
+    const threeWeeksLater = new Date(startTime);
+    threeWeeksLater.setDate(threeWeeksLater.getDate() + 21); // Adding 21 days for "coming soon"
+  
+    return isNaN(startTime) || (Date.now() >= startTime && Date.now() < threeWeeksLater);
+  };
+
   const executeSearch = useCallback(async () => {
     const response = await api.listMovies();
     const allMovies = response.data;
@@ -51,9 +60,9 @@ const Header = () => {
         categoryQuery
       );
   
-      results = filteredByCategory.slice(0, 10).map(({ movieTitle }, i) => (
-        <li key={i}>
-          <Link to={`/${movieTitle}`}>{movieTitle}</Link>
+      results = filteredByCategory.slice(0, 10).map(({ movieTitle, id }) => (
+        <li key={id}>
+           <Link to={`/Listing/${id}/${encodeURIComponent(movieTitle.slice(0, 16))}`}>{movieTitle}</Link>
         </li>
       ));
     } else { //Search by title and (optionally) filter between "currently showing" and "coming soon"
@@ -63,13 +72,13 @@ const Header = () => {
         showOnlyComingSoon
       );
   
-      const titleFilteredMovies = filteredMovies.filter(({ movieTitle }) =>
+      const titleFilteredMovies = filteredMovies.filter(({ movieTitle}) =>
         movieTitle.toLowerCase().includes(query)
       );
   
-      results = titleFilteredMovies.slice(0, 10).map(({ movieTitle }, i) => (
-        <li key={i}>
-          <Link to={`/${movieTitle}`}>{movieTitle}</Link>
+      results = titleFilteredMovies.slice(0, 10).map(({ movieTitle, id }) => (
+        <li key={id}>
+           <Link to={`/Listing/${id}/${encodeURIComponent(movieTitle.slice(0, 16))}`}>{movieTitle}</Link>
         </li>
       ));
     }
@@ -105,7 +114,13 @@ const Header = () => {
         </li>
       </ul>
     );
-
+    const clickHandler = (event) => {
+      if (searchResultsRef.current && !searchResultsRef.current.contains(event.target)) {
+        document.removeEventListener('click', clickHandler);
+        setSearchResults(null);
+      }
+    };
+    document.addEventListener('click', clickHandler);
   }, [api, searchBarId, showOnlyCurrentlyShowing, showOnlyComingSoon]);
   
   useEffect(() => {
