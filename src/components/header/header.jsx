@@ -1,11 +1,15 @@
-import { useContext, useId, useRef, useState } from 'react';
+import { useContext, useId, useRef, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import './header.css';
 import Logo from '../../assets/bookit-high-resolution-logo-colo.png';
 import DropDownMenu from './DropDownMenu';
 import { APIContext } from '../../utils/API';
 
+import { showDatesCurrent } from '../Movies/movies.jsx';
+
+
 const Header = () => {
+  
   const api = useContext(APIContext);
   const [Mobile, setMobile] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
@@ -14,82 +18,99 @@ const Header = () => {
   const searchBarKeyPress = async (event) => {
       await executeSearch();
   };
+  const [showOnlyCurrentlyShowing, setShowOnlyCurrentlyShowing] = useState(false); 
+  const [showOnlyComingSoon, setShowOnlyComingSoon] = useState(false); 
 
-
-  // const executeSearch = async () => {
-  //   const response = await api.listMovies();
-  //   const allMovies = response.data;
-  //   const query = document.getElementById(searchBarId).value.toLowerCase();
-  //   const results = allMovies
-  //     .filter(({ movieTitle }) => movieTitle.toLowerCase().includes(query))
-  //     .slice(0, 10)
-  //     .map(({ movieTitle }, i) => <li key={i}><Link to={`/${movieTitle}`}>{movieTitle}</Link></li>);
-
-  const showDatesCurrent = (dates) => {
-    const firstDate = dates.split(',')[0];
-    const startTime = Date.parse(firstDate + 'T00:00:00');
-    return isNaN(startTime) || Date.now() >= startTime;
-  };
-
-  const executeSearch = async () => {
+  const executeSearch = useCallback(async () => {
     const response = await api.listMovies();
     const allMovies = response.data;
     const query = document.getElementById(searchBarId).value.toLowerCase();
-
-    const isCategorySearch = query.startsWith('category:'); // Check if it's a category search
-
-    const isStatusSearch = query.toLowerCase() === 'comingsoon:' || query.toLowerCase() === 'currentlyshowing:'; //Check if it's searching by showtime
-
-
-    let results;
-    if (isCategorySearch) { //Search by Category
-      const categoryQuery = query.replace('category:', '').trim();
-      results = allMovies
-        .filter(({ movieCategory }) => movieCategory.toLowerCase().includes(categoryQuery))
-        .slice(0, 10)
-        .map(({ movieTitle }, i) => (
-          <li key={i}>
-            <Link to={`/${movieTitle}`}>{movieTitle}</Link>
-          </li>
-        ));
-        
-    } else if (isStatusSearch) { //Search by either "currently showing" or "coming soon"
-        const statusQuery = query.toLowerCase();
-        const filteredByStatus = allMovies.filter(({ movieShowDates }) =>
-          statusQuery === 'comingsoon:'
-            ? !showDatesCurrent(movieShowDates)
-            : showDatesCurrent(movieShowDates)
-        );
-        results = filteredByStatus
-          .slice(0, 10)
-          .map(({ movieTitle }, i) => (
-            <li key={i}>
-              <Link to={`/${movieTitle}`}>{movieTitle}</Link>
-            </li>
-          ));
-          
-    } else { //Search by Title, Default 
-        results = allMovies
-        .filter(({ movieTitle }) => movieTitle.toLowerCase().includes(query))
-        .slice(0, 10)
-        .map(({ movieTitle }, i) => (
-          <li key={i}>
-            <Link to={`/${movieTitle}`}>{movieTitle}</Link>
-          </li>
-        ));
-    }
-
-
-    const clickHandler = (event) => {
-      if (searchResultsRef.current && !searchResultsRef.current.contains(event.target)) {
-        document.removeEventListener('click', clickHandler);
-        setSearchResults(null);
-      }
+  
+    const filterByStatusAndCategory = (movies, showCurrently, showComingSoon, categoryQuery = '') => {
+      return movies.filter(({ movieTitle, movieShowDates, movieCategory }) => {
+        const titleMatch = movieTitle.toLowerCase().includes(query);
+        const isCurrentlyShowing = showDatesCurrent(movieShowDates);
+        const categoryMatch = movieCategory.toLowerCase().includes(categoryQuery);
+        const statusMatch =
+          (!showCurrently && !showComingSoon) ||
+          (showCurrently && isCurrentlyShowing) ||
+          (showComingSoon && !isCurrentlyShowing);
+  
+        return (titleMatch || categoryMatch) && statusMatch;
+      });
     };
-    document.addEventListener('click', clickHandler);
-    setSearchResults(<ul className="search-results" ref={searchResultsRef}>{results}</ul>);
-  };
+  
+    let results = [];
+    const categoryPrefix = 'category:';
+    if (query.startsWith(categoryPrefix)) { //Search by category and (optionally) filter between "currently showing" and "coming soon"
+      const categoryQuery = query.replace(categoryPrefix, '').trim();
+      const filteredByCategory = filterByStatusAndCategory(
+        allMovies,
+        showOnlyCurrentlyShowing,
+        showOnlyComingSoon,
+        categoryQuery
+      );
+  
+      results = filteredByCategory.slice(0, 10).map(({ movieTitle }, i) => (
+        <li key={i}>
+          <Link to={`/${movieTitle}`}>{movieTitle}</Link>
+        </li>
+      ));
+    } else { //Search by title and (optionally) filter between "currently showing" and "coming soon"
+      const filteredMovies = filterByStatusAndCategory(
+        allMovies,
+        showOnlyCurrentlyShowing,
+        showOnlyComingSoon
+      );
+  
+      const titleFilteredMovies = filteredMovies.filter(({ movieTitle }) =>
+        movieTitle.toLowerCase().includes(query)
+      );
+  
+      results = titleFilteredMovies.slice(0, 10).map(({ movieTitle }, i) => (
+        <li key={i}>
+          <Link to={`/${movieTitle}`}>{movieTitle}</Link>
+        </li>
+      ));
+    }
+  
+   
+    // Render search results with checkboxes
+    setSearchResults(
+      <ul className="search-results" ref={searchResultsRef}>
+        {results}
+        {/* Checkbox for showing currently showing movies */}
+        <li key="showOnlyCurrentlyShowing">
+          <label htmlFor="showCurrentlyShowing">
+            <input
+              id="showCurrentlyShowing"
+              type="checkbox"
+              checked={showOnlyCurrentlyShowing}
+              onChange={(e) => setShowOnlyCurrentlyShowing(e.target.checked)}
+            />
+            Only show currently showing
+          </label>
+        </li>
+        {/* Checkbox for showing coming soon movies */}
+        <li key="showOnlyComingSoon">
+          <label htmlFor="showOnlyComingSoon">
+            <input
+              id="showComingSoon"
+              type="checkbox"
+              checked={showOnlyComingSoon}
+              onChange={(e) => setShowOnlyComingSoon(e.target.checked)}
+            />
+            Only show coming soon
+          </label>
+        </li>
+      </ul>
+    );
 
+  }, [api, searchBarId, showOnlyCurrentlyShowing, showOnlyComingSoon]);
+  
+  useEffect(() => {
+    executeSearch();
+  }, [executeSearch, showOnlyCurrentlyShowing, showOnlyComingSoon]); 
 
   return (
     <>
@@ -126,7 +147,7 @@ const Header = () => {
           <div className='account flexSB'>
             <div className="search-bar">
               <input id={searchBarId} type="text" className="search-bar_input" placeholder="Search for Movies" onKeyPress={searchBarKeyPress}/>
-              <i className='fa fa-search' onClick={executeSearch}></i>
+              <i className='fa fa-search' onClick={executeSearch}></i>   
               {searchResults}
             </div>
             <DropDownMenu/>

@@ -4,6 +4,17 @@ import './movies.css';
 import '../../logo.svg';
 import { useApiData } from '../../utils/API';
 
+
+// Fix this
+const showDatesCurrent = (dates) => {
+  const firstDate = dates.split(',')[0];
+  const startTime = Date.parse(firstDate + 'T00:00:00');
+  const threeWeeksLater = new Date(startTime);
+  threeWeeksLater.setDate(threeWeeksLater.getDate() + 21); // Adding 21 days for "coming soon"
+
+  return isNaN(startTime) || (Date.now() >= startTime && Date.now() < threeWeeksLater);
+};
+
 const Movies = () => {
   const [moviesData, setMoviesData] = useState([]);
   const navigate = useNavigate();
@@ -43,12 +54,6 @@ const Movies = () => {
     </div>
   );
 
-  const showDatesCurrent = (dates) => {
-    const firstDate = dates.split(',')[0];
-    const startTime = Date.parse(firstDate + 'T00:00:00');
-    return isNaN(startTime) || Date.now() >= startTime;
-  };
-
   return (
     <>
       <section className="movie_section">
@@ -67,4 +72,5 @@ const Movies = () => {
   );
 };
 
+export { showDatesCurrent };
 export default Movies;
