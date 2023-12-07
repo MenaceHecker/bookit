@@ -9,7 +9,15 @@ const showDatesCurrent = (dates) => {
   const threeWeeksLater = new Date(startTime);
   threeWeeksLater.setDate(threeWeeksLater.getDate() + 21); // Adding 21 days for "coming soon"
 
-  return isNaN(startTime) || (Date.now() >= startTime && Date.now() < threeWeeksLater);
+  const now = Date.now();
+  const twentyOneDaysAgo = new Date(now);
+  twentyOneDaysAgo.setDate(twentyOneDaysAgo.getDate() - 21); // Subtracting 21 days to check if it's in the past
+
+  return (
+    isNaN(startTime) ||
+    (now >= startTime && now < threeWeeksLater) || // Within the next 21 days
+    (startTime < twentyOneDaysAgo) // Started more than 21 days ago
+  );
 };
 
 const Movies = ({ movies, refreshMovies }) => {
