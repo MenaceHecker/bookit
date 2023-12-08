@@ -6,7 +6,10 @@ import AgeSelector from './AgeSelector';
 import ShowDateSelector from './ShowDateSelector';
 import './BookMovie.css';
 
+import { Link } from 'react-router-dom';
+
 const BookMovie = (props) => {
+ 
   const {
     movieTitle,
     movieShowDates,
@@ -42,11 +45,6 @@ const BookMovie = (props) => {
     console.log(selectedShowDate);
   };
 
-  // Handle checkout logic here or redirect to checkout page
-  const handleProceedToCheckout = () => {
-    
-  };
-
   return (
     <div className="book_movie_container">
 
@@ -79,9 +77,10 @@ const BookMovie = (props) => {
         {/* Select tickets based on age: child, adult, senior */}
       </div>
 
-      <button className="book_movie_button" onClick={handleProceedToCheckout}>
-        Proceed to Checkout
-      </button>
+      <Link to = "/Checkout">
+        <button className="book_movie_button">Proceed to Checkout</button>
+      </Link>
+
     </div>
   );
 };
