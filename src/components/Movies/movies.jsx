@@ -25,8 +25,9 @@ const Movies = ({ movies, refreshMovies }) => {
 
   useEffect(() => { refreshMovies(); }, [refreshMovies]);
 
-  const bookNow = () => {
-    navigate('/BookingPage');
+  const bookNow = (id, movieTitle) => {
+    const shortTitle = movieTitle.slice(0, 16);
+    navigate(`/BookingPage/${id}/${encodeURIComponent(shortTitle)}`);
   };
   const navMovie = (id, movieTitle) => {
     const shortTitle = movieTitle.slice(0, 16);
@@ -44,7 +45,7 @@ const Movies = ({ movies, refreshMovies }) => {
         <h3>Description:<br></br>{movieSynopsis}</h3>
       <h3>Category:<br></br>{movieCategory}</h3>
         <div className='button_div'>
-          <button onClick={bookNow}>Book Now</button>
+          <button  onClick={() => bookNow(id, movieTitle)}>Book Now</button>
         </div>
     </article>
     </div>

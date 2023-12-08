@@ -38,7 +38,7 @@ export default function App() {
         <Route path="/" element={<Homepage {...{movies, refreshMovies}}/>}/>
         <Route path="/Activate" element={<Activate/>}/>
         <Route path="/admin" element={<MainAdmin/>}/>
-        <Route path="/BookingPage" element={<BookingPage/>}/>
+        <Route path="/BookingPage/:id/*" element={<BookingPage {...{movies,refreshMovies}}/>}/>
         <Route path="/Checkout" element={<Checkout/>}/>
         <Route path="/CreateNewPassword" element={<CreateNewPassword/>}/>
         <Route path="/EditProfile" element={<EditProfile/>}/>

@@ -6,6 +6,7 @@ import bookMovie from "../BookMovie/BookMovie";
 const Listing = (props) => {
     const navigate = useNavigate();
     const {
+        id,
         movieTitle,
         movieCategory,
         movieCast,
@@ -19,9 +20,10 @@ const Listing = (props) => {
         movieShowDates,
         movieShowTimes,
     } = props;
-    const bookNow = () => {
-        navigate('/BookingPage');
-    };
+    const bookNow = (id, movieTitle) => {
+        const shortTitle = movieTitle.slice(0, 16);
+        navigate(`/BookingPage/${id}/${encodeURIComponent(shortTitle)}`);
+      };
     return (
         <>
             <div id={'list_cont'}>
@@ -41,7 +43,7 @@ const Listing = (props) => {
                 <p><strong>MPAA Rating:</strong> {movieMpaaRating}</p>
                 <p><strong>Show Dates:</strong> {movieShowDates}</p>
                 <p><strong>Show Times:</strong> {movieShowTimes}</p>
-                    <button className="btn_book" onClick={bookNow}>Book Now</button>
+                    <button className="btn_book"onClick={() => bookNow(id, movieTitle)}>Book Now</button>
                 </div>
             </div>
         </>
