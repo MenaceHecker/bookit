@@ -4,6 +4,7 @@ import ShowTimeSelector from './ShowTimeSelector';
 import SeatSelector from './SeatSelector';
 import AgeSelector from './AgeSelector';
 import ShowDateSelector from './ShowDateSelector';
+import { useNavigate } from 'react-router-dom';
 import './BookMovie.css';
 
 import { Link } from 'react-router-dom';
@@ -11,11 +12,12 @@ import { Link } from 'react-router-dom';
 const BookMovie = (props) => {
  
   const {
+      id,
     movieTitle,
     movieShowDates,
     movieShowTimes,
   } = props;
-
+    const navigate = useNavigate();
 
   const [selectedShowDate, setSelectedShowDate] = useState(movieShowDates || '');
 
@@ -44,6 +46,20 @@ const BookMovie = (props) => {
     setSelectedShowDate(e.target.value);
     console.log(selectedShowDate);
   };
+
+    const checkNow = (id, movieTitle) => {
+        //const shortTitle = movieTitle.slice(0, 16);
+        const checkoutDetails = {
+            id: id,
+            selectedTickets: selectedTickets,
+            selectedSeats: selectedSeats,
+            selectedTime: selectedTime,
+            selectedShowDate: selectedShowDate,
+        }
+        const encodedDetails = encodeURIComponent(JSON.stringify(checkoutDetails));
+        console.log("Encoded Details:", encodedDetails);
+        navigate(`/Checkout/${encodedDetails}`);
+    };
 
   return (
     <div className="book_movie_container">
@@ -77,9 +93,8 @@ const BookMovie = (props) => {
         {/* Select tickets based on age: child, adult, senior */}
       </div>
 
-      <Link to = "/Checkout">
-        <button className="book_movie_button">Proceed to Checkout</button>
-      </Link>
+
+        <button onClick={() => checkNow(id, movieTitle)} className="book_movie_button">Proceed to Checkout</button>
 
     </div>
   );

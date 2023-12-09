@@ -1,11 +1,21 @@
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import './check.css';
 import { APIContext, useApiData } from '../../utils/API';
 
-const CheckoutU = () => {   
+const CheckoutU = (props) => {
+    const {
+        id,
+        selectedTickets,
+        selectedSeats,
+        selectedTime,
+        selectedShowDate,
+    } = props;
+    console.log("Selected Seats:", selectedSeats);
+    const childPrice = 11.99, adultPrice = 48.99, seniorPrice = 2.99;
+
     const api = useContext(APIContext);
     const [payments, setPayments] = useState([]);
-    console.log(payments);
+    //console.log(payments);
 
     const [refreshPayments] = useApiData(async (api) => {
         try {
@@ -29,8 +39,21 @@ const CheckoutU = () => {
         [{ value: 'Name on Card' }, {value: 'Billing Address'}, {value: 'Card Number'}, {value: 'Expiration'},
             {value:'Security Code'}]);
 
-    //Dummy Tickets
-    let items = ["1. Example Item One: $24.99", "2. Example Item Two: $31.60", "Total: $24.75"]
+
+    let items = [], count = 1;
+    // logic for generating purchases
+    if (selectedTickets.child > 0) {
+        items.push(count + '. Child Tickets: ' + selectedTickets.child + '    $' + selectedTickets.child*childPrice);
+        count++;
+    }
+    if (selectedTickets.adult > 0) {
+        items.push(count + '. Adult Tickets: ' + selectedTickets.adult + '    $' + selectedTickets.adult*adultPrice);
+        count++;
+    }
+    if (selectedTickets.senior > 0) {
+        items.push(count + '. Senior Tickets: ' + selectedTickets.senior + '    $' + selectedTickets.senior*seniorPrice);
+        count++;
+    }
 
     //Dummy Payment Methods
     let methods = [{name:"Card name: Joe Shamlock", number: "Card: ****98"},{name:"Card name: Johnny Jackson", number:"Card: ****71"}, {name:"Card name: Jeffrey Humor", number:"Card: ****25"}]
@@ -115,6 +138,11 @@ const CheckoutU = () => {
             {items.map((item, index) => (
                 <div key={index} id={"inp_cont"}>
                     <p id={'orderconf_h1'}>{item}</p>
+                    <p>Time of seeing: {selectedTime}</p>
+                    <p>Date of seeing: {selectedShowDate}</p>
+                    <p>Seats selected: {selectedSeats.map((seat, index) => (
+                        <span key={index}>{seat}</span>
+                    ))}</p>
                 </div>
             ))}
         </div>
