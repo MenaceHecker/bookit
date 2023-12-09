@@ -226,6 +226,11 @@ export class API {
     url.searchParams.append('ticketId', ticketId);
     return await getResponseJson(this.#fetchGet(url));
   }
+
+  async listOrderEntries() {
+    const url = this.#newSessionUrl('api/listOrderEntries');
+    return await getResponseJson(this.#fetchGet(url));
+  }
 }
 
 class AbortableAPI extends API {
