@@ -181,7 +181,7 @@ export class API {
 
   async updateCard(cardData) {
     const url = this.#newSessionUrl('api/updateCard');
-    const props = ['cardId', 'cardNumber', 'billingAddress', 'expirationDate'];
+    const props = ['cardId', 'cardNumber', 'securityCode', 'billingAddress', 'expirationDate'];
     for (const prop of props)
       if (prop in cardData)
         url.searchParams.append(prop, cardData[prop]);
