@@ -6,8 +6,8 @@ const AddPaymentForm = ({ setShowPopout, refreshPayments }) => {
   const api = useContext(APIContext);
     const [formData, setFormData] = useState({
       //Payment Information/Card Info
-      // cardFirstName: '',
-      // cardLastName: '',
+      firstName: '',
+      lastName: '',
        cardNumber: '',
       expirationDate: '',
       //securityCode: '',
@@ -103,8 +103,8 @@ const AddPaymentForm = ({ setShowPopout, refreshPayments }) => {
                     First Name
                     <input
                       type="text"
-                      name="cardFirstName"
-                      value={formData.cardFirstName}
+                      name="firstName"
+                      value={formData.firstName}
                       onChange={handleChange}
                       placeholder="Card First Name"
                     />
@@ -115,8 +115,8 @@ const AddPaymentForm = ({ setShowPopout, refreshPayments }) => {
                     Last Name
                     <input
                       type="text"
-                      name="cardLastName"
-                      value={formData.cardLastName}
+                      name="lastName"
+                      value={formData.lastName}
                       onChange={handleChange}
                       placeholder="Card Last Name"
                     />
