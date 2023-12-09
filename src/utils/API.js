@@ -155,6 +155,11 @@ export class API {
     return await getResponseJson(this.#fetchGet(url));
   }
 
+  async updateMovie(movieData) {
+    const url = new URL('api/updateMovie', this.#baseUrl);
+    return await getResponseJson(this.#fetchPostJson(url, movieData));
+  }
+
   async deleteMovie(id) {
     const url = this.#newSessionUrl('api/rmmovie');
     url.searchParams.append('id', id);
