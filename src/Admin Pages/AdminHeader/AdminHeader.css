@@ -10,9 +10,6 @@
     margin: auto;
     z-index:10;
   }
-  
-
-  
   .center {
     text-align: center;
     font-size: 25px;
@@ -24,8 +21,6 @@
     border-radius: 10px;
     font-size: 15px;
     font-weight: bold;
-
-    
   }
 
   .logo img {

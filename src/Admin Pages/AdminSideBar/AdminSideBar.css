@@ -2,10 +2,10 @@
 .sidebar {
     position: fixed;
     left: 0;
-    top: 70px; 
+    top: 96px; 
     bottom: 0;
     width: 250px; /* Adjust the width as needed */
-    height: 100%; /* Make it full height */
+    height: 73%; /* Make it full height */
     background-color: #e50813;
     padding: 20px;
     display: flex;
