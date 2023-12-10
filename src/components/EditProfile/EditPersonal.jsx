@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EditPersonal.css';
-import { APIContext } from '../../utils/API';
+import { APIContext, useApiData } from '../../utils/API';
 
 function EditPersonal() {
   const api = useContext(APIContext);
@@ -11,41 +11,35 @@ function EditPersonal() {
     // api/mpc
     firstName: '',
     lastName: '',
-    subscribe: false,
+    wantsPromotions: false,
     // api/updatePassword
     password: '',
     password2: '',
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`http://198.251.67.241:8080/api/getCurrentUser?` +
-          'sid=' + localStorage.sessionId);
-  
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-  
-        const userData = response.data;
-  
-        // Update the placeholder text with data from the backend
-        document.getElementById('firstNameInput').placeholder = userData.firstName;
-        document.getElementById('lastNameInput').placeholder = userData.lastName;
-  
-        setFormData({
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          wantsPromotions: userData.wantsPromotions,
-        });
-  
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+  useApiData(async (api) => {
+    try {
+      const response = await api.getCurrentUser();
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    };
-  
-    fetchData();
-  }, []);
+
+      const userData = response.data;
+
+      // Update the placeholder text with data from the backend
+      document.getElementById('firstNameInput').placeholder = userData.firstName;
+      document.getElementById('lastNameInput').placeholder = userData.lastName;
+
+      setFormData({
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        wantsPromotions: userData.wantsPromotions,
+      });
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  });
 
   const handleInputChange = (e) => {
     const { type, name } = e.target;
@@ -59,11 +53,7 @@ function EditPersonal() {
 
     //update password
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/updatePassword?' + 'sid=' + localStorage.sessionId + '&oldPassword=' + formData.password + '&newPassword='
-          + formData.password2 ,
-          {
-        method: 'GET',
-      });
+      const response = await api.updatePassword(formData.password, formData.password2);
 
       if (!response.ok) {
         console.error('error with password');
@@ -81,11 +71,7 @@ function EditPersonal() {
 
     //update first name, last name, and subscription.
     try {
-      const response = await fetch('http://198.251.67.241:8080/api/mpc?' + 'email=' + localStorage.email + '&sid=' + localStorage.sessionId + '&ufChange=' + formData.firstName + '&ulChange='
-          + formData.lastName + '&wantsPromotions=' + formData.subscribe,
-          {
-        method: 'GET',
-      });
+      const response = await api.updateProfile(formData);
 
       if (!response.ok) {
         console.error('error with mpc');
@@ -147,7 +133,7 @@ function EditPersonal() {
           <div className="edit_personal_form_row">
             <label>
               Subscribe/Unsubscribe to promotions?
-              <input type="checkbox" name="subscribe" checked={formData.subscribe} onChange={handleInputChange}/>
+              <input type="checkbox" name="wantsPromotions" checked={formData.wantsPromotions} onChange={handleInputChange}/>
             </label>
           </div>
 

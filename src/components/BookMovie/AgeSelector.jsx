@@ -4,12 +4,13 @@ import './AgeSelector.css'
 const AgeSelector = ({ selectedSeats, setSelectedTickets }) => {
   
   const handleTicketSelect = (e) => {
-    const selectedValue = e.target.value;
+    const { name, valueAsNumber } = e.target;
     setSelectedTickets(prevTickets => ({
       ...prevTickets,
-      [selectedValue]: prevTickets[selectedValue] + 1
+      [name]: valueAsNumber >= 0 ? valueAsNumber : 0 // Ensure non-negative values
     }));
   };
+  
 
   return (
     <div className="select_tickets_row">

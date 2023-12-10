@@ -13,7 +13,7 @@
     align-items: center;
     padding: 20px;
     border: 2px solid red;
-    width: 50%; /* Adjust this as needed */
+    width: 50%;
     bottom: 10px;
     
     
@@ -33,11 +33,11 @@
   
   .add_promotions_form_row label {
     text-align: left;
-    width: 45%; /* Adjust this as needed */
+    width: 45%
   }
   
   .add_promotions_form_row input {
-    width: 50%; /* Adjust this as needed */
+    width: 50%;
   }
   
   .add_promotions_form button {

@@ -1,12 +1,15 @@
 import Header from "../header/header";
-import React from "react";
 import CheckoutU from "./CheckoutU";
 import Footer from "../footer/footer";
-const Checkout = () => {
+import {useParams} from 'react-router-dom';
+import { useEffect } from 'react';
+const Checkout = ({movies, refreshMovies}) => {
+    const {encodedDetails } = useParams();
+    const decodedDetails = JSON.parse(decodeURIComponent(encodedDetails));
     return (
         <>
             <Header/>
-            <CheckoutU/>
+            {decodedDetails && <CheckoutU {...decodedDetails}/>}
             <Footer/>
         </>
     );

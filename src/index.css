@@ -11,6 +11,7 @@ body {
   font-family: "Oswald", sans-serif;
   background-color:#141414;
   overflow-x: hidden;
+  background-image: url(../src/assets/moviePosters/Netflix-bg.jpg);
 }
 a {
   text-decoration: none;

@@ -16,8 +16,7 @@ function AdminHeader() {
                 navigate('/');
             } else {
                 //const data = await response.text();
-                localStorage.setItem('sessionId', null);
-                localStorage.setItem('email', null)
+                localStorage.clear();
                 console.log('Logout successful:');
                 // Handle the successful case here
                 navigate('/');

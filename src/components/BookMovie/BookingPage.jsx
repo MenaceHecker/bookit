@@ -1,14 +1,18 @@
 import React from 'react';
 import BookMovie from './BookMovie';
 import Header from '../header/header';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 
-function BookingPage () {
+function BookingPage ({movies, refreshMovies}) {
+  const { id } = useParams();
+  useEffect(() => { refreshMovies(); }, [id, refreshMovies]);
+  const selectedMovie = movies.find((movie) => movie.id === +id);
     return (
         <div>
             <Header/>
-            <BookMovie  />
-
+            {selectedMovie && <BookMovie {...selectedMovie} />}
         </div>
     );
 };

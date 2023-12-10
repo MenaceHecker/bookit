@@ -1,47 +1,37 @@
-
 import './EditPayment.css'
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import EditPaymentCard from './EditPaymentCard';
 import AddPaymentForm from './AddPaymentForm';
+import { APIContext, useApiData } from '../../utils/API';
 
 const EditPayment = () => {
-    const getCards = async () => {
+  const api = useContext(APIContext);
 
-    };
+  const [payments, setPayments] = useState([]);
+  console.log(payments);
 
-    const [payments, setPayments] = useState([]);
-    console.log(payments);
+  const [refreshPayments] = useApiData(async (api) => {
+    try {
+      const response = await api.listCards();
+      if (response.ok)
+        setPayments(response.data);
+      else
+        console.error(response.message);
+    } catch (err) {
+      console.error(err);
+    }
+  });
 
-    const updatePayments = async () => {
-      const url = new URL('http://198.251.67.241:8080/api/listCards');
-      url.searchParams.append('sid', localStorage.getItem('sessionId'));
-      try {
-        const response = await fetch(url);
-        if (!response.ok)
-          console.error(await response.text());
-        setPayments(await response.json());
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    useEffect(() => {
-      updatePayments();
-    }, []);
-
-    const handleDelete = async (id) => {
-      const url = new URL('http://198.251.67.241:8080/api/deleteCard');
-      url.searchParams.append('sid', localStorage.getItem('sessionId'));
-      url.searchParams.append('cardId', id);
-      try {
-        const response = await fetch(url);
-        if (!response.ok)
-          console.error(await response.text());
-        updatePayments();
-      } catch (err) {
-        console.error(err);
-      }
-    };
+  const handleDelete = async (id) => {
+    try {
+      const response = await api.deleteCard(id);
+      if (!response.ok)
+        console.error(response.message);
+      refreshPayments();
+    } catch (err) {
+      console.error(err);
+    }
+  };
   
     const handleEdit = (id) => {
       // Handle edit action and open form for editing
@@ -54,14 +44,13 @@ const EditPayment = () => {
       setShowPopout(!showPopout);
     };
 
-  
     return (
       <div className="edit_payment_container">
 
         <div className="edit_payment_center_title">Edit Payment Information</div>
 
         <button className = "edit_payment_button"onClick={onAdd}>Add Payment Method</button>
-        {showPopout && (<AddPaymentForm onClose={onAdd} setShowPopout={setShowPopout} updatePayments={updatePayments} />)}
+        {showPopout && (<AddPaymentForm onClose={onAdd} setShowPopout={setShowPopout} refreshPayments={refreshPayments} />)}
 
 
 

@@ -1,15 +1,65 @@
-import React, { useState } from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import './check.css';
+import { APIContext, useApiData } from '../../utils/API';
 
-const CheckoutU = () => {
+const CheckoutU = (props) => {
+    const {
+        id,
+        selectedTickets,
+        selectedSeats,
+        selectedTime,
+        selectedShowDate,
+    } = props;
+    console.log("Selected Seats:", selectedSeats);
+    const childPrice = 11.99, adultPrice = 48.99, seniorPrice = 2.99;
+
+    const api = useContext(APIContext);
+    const [payments, setPayments] = useState([]);
+    //console.log(payments);
+
+    const [refreshPayments] = useApiData(async (api) => {
+        try {
+          const response = await api.listCards();
+          if (response.ok)
+            setPayments(response.data);
+          else
+            console.error(response.message);
+        } catch (err) {
+          console.error(err);
+        }
+      });
+
+    //Billing Information
     const [fields, setFields] = useState(
         [{ value: 'Country' }, {value: 'Name'}, {value: 'Address'}, {value: 'City'},
             {value: 'State'},{value: 'Zip Code'}, {value: 'Phone Number'}]);
+
+    //Payment Information
     const [fields2, setFields2] = useState(
         [{ value: 'Name on Card' }, {value: 'Billing Address'}, {value: 'Card Number'}, {value: 'Expiration'},
             {value:'Security Code'}]);
-    let items = ["1. Example Item One: $24.99", "2. Example Item Two: $31.60", "Total: $24.75"]
+
+
+    let items = [], count = 1;
+    // logic for generating purchases
+    if (selectedTickets.child > 0) {
+        items.push(count + '. Child Tickets: ' + selectedTickets.child + '    $' + selectedTickets.child*childPrice);
+        count++;
+    }
+    if (selectedTickets.adult > 0) {
+        items.push(count + '. Adult Tickets: ' + selectedTickets.adult + '    $' + selectedTickets.adult*adultPrice);
+        count++;
+    }
+    if (selectedTickets.senior > 0) {
+        items.push(count + '. Senior Tickets: ' + selectedTickets.senior + '    $' + selectedTickets.senior*seniorPrice);
+        count++;
+    }
+
+    //Dummy Payment Methods
     let methods = [{name:"Card name: Joe Shamlock", number: "Card: ****98"},{name:"Card name: Johnny Jackson", number:"Card: ****71"}, {name:"Card name: Jeffrey Humor", number:"Card: ****25"}]
+
+
+
     const handleInputChange = (index, event) => {
         const values = [...fields];
         values[index].value = event.target.value;
@@ -63,6 +113,7 @@ const CheckoutU = () => {
                     />
                 </div>
             ))}
+
             <h1 id={'orderconf_h1'}>Payment Information</h1>
             {fields2.map((field, index) => (
                 <div key={index} id={"inp_cont"}>
@@ -75,26 +126,35 @@ const CheckoutU = () => {
                     />
                 </div>
             ))}
+            
             <div id={"buttongroup"}>
                 <button id={"checkout_button"} onClick={submit}>Submit</button>
                 <button id={"checkout_button"} onClick={submit}>Save Payment Method</button>
             </div>
         </div>
 
+
         <div className={"right"}>
             {items.map((item, index) => (
                 <div key={index} id={"inp_cont"}>
                     <p id={'orderconf_h1'}>{item}</p>
+                    <p>Time of seeing: {selectedTime}</p>
+                    <p>Date of seeing: {selectedShowDate}</p>
+                    <p>Seats selected: {selectedSeats.map((seat, index) => (
+                        <span key={index}>{seat}</span>
+                    ))}</p>
                 </div>
             ))}
         </div>
+
             <div className={"right"}>
-                {methods.map((item, index) => (
-                    <div key={index} id={"inp_cont"}>
+                {payments.map((paymentMethod) => (
+                    <div key={paymentMethod.cardId} id={"inp_cont"}>
                         <div id={"list_slot"}>
                             <input type="radio" value="Male" name="gender" />
-                            <p id={'orderconf_h1'}>{item.name}</p>
-                            <p id={'orderconf_h1'}>{item.number}</p>
+                            <p id={'orderconf_h1'}>{paymentMethod.firstName} {paymentMethod.lastName}</p>
+                            <p id={'orderconf_h1'}>{paymentMethod.lastFourDigits}</p>
+                            <p id={'orderconf_h1'}>{paymentMethod.expirationDate}</p>
                         </div>
                     </div>
                 ))}

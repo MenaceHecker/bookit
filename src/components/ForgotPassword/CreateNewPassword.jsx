@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './CreateNewPassword.css';
 import Header from '../header/header';
@@ -20,23 +20,20 @@ function CreateNewPassword() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const resetPasswordWithToken = async (token, newPassword) => {
-    const url = new URL('http://198.251.67.241:8080/api/resetPasswordWithToken');
-    url.searchParams.append('token', token);
-    url.searchParams.append('newPassword', newPassword);
+  const loginWithPasswordToken = async (token, newPassword) => {
     try {
-      const response = await fetch(url);
+      const response = await api.loginWithPasswordToken(token, newPassword);
       if (!response.ok) {
-        console.error(await response.text());
+        console.error(response.message);
         return;        
       }
-      const data = await response.json();
+      const data = await response.data;
       setFormData({
         newPassword: '',
         confirmNewPassword:'',
       });
       localStorage.setItem('sessionId', data.sessionId);
-      localStorage.setItem('isPriveleged', data.isPrivileged);
+      localStorage.setItem('isPrivileged', +data.isPrivileged);
       if (data.isPrivileged) {
         navigate('/ManageMovies');
       } else {
@@ -50,16 +47,16 @@ function CreateNewPassword() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    if (formData.newPassword != formData.confirmNewPassword) {
+    if (formData.newPassword !== formData.confirmNewPassword) {
       console.error("Passwords don't match");
       return;
     }
     const token = new URLSearchParams(search).get('token');
-    if (token == null) {
+    if (token === null) {
       console.error('Missing token in URL');
       return;
     }
-    resetPasswordWithToken(token, formData.newPassword);
+    loginWithPasswordToken(token, formData.newPassword);
   };
 
   const onClose = () => {
