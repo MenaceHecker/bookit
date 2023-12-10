@@ -99,6 +99,7 @@ const Table = ({ data, pageType }) => {
                       <td>{item.type}</td>
                       <td>
                         <button>Suspend</button>
+                        <button>Edit</button>
                         <button>Delete</button>
                       </td>
                     </tr>

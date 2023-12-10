@@ -64,6 +64,7 @@ const EditPayment = () => {
             expirationDate={paymentMethod.expirationDate}
             onDelete={() => handleDelete(paymentMethod.cardId)}
             onEdit={() => handleEdit(paymentMethod.cardId)}
+            editingCard={paymentMethod}
           />
         ))}
 

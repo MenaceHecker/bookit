@@ -14,7 +14,7 @@ const AddPaymentForm = ({ setShowPopout, refreshPayments }) => {
       //Billing Address
       // billingFirstName: '',
       // billingLastName: '',
-      billingStreetAddress: '',
+      billingAddress: '',
       // billingCity: '',
       // billingState: '',
       // billingCountry: '',
@@ -186,10 +186,10 @@ const AddPaymentForm = ({ setShowPopout, refreshPayments }) => {
                     Billing Address
                     <textarea
                       type="text"
-                      name="billingStreetAddress"
+                      name="billingAddress"
                       rows="3"
                       cols="40"
-                      value={formData.billingStreetAddress}
+                      value={formData.billingAddress}
                       onChange={handleChange}
                       placeholder="Billing Address"
                     />
