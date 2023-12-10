@@ -1,0 +1,36 @@
+ 
+  .Checkout_header {
+    display: flex;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    height: 70px;
+    margin: auto;
+    z-index:10;
+  }
+  .checkout {
+    font-size: 25px;
+  }
+  .right_cancel{
+    margin-left: auto;
+  }
+  .right_cancel button {
+    background: #e50813;
+    outline: none;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .checkout_logo img {
+    width: 150px;
+    margin-top: 20px;
+    margin-left: 300px;
+    margin-right: 20px;
+  }
+
+  .Admin_header button:hover {
+    background-color: transparent;
+  }

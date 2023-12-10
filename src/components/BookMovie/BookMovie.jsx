@@ -10,25 +10,22 @@ import './BookMovie.css';
 import { Link } from 'react-router-dom';
 
 const BookMovie = (props) => {
- 
   const {
-      id,
+    id,
     movieTitle,
     movieShowDates,
     movieShowTimes,
   } = props;
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const [selectedShowDate, setSelectedShowDate] = useState(movieShowDates || '');
+  const [selectedShowDate, setSelectedShowDate] = useState(movieShowDates ? movieShowDates[0] : '');
 
-  const [selectedTime, setSelectedTime] = useState(movieShowTimes || '');
+  const [selectedTime, setSelectedTime] = useState(movieShowTimes ? movieShowTimes[0] : '');
 
-
-  // Seat and Ticket Selectors
   const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
   const columns = [1, 2, 3, 4, 5, 6, 7, 8];
   const availableSeats = rows.flatMap(row => columns.map(col => `${row}${col}`));
-  
+
   const [selectedSeats, setSelectedSeats] = useState([]);
 
   const [selectedTickets, setSelectedTickets] = useState({
@@ -37,7 +34,6 @@ const BookMovie = (props) => {
     senior: 0,
   });
 
-  // Show Date and Show Time Selectors
   const handleTimeSelect = (e) => {
     setSelectedTime(e.target.value);
   };
@@ -47,20 +43,26 @@ const BookMovie = (props) => {
     console.log(selectedShowDate);
   };
 
-    const checkNow = (id, movieTitle) => {
-        //const shortTitle = movieTitle.slice(0, 16);
-        const checkoutDetails = {
-            id: id,
-            selectedTickets: selectedTickets,
-            selectedSeats: selectedSeats,
-            selectedTime: selectedTime,
-            selectedShowDate: selectedShowDate,
-        }
-        const encodedDetails = encodeURIComponent(JSON.stringify(checkoutDetails));
-        console.log("Encoded Details:", encodedDetails);
-        navigate(`/Checkout/${encodedDetails}`);
-    };
-
+  const checkNow = (id, movieTitle) => {
+    if (selectedSeats.length === 0) {
+      alert("Please select seats before proceeding to checkout.");
+    } else {
+      const checkoutDetails = {
+        id: id,
+        selectedTickets: selectedTickets,
+        selectedSeats: selectedSeats,
+        selectedTime: selectedTime,
+        selectedShowDate: selectedShowDate,
+      };
+      const encodedDetails = encodeURIComponent(JSON.stringify(checkoutDetails));
+      console.log("Encoded Details:", encodedDetails);
+  
+      // Construct the URL without unwanted parameters
+      const checkoutUrl = `/Checkout/${encodedDetails}`;
+      navigate(checkoutUrl);
+    }
+  };
+  
   return (
     <div className="book_movie_container">
 
