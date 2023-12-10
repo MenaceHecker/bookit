@@ -9,7 +9,7 @@ import Activate from './components/Activate/Activate';
 import BookingPage from './components/BookMovie/BookingPage';
 import Checkout from './components/checkout/Checkout';
 import OF from './components/checkout/OF';
-import EditProfile from './components/Editprofile/EditProfile';
+import EditProfile from './components/EditProfile/EditProfile.jsx';
 import CreateNewPassword from './components/ForgotPassword/CreateNewPassword';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import Homepage from './components/Homepage/Homepage';
