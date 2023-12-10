@@ -210,7 +210,8 @@ export class API {
   }
 
   async getBooking(bookingId) {
-    const url = this.#newSessionUrl('api/listBookings');
+
+    const url = this.#newSessionUrl('api/getBooking');
     url.searchParams.append('bookingId', bookingId);
     return await getResponseJson(this.#fetchGet(url));
   }
@@ -224,6 +225,11 @@ export class API {
   async getTicket(ticketId) {
     const url = this.#newSessionUrl('api/getTicket');
     url.searchParams.append('ticketId', ticketId);
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async listOrderEntries() {
+    const url = this.#newSessionUrl('api/listOrderEntries');
     return await getResponseJson(this.#fetchGet(url));
   }
 }
