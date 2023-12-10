@@ -210,7 +210,7 @@ export class API {
   }
 
   async getBooking(bookingId) {
-    const url = this.#newSessionUrl('api/listBookings');
+    const url = this.#newSessionUrl('api/getBooking');
     url.searchParams.append('bookingId', bookingId);
     return await getResponseJson(this.#fetchGet(url));
   }
