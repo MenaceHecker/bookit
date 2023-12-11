@@ -52,7 +52,7 @@ export default function App() {
           <Route path="/" element={<Homepage {...{movies, refreshMovies}}/>}/>
           <Route path="/Activate" element={<Activate/>}/>
           <Route path="/admin" element={<MainAdmin/>}/>
-          <Route path="/BookingPage/:id/*" element={<BookingPage {...{movies,refreshMovies}}/>}/>
+          <Route path="/BookingPage/:id/*" element={<BookingPage {...{movies, refreshMovies}}/>}/>
           <Route path="/Checkout/:encodedDetails/" element={<Checkout/>}/>
           <Route path="/CreateNewPassword" element={<CreateNewPassword/>}/>
           <Route path="/EditProfile" element={<EditProfile/>}/>
@@ -61,7 +61,7 @@ export default function App() {
           <Route path="/Listing/:id/*" element={<Listings {...{movies, refreshMovies}}/>}/>
           <Route path="/Login" element={<Login/>}/>
           <Route path="/MainAdmin" element={<MainAdmin/>}/>
-          <Route path="/ManageMovies" element={<ManageMovies/>}/>
+          <Route path="/ManageMovies" element={<ManageMovies {...{movies, refreshMovies}}/>}/>
           <Route path="/ManagePromotions" element={<ManagePromotions/>}/>
           <Route path="/ManageUsers" element={<ManageUsers/>}/>
           <Route path="/OrderConfirmation" element={<OF/>}/>

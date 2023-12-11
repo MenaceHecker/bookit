@@ -35,6 +35,8 @@ const Table = ({ data, pageType, refresh }) => {
   // Add a function to close the popout
   const closePopout = () => {
     setShowPopout(false);
+    if (refresh)
+      refresh();
   };
   const removeMovie = async (id) => {
     const response = await api.deleteMovie(id);
