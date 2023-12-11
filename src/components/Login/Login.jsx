@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './Login.css';
 import Header from '../header/header';
 import Footer from '../footer/footer';
@@ -26,12 +27,11 @@ function Login() {
     try {
       const response = await session.login(formData.email, formData.password);
       if (!response.ok) {
-        console.error('Login failed');
+        toast.error(`Error: ${response.message}`);
         setIsUp(true);
       } else {
         const data = response.data;
-        console.log(data);
-        console.log('Login successful:', data);
+        toast.success('Logged in');
         // Handle the successful case here
         if (data.privileged) {
           navigate('/ManageMovies');

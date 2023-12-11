@@ -43,7 +43,12 @@ video{
     font-size: 17px;
     max-width:fit-content;
     cursor: pointer;
+    margin-top: 35px;
+    margin-right: 35px;
   }
+.arrowBtn {
+    margin-right: 35px;
+}
  
 
   

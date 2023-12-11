@@ -1,18 +1,23 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 async function getResponseText(promise) {
+  if (promise === null)
+    return { ok: false, message: 'Not logged in' };
   try {
     const response = await promise;
     return { ok: response.ok, message: await response.text() };
   } catch (err) {
     switch (err.name) {
-      case 'TypeError': throw new Error('Connection error', { cause: err });
+      case 'AbortError': return { ok: false, type: 'aborted', message: 'Request aborted' };
+      case 'TypeError': return { ok: false, message: 'Connection error' };
       default: throw err;
     }
   }
 }
 
 async function getResponseJson(promise) {
+  if (promise === null)
+    return { ok: false, message: 'Not logged in' };
   try {
     const response = await promise;
     if (!response.ok)
@@ -20,14 +25,17 @@ async function getResponseJson(promise) {
     return { ok: true, data: await response.json() };
   } catch (err) {
     switch (err.name) {
+      case 'AbortError': return { ok: false, type: 'aborted', message: 'Request aborted' };
       case 'SyntaxError': throw new Error('Unexpected response', { cause: err });
-      case 'TypeError': throw new Error('Connection error', { cause: err });
+      case 'TypeError': return { ok: false, message: 'Connection error' };
       default: throw err;
     }
   }
 }
 
 async function getResponseNum(promise, errorMessage) {
+  if (promise === null)
+    return { ok: false, message: 'Not logged in' };
   const response = await getResponseJson(promise);
   if (!response.ok)
     return response;
@@ -55,21 +63,33 @@ export class API {
   #newSessionUrl(path, prop = 'sid', overrideId = null) {
     const sessionId = overrideId ?? this.#sessionId;
     if (sessionId === null)
-      throw new Error('Not logged in');
+      return null;
     const url = new URL(path, this.#baseUrl);
     url.searchParams.append(prop, sessionId);
     return url;
   }
 
   #fetchGet(url) {
+    if (url === null)
+      return null;
     return fetch(url, this.addOptions({ method: 'GET' }));
   }
 
+  #fetchPost(url) {
+    if (url === null)
+      return null;
+    return fetch(url, this.addOptions({ method: 'POST' }));
+  }
+
   #fetchDelete(url) {
+    if (url === null)
+      return null;
     return fetch(url, this.addOptions({ method: 'DELETE' }));
   }
 
   #fetchPostJson(url, data) {
+    if (url === null)
+      return null;
     return fetch(url, this.addOptions({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -108,7 +128,7 @@ export class API {
 
   async createCustomer(customerData) {
     const url = new URL('api/add', this.#baseUrl);
-    const props = ['email', 'password', 'firstName', 'lastName', 'phoneNumber'];
+    const props = ['email', 'password', 'firstName', 'lastName', 'phoneNumber', 'address'];
     for (const prop of props)
       url.searchParams.append(prop, customerData[prop]);
     if ('wantsPromotions' in customerData)
@@ -124,6 +144,11 @@ export class API {
 
   async getCurrentUser(sessionId = null) {
     const url = this.#newSessionUrl('api/getCurrentUser', 'sid', sessionId);
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async listAllUsers() {
+    const url = this.#newSessionUrl('api/all');
     return await getResponseJson(this.#fetchGet(url));
   }
 
@@ -147,6 +172,28 @@ export class API {
     return await getResponseText(this.#fetchGet(url));
   }
 
+  async updateTargetUser(targetId, userData) {
+    const url = this.#newSessionUrl('api/updateTargetUser');
+    url.searchParams.append('targetId', targetId);
+    const props = ['firstName', 'lastName', 'address', 'phoneNumber', 'wantsPromotions', 'suspended'];
+    for (const prop of props)
+      if (prop in userData)
+        url.searchParams.append(prop, userData[prop]);
+    return await getResponseText(this.#fetchPost(url));
+  }
+
+  async promoteToAdmin(targetId) {
+    const url = this.#newSessionUrl('api/promoteToAdmin');
+    url.searchParams.append('targetId', targetId);
+    return await getResponseText(this.#fetchPost(url));
+  }
+
+  async deleteTargetUser(targetId) {
+    const url = this.#newSessionUrl('api/deleteTargetUser');
+    url.searchParams.append('targetId', targetId);
+    return await getResponseText(this.#fetchDelete(url));
+  }
+
   async createMovie(movieData) {
     const url = this.#newSessionUrl('api/newmovie');
     return await getResponseText(this.#fetchPostJson(url, movieData));
@@ -158,14 +205,36 @@ export class API {
   }
 
   async updateMovie(movieData) {
-    const url = new URL('api/updateMovie', this.#baseUrl);
-    return await getResponseJson(this.#fetchPostJson(url, movieData));
+    const url = this.#newSessionUrl('api/updateMovie')
+    return await getResponseText(this.#fetchPostJson(url, movieData));
   }
 
   async deleteMovie(id) {
     const url = this.#newSessionUrl('api/rmmovie');
     url.searchParams.append('id', id);
     return await getResponseNum(this.#fetchDelete(url), 'Could not delete movie');
+  }
+
+  async listShowrooms() {
+    const url = new URL('api/listShowrooms', this.#baseUrl);
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async createShowing(showingData) {
+    const url = this.#newSessionUrl('api/createShowing');
+    return await getResponseText(this.#fetchPostJson(url, showingData));
+  }
+
+  async listShowings(movieId) {
+    const url = new URL('api/listShowings', this.#baseUrl);
+    url.searchParams.append('movieId', movieId);
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async deleteShowing(showingId) {
+    const url = this.#newSessionUrl('api/deleteShowing');
+    url.searchParams.append('showingId', showingId);
+    return await getResponseText(this.#fetchDelete(url));
   }
 
   async createCard(cardData) {
@@ -212,7 +281,6 @@ export class API {
   }
 
   async getBooking(bookingId) {
-
     const url = this.#newSessionUrl('api/getBooking');
     url.searchParams.append('bookingId', bookingId);
     return await getResponseJson(this.#fetchGet(url));
@@ -233,6 +301,34 @@ export class API {
   async listOrderEntries() {
     const url = this.#newSessionUrl('api/listOrderEntries');
     return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async createPromotion(promotionData) {
+    const url = this.#newSessionUrl('api/createPromotion');
+    return await getResponseText(this.#fetchPostJson(url, promotionData));
+  }
+
+  async listAllPromotions() {
+    const url = this.#newSessionUrl('api/listAllPromotions');
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async getPromotionFromCode(promoCode) {
+    const url = this.#newSessionUrl('api/getPromotionFromCode');
+    url.searchParams.append('promoCode', promoCode);
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async sendPromotion(promotionId) {
+    const url = this.#newSessionUrl('api/sendPromotion');
+    url.searchParams.append('promotionId', promotionId);
+    return await getResponseText(this.#fetchPost(url));
+  }
+
+  async deletePromotion(promotionId) {
+    const url = this.#newSessionUrl('api/deletePromotion');
+    url.searchParams.append('promotionId', promotionId);
+    return await getResponseText(this.#fetchDelete(url));
   }
 }
 

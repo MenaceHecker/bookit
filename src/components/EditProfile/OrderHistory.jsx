@@ -1,8 +1,8 @@
-
 import './OrderHistory.css'
 import OrderHistoryCard from './OrderHistoryCard';
 import { APIContext, useApiData } from '../../utils/API';
 import { useState, useContext } from 'react';
+import { toast } from 'react-toastify';
 
 const EditPayment = () => {
     // Dummy data for demonstration
@@ -16,18 +16,13 @@ const EditPayment = () => {
     console.log('Order History:',orderHistory);
   
     const [refreshBookings] = useApiData(async (api) => {
-      try {
-        const response = await api.listOrderEntries();
-        if (response.ok)
+      const response = await api.listOrderEntries();
+      if (response.ok)
         setOrderHistory(response.data);
-        else
-          console.error(response.message);
-      } catch (err) {
-        console.error(err);
-      }
+      else if (response.type !== 'aborted')
+        toast.error(`Error fetching order history: ${response.message}`);
     });
 
- 
     return (
       <div className="order_history_container">
         <div className="order_history_center_title">Order History</div>

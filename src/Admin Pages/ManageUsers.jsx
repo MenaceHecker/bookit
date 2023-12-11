@@ -17,20 +17,29 @@ import AddUserForm from "./UserForms/AddUserForm";
 import { useContext, useState } from "react";
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { SessionContext } from '../utils/Session';
+import {useApiData} from "../utils/API";
 
 function ManageUsers() {
     const { currentUser } = useContext(SessionContext);
     const navigate = useNavigate();
     const [showPopout, setShowPopout] = useState(false);
-
+    const [users, setUsers] = useState([]);
+    const [refreshUsers] = useApiData(async (api) => {
+        const response = await api.listAllUsers();
+        if (response.ok)
+            setUsers(response.data);
+        else if (response.type !== 'aborted')
+            toast.error(`Error fetching users: ${response.message}`);
+    });
     const togglePopout = () => {
       setShowPopout(!showPopout);
     };
     function joe() {
         navigate('/')
     }
-    if (!currentUser.privileged) {
+    if (!currentUser?.privileged) {
         return (
             <div className={'center_title'}>
                 <h1>You are not granted access</h1>
@@ -38,51 +47,21 @@ function ManageUsers() {
             </div>
         );
     }
-    
-    const mockData = [
-        {
-          id: 1,
-          email: 'john@uga.edu',
-          firstName: 'John',
-          lastName: 'Doe',
-          verificationStatus: 'verified',
-          type: 'admin',
-        },
-        {
-            id: 2,
-            email: 'jane@uga.edu',
-            firstName: 'Jane',
-            lastName: 'Doe',
-            verificationStatus: 'unverified',
-            type: 'customer',
-          },
-        
-      ];
-    
-
-
-
-
 
     return (
         <div>
             <AdminHeader/>
             <AdminSideBar/>
-
             <div className="center_title">
                 Manage Users
             </div>
-
             <div className="add_users">
-                <button className= "add_users_button" onClick={togglePopout}>Add User</button>
-                {showPopout && <AddUserForm onClose={togglePopout} setShowPopout={setShowPopout}/>} 
+                {/**<button className= "add_users_button" onClick={togglePopout}>Add User</button>
+                {showPopout && <AddUserForm onClose={togglePopout} setShowPopout={setShowPopout}/>}**/}
             </div>
-
             <div className = "table">
-                <Table data={mockData} pageType="ManageUsers" />
+                <Table data={users} pageType="ManageUsers" refresh={refreshUsers}/>
             </div>
-
-
         <Footer/>
         </div>
     );

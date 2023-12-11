@@ -1,8 +1,9 @@
 import EditMoviePopout from '../MovieForms/EditMoviePopout';
 import './Table.css'
 import { useContext, useState } from 'react';
+import { toast } from 'react-toastify';
 import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
-import { APIContext } from '../../utils/API';
+import { APIContext, useApiData } from '../../utils/API';
 import EditUserForm from '../UserForms/EditUserForm';
 
 
@@ -12,13 +13,21 @@ import EditUserForm from '../UserForms/EditUserForm';
     //Add new user button?
 
 
-const Table = ({ data, pageType }) => {
+const Table = ({ data, pageType, refresh }) => {
+
+  //Select a Certain movie for Editing
+  const [selectedMovieData, setSelectedMovieData] = useState(null);
+
+
+
+
   const api = useContext(APIContext);
   // const [showUserPopout, setShowUserPopout] = useState(false);
   const [showPopout, setShowPopout] = useState(false);
-
-      const togglePopout = () => {
+  const [sentPromo, setSP] = useState(false);
+      const togglePopout = (movieData) => {
         setShowPopout(!showPopout); 
+        setSelectedMovieData(movieData);
         // setShowUserPopout(!showUserPopout);
       };
 
@@ -26,14 +35,60 @@ const Table = ({ data, pageType }) => {
   // Add a function to close the popout
   const closePopout = () => {
     setShowPopout(false);
+    refresh();
   };
-
   const removeMovie = async (id) => {
-    try {
-      await api.deleteMovie(id);
-    } catch (error) {
-      console.log('Error:', error);
+    const response = await api.deleteMovie(id);
+    if (response.ok)
+      toast.success('Movie removed');
+    else
+      toast.error(`Error: ${response.message}`);
+    refresh();
+  };
+  const deletePromo = async (id) => {
+    const response = await api.deletePromotion(id);
+    if (response.ok)
+      toast.success('Promotion removed');
+    else
+      toast.error(`Error: ${response.message}`);
+    refresh();
+  };
+  const sendPromo = async (id) => {
+    const response = await api.sendPromotion(id);
+    if (response.ok)
+      toast.success('Promotion sent to subscribers');
+    else
+      toast.error(`Error: ${response.message}`);
+    setSP(true);
+    refresh();
+  };
+  const deleteUser = async (id) => {
+    const response = await api.deleteTargetUser(id);
+    if (response.ok)
+      toast.success('User removed');
+    else
+      toast.error(`Error: ${response.message}`);
+    refresh();
+  };
+  const suspendUser = async (user) => {
+    const response = await api.updateTargetUser(user.id, { suspended: true });
+    if (response.ok)
+      toast.success('User suspended');
+    else
+      toast.error(`Error: ${response.message}`);
+    refresh();
+  }
+  const promoteUser = async (user) => {
+    if (user.privileged) {
+      toast.info('User is already an admin');
+      return;
     }
+    const response = await api.promoteToAdmin(user.id);
+    if (response.ok)
+      toast.success('User promoted to admin');
+    else
+      toast.error(`Error: ${response.message}`);
+    refresh();
   };
 
         const renderTable = () => {
@@ -58,15 +113,17 @@ const Table = ({ data, pageType }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map(item => (
+                  {data.map((item) => (
                     <tr key={item.id}>
                       <td>{item.movieTitle}</td>
                       <td>{item.movieDirector}</td>
                       <td>(TODO)</td>
                       <td>{item.movieShowDates}</td>
                       <td>      
-                        <button onClick={togglePopout}>Edit</button>
-                        {showPopout && <EditMoviePopout onClose={closePopout} />}
+                        <button onClick={() => togglePopout(item)}>Edit</button>
+                        {showPopout && selectedMovieData === item && (
+                          <EditMoviePopout onClose={closePopout} movieData={selectedMovieData} />
+                        )}
                         <button onClick={() => removeMovie(item.id)}>Remove</button>
                       </td>
                     </tr>
@@ -87,8 +144,8 @@ const Table = ({ data, pageType }) => {
                     <th>Email</th>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th>Verification Status</th>
-                    <th>Type</th>
+                    <th>Wants Promos</th>
+                    <th>Suspended</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -98,13 +155,17 @@ const Table = ({ data, pageType }) => {
                       <td>{item.email}</td>
                       <td>{item.firstName}</td>
                       <td>{item.lastName}</td>
-                      <td>{item.wantsPromotions}</td>
-                      <td>{item.type}</td>
+                      <td>{`${item.wantsPromotions}`}</td>
+                      <td>{`${item.suspended}`}</td>
                       <td>
-                        <button>Suspend</button>
+                        <button onClick={() => suspendUser(item)}>Suspend</button>
+                        <br/>
+                        <button onClick={() => promoteUser(item)}>Promote</button>
+                        <br/>
                         <button onClick={togglePopout}>Edit</button>
-                        {showPopout && <EditUserForm  onClose={closePopout}/>}
-                        <button>Delete</button>
+                        <br/>
+                        {showPopout && <EditUserForm  onClose={closePopout} selected={item}/>}
+                        <button onClick={() => deleteUser(item.id)}>Delete</button>
                       </td>
                     </tr>
                   ))}
@@ -118,6 +179,7 @@ const Table = ({ data, pageType }) => {
               <table>
                 <thead>
                   <tr>
+                    <th>Promotion Code</th>
                     <th>Promotion Name</th>
                     <th>Brief Description</th>
                     <th>Percentage</th>
@@ -128,22 +190,25 @@ const Table = ({ data, pageType }) => {
                 <tbody>
                   {data.map(item => (
                     <tr key={item.id}>
-                      <td>{item.promotionName}</td>
-                      <td>{item.promotionDescription}</td>
-                      <td>{item.promotionPercentage}</td>
-                      <td>{item.promotionExpDate}</td>
+                      <td>{item.promoCode}</td>
+                      <td>{item.name}</td>
+                      <td>{item.description}</td>
+                      <td>{item.discountPct}</td>
+                      <td>{item.expirationDate}</td>
                       <td>
                         
                         <button onClick={togglePopout}>Edit</button>
                         {showPopout && <EditPromotionsForm  onClose={closePopout}/>}
 
 
-                        <button>Remove</button>
+                        <button onClick={() => deletePromo(item.id)}>Remove</button>
+                        <button onClick={() => sendPromo(item.id)}>Send</button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+                {sentPromo && <h1>Request Status: Success</h1>}
             </div>
             )
           }

@@ -10,37 +10,27 @@
 //create AddMovieForm.jsx
 //create EditMoveForm.jsx
 
-import Table from './Table/Table';
-import './ManageMovies.css'
-import AdminHeader from "./AdminHeader/AdminHeader";
-import AdminSideBar from "./AdminSideBar/AdminSideBar";
-import AddMoviePopout from './MovieForms/AddMoviePopout';
 import { useContext, useState } from 'react';
-import './MovieForms/MovieForm.css'
-import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import './ManageMovies.css';
+import './MovieForms/MovieForm.css';
+import AdminHeader from './AdminHeader/AdminHeader';
+import AdminSideBar from './AdminSideBar/AdminSideBar';
+import AddMoviePopout from './MovieForms/AddMoviePopout';
+import Table from './Table/Table';
+import Footer from '../components/footer/footer';
 import { useApiData } from '../utils/API';
 import { SessionContext } from '../utils/Session';
 
-function ManageMovies() {
+function ManageMovies({ movies, refreshMovies }) {
   const { currentUser } = useContext(SessionContext);
   const navigate = useNavigate();
   const [movieType, setMovieType] = useState('currentlyShowing'); //This will allow the admin to switch between the "Currently Showing" movies and the "Coming soon" movies
   //different data from the database will be fetched depending on state
-  const [data, setData] = useState([]);
   const handleMovieTypeChange = (type) => {
     setMovieType(type);
   };
-
-  const [refreshMovies] = useApiData(async (api) => {
-    try {
-      const response = await api.listMovies();
-      if (response.ok)
-        setData(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  });
 
   const [showPopout, setShowPopout] = useState(false);
 
@@ -53,7 +43,7 @@ function ManageMovies() {
     function joe() {
         navigate('/')
     }
-    if (!currentUser.privileged) {
+    if (!currentUser?.privileged) {
         return (
             <div className={'center_title'}>
                 <h1>You are not granted access</h1>
@@ -82,7 +72,7 @@ function ManageMovies() {
       </div>
 
       <div className="table">
-        <Table data={data} pageType="ManageMovies" movieType={movieType}  />
+        <Table data={movies} pageType="ManageMovies" movieType={movieType} refresh={refreshMovies}/>
       </div>
       <Footer/>
     </div>

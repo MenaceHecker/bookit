@@ -7,7 +7,7 @@ function CheckoutHeader() {
     return (
         <div className="Checkout_header">
             <Link to='/Homepage'>
-                <div className="checkout_logo"> 
+                <div className="checkout_logo">
                     <img src={Logo} alt='Logo' />
                 </div>
             </Link>
@@ -16,7 +16,7 @@ function CheckoutHeader() {
             </div>
             <div className="right_cancel">
                 <Link to='/Homepage'>
-                <button className="button">Cancel</button>
+                    <button className="button">Cancel</button>
                 </Link>
             </div>
         </div>

@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './AdminHeader.css';
 import Logo from '../../assets/bookit-high-resolution-logo-colo.png'
 import { SessionContext } from '../../utils/Session';
@@ -10,8 +11,9 @@ function AdminHeader() {
   const navigate = useNavigate();
   async function logout() {
     if (session.currentUser !== null) {
-      await session.logout();
       navigate('/');
+      await session.logout();
+      toast.success('Logged out');
     }
   }
   return (

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import './DropDownMenu.css';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { toast } from 'react-toastify';
 import { SessionContext } from '../../utils/Session';
 
 const DropDownMenu = () => {
@@ -9,10 +9,9 @@ const DropDownMenu = () => {
     const navigate = useNavigate();
     async function logout() {
         if (session.currentUser !== null) {
-            await session.logout();
-            console.log('Logout successful');
-            // Handle the successful case here
             navigate('/');
+            await session.logout();
+            toast.success('Logged out');
         }
     }
     return (

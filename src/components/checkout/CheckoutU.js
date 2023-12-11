@@ -2,6 +2,8 @@ import React, {useState, useContext, useEffect} from 'react';
 import './check.css';
 import { APIContext, useApiData } from '../../utils/API';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 const CheckoutU = (props) => {
     let navigate = useNavigate();
     let totalPrice = 0.0;
@@ -33,36 +35,36 @@ const CheckoutU = (props) => {
     const api = useContext(APIContext);
     const [payments, setPayments] = useState([]);
     const [selectedPayment, setSelectedPayment] = useState(null);
+    const [previousPaymentSelected, setPPS] = useState(false);
     const handlePaymentChange = (paymentMethod) => {
-        setSelectedPayment(paymentMethod);
+        setSelectedPayment(selectedPayment === paymentMethod ? null : paymentMethod);
+        setPPS(!previousPaymentSelected);
     };
     const [refreshPayments] = useApiData(async (api) => {
         try {
           const response = await api.listCards();
           if (response.ok)
             setPayments(response.data);
-          else
-            console.error(response.message);
+          else if (response.type !== 'aborted')
+            toast.error(`Error fetching cards: ${response.message}`);
         } catch (err) {
           console.error(err);
         }
       });
 
     const addCard = async (card) => {
-        try {
-            const response = await api.createCard(card);
-            if (!response.ok)
-                console.error(response.message);
-            /*setPFD({
-                email: '',
-                subscribe: 'off',
-                password: '',
-                password2: '',
-            });*/
-            refreshPayments();
-        } catch (err) {
-            console.error(err);
-        }
+        const response = await api.createCard(card);
+        if (response.ok)
+            toast.success('Card added');
+        else
+            toast.error(`Error: ${response.message}`);
+        /*setPFD({
+            email: '',
+            subscribe: 'off',
+            password: '',
+            password2: '',
+        });*/
+        refreshPayments();
     };
     const save_payment = async (e) => {
         e.preventDefault();
@@ -72,23 +74,21 @@ const CheckoutU = (props) => {
     const submit = async (e) => {
         e.preventDefault();
         if (selectedPayment) {
-        const book = {
-            showingId: id,
-            cardId: selectedPayment.cardId,
-            promoCode: pCode,
-            tickets: selectedTickets,
-        }
-            try {
-                const response = await api.createBooking(book);
-                if (response.ok)
-                    navigate('/OF');
-                else
-                    console.error(response.message);
-            } catch (err) {
-                console.error(err);
+            const book = {
+                showingId: id,
+                cardId: selectedPayment.cardId,
+                promoCode: pCode,
+                tickets: selectedTickets,
+            };
+            const response = await api.createBooking(book);
+            if (response.ok) {
+                toast.success('Tickets have been booked');
+                navigate('/OF');
+            } else {
+                toast.error(`Error: ${response.message}`);
             }
         } else {
-            console.log('No payment method selected');
+            toast.error(`Error: No payment method selected`);
         }
     }
 
@@ -148,8 +148,16 @@ const CheckoutU = (props) => {
             [key]: value,
         }));
     };
+    const [validPromo, setVP] = useState(false);
+    const [promo, setPromo] = useState({});
     const handleInputChangePromo = (s) => {
         setPC(s);
+    }
+    const checkPromo = async () => {
+        const response = await api.getPromotionFromCode(pCode);
+        setPromo(response.data);
+        console.log(promo);
+        setVP(true);
     }
     return (
         <div id={"checkout_cont"}>
@@ -182,7 +190,7 @@ const CheckoutU = (props) => {
             ))}
             */}
             <h1 id={'orderconf_h1'}>Payment Information</h1>
-            {Object.keys(paymentFormData).map((key) => (
+            {!previousPaymentSelected && Object.keys(paymentFormData).map((key) => (
                 <div key={key} id={"inp_cont"}>
                     <p htmlFor={key}>{key}</p>
                     <input
@@ -193,6 +201,13 @@ const CheckoutU = (props) => {
                     />
                 </div>
             ))}
+            {previousPaymentSelected && <p>Card Code:</p>}
+            {previousPaymentSelected && <input
+                id={'ibox'}
+                type="text"
+                value={paymentFormData.code}
+                onChange={(e) => handleInputChange('code', e.target.value)}
+            />}
             <h1 id={'orderconf_h1'}>Billing Information</h1>
             {Object.keys(billingFormData).map((key) => (
                 <div key={key} id={"inp_cont"}>
@@ -208,7 +223,7 @@ const CheckoutU = (props) => {
 
             
             <div id={"buttongroup"}>
-                <button id={"checkout_button"} onClick={save_payment}>Save Payment Method</button>
+                {!previousPaymentSelected && <button id={"checkout_button"} onClick={save_payment}>Save Payment Method</button>}
             </div>
         </div>
 
@@ -224,6 +239,12 @@ const CheckoutU = (props) => {
                     ))}</p>
                 </div>
             ))}
+            {validPromo && <p>Total Price: {totalPrice - (totalPrice*(promo.discountPct/100))}</p>}
+            {validPromo && <p id={'orderconf_h1'}>Discount: {promo.name}</p>}
+            {validPromo  && <p>Percentage: {promo.discountPct}</p>}
+            {validPromo   && <p>Description: {promo.description}</p>}
+            {validPromo  && <p>Exp. Date: {promo.expirationDate}</p>}
+
         </div>
             <div className={"right"}>
                 <h2>Enter Promo:</h2>
@@ -231,7 +252,8 @@ const CheckoutU = (props) => {
                     type="text"
                     value={pCode}
                     onChange={(e) => handleInputChangePromo(e.target.value)}
-                />
+                /><button onClick={checkPromo}>Enter</button>
+                {validPromo && <p>Promotional Code Applied</p>}
             </div>
 
             <div className={"right"}>
@@ -239,7 +261,7 @@ const CheckoutU = (props) => {
                     <div key={paymentMethod.cardId} id={"inp_cont"}>
                         <div id={"list_slot"}>
                             <input
-                                type="radio"
+                                type="checkbox"
                                 value={paymentMethod.cardId}
                                 name="paymentMethod"
                                 onChange={() => handlePaymentChange(paymentMethod)}

@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { Slide, ToastContainer, toast } from 'react-toastify';
+import { injectStyle } from 'react-toastify/dist/inject-style';
 import 'font-awesome/css/font-awesome.min.css';
 import MainAdmin from './Admin Pages/MainAdmin';
 import ManageMovies from './Admin Pages/ManageMovies';
@@ -18,12 +20,12 @@ import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import TrailerPage from './components/TrailerPage/TrailerPage';
 import { API, APIContext, useApiData } from './utils/API';
-import { SessionContext, useSession } from './utils/Session';
+import { SessionContext, getSessionFromStorage, useSession } from './utils/Session';
 import BookMovie from './components/BookMovie/BookMovie';
 
-
 export default function App() {
-  const [sessionData, setSessionData] = useState(null);
+  injectStyle();
+  const [sessionData, setSessionData] = useState(getSessionFromStorage);
   const [checkoutDetails, setCheckoutDetails] = useState(null);
   const api = useMemo(() => {
     const sessionId = sessionData !== null ? sessionData.sessionId : null;
@@ -32,23 +34,25 @@ export default function App() {
   const session = useSession(api, sessionData, setSessionData);
   const [movies, setMovies] = useState([]);
   const [refreshMovies] = useApiData(async (api, tools) => {
-    try {
-      const response = await api.listMovies();
-      if (response.ok)
-        setMovies(response.data);
-      tools.refreshOnTimeout(60000);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+    const response = await api.listMovies();
+    if (response.ok)
+      setMovies(response.data);
+    else if (response.type !== 'aborted')
+      toast.error(`Error fetching listings: ${response.message}`);
+    tools.refreshOnTimeout(60000);
   }, { api });
   return (
     <APIContext.Provider value={api}>
       <SessionContext.Provider value={session}>
+        <ToastContainer
+          position="top-center" autoClose={1000} closeButton={false} transition={Slide}
+          hideProgressBar draggable={false} theme="light"
+        />
         <Routes>
           <Route path="/" element={<Homepage {...{movies, refreshMovies}}/>}/>
           <Route path="/Activate" element={<Activate/>}/>
           <Route path="/admin" element={<MainAdmin/>}/>
-          <Route path="/BookingPage/:id/*" element={<BookingPage {...{movies,refreshMovies}}/>}/>
+          <Route path="/BookingPage/:id/*" element={<BookingPage {...{movies, refreshMovies}}/>}/>
           <Route path="/Checkout/:encodedDetails/" element={<Checkout/>}/>
           <Route path="/CreateNewPassword" element={<CreateNewPassword/>}/>
           <Route path="/EditProfile" element={<EditProfile/>}/>
@@ -57,7 +61,7 @@ export default function App() {
           <Route path="/Listing/:id/*" element={<Listings {...{movies, refreshMovies}}/>}/>
           <Route path="/Login" element={<Login/>}/>
           <Route path="/MainAdmin" element={<MainAdmin/>}/>
-          <Route path="/ManageMovies" element={<ManageMovies/>}/>
+          <Route path="/ManageMovies" element={<ManageMovies {...{movies, refreshMovies}}/>}/>
           <Route path="/ManagePromotions" element={<ManagePromotions/>}/>
           <Route path="/ManageUsers" element={<ManageUsers/>}/>
           <Route path="/OrderConfirmation" element={<OF/>}/>

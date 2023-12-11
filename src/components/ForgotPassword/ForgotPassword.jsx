@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './ForgotPassword.css';
 import Header from '../header/header';
 import Footer from '../footer/footer';
@@ -19,13 +20,11 @@ function ForgotPassword() {
   };
 
   const sendPasswordToken = async (email) => {
-    try {
-      const response = await api.sendPasswordToken(email);
-      if (!response.ok)
-        console.error(response.message);
-    } catch (err) {
-      console.error(err);
-    }
+    const response = await api.sendPasswordToken(email);
+    if (response.ok)
+      toast.success('Email sent');
+    else
+      toast.error(`Error: ${response.message}`);
   };
 
   const handleSubmit = (e) => {

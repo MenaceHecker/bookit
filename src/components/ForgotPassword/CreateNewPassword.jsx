@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './CreateNewPassword.css';
 import Header from '../header/header';
 import Footer from '../footer/footer';
@@ -21,24 +22,21 @@ function CreateNewPassword() {
   };
 
   const loginWithPasswordToken = async (token, newPassword) => {
-    try {
-      const response = await session.loginWithPasswordToken(token, newPassword);
-      if (!response.ok) {
-        console.error(response.message);
-        return;        
-      }
-      const currentUser = response.data;
-      setFormData({
-        newPassword: '',
-        confirmNewPassword:'',
-      });
-      if (currentUser.privileged) {
-        navigate('/ManageMovies');
-      } else {
-        navigate('/');
-      }
-    } catch (err) {
-      console.error(err);
+    const response = await session.loginWithPasswordToken(token, newPassword);
+    if (!response.ok) {
+      toast.error(`Error: ${response.message}`);
+      return;
+    }
+    toast.success('Password reset');
+    const currentUser = response.data;
+    setFormData({
+      newPassword: '',
+      confirmNewPassword:'',
+    });
+    if (currentUser.privileged) {
+      navigate('/ManageMovies');
+    } else {
+      navigate('/');
     }
   };
 
@@ -46,7 +44,7 @@ function CreateNewPassword() {
     e.preventDefault();
     console.log('Form submitted:', formData);
     if (formData.newPassword !== formData.confirmNewPassword) {
-      console.error("Passwords don't match");
+      toast.error('Error: Passwords do not match');
       return;
     }
     const token = new URLSearchParams(search).get('token');

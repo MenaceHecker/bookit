@@ -2,6 +2,7 @@
 import '../Table/Table.css';
 import './MovieForm.css';
 import { useContext, useState } from 'react';
+import { toast } from 'react-toastify';
 import { APIContext } from '../../utils/API';
 
 const AddMoviePopout = ({ onClose }) => {
@@ -40,21 +41,16 @@ const AddMoviePopout = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await api.createMovie(formData);
+    const response = await api.createMovie(formData);
 
-      if (response.ok) {
-        const data = response.message;
-        // Handle success, e.g., show a success message
-        console.log('Form submitted successfully!', data);
-      } else {
-        // Handle errors, e.g., show an error message
-        console.error('Error submitting form:', response.message);
-      }
-      onClose();
-    } catch (error) {
-      console.error('Error:', error);
+    if (response.ok) {
+      // Handle success, e.g., show a success message
+      toast.success('Movie added');
+    } else {
+      // Handle errors, e.g., show an error message
+      toast.error(`Error: ${response.message}`);
     }
+    onClose();
   };
 
       //http://198.251.67.241:8080/api/newmovie
