@@ -13,15 +13,9 @@ function ManagePromotions() {
     const { currentUser } = useContext(SessionContext);
     const [showPopout, setShowPopout] = useState(false);
     const navigate = useNavigate();
-    const togglePopout = () => {
-      setShowPopout(!showPopout);
-
-    };
-
-
 
     const [promos, setPromos] = useState([]);
-    const retData = useApiData(async (api) => {
+    const [refreshPromos] = useApiData(async (api) => {
         try {
             const response = await api.listAllPromotions();
             if (response.ok) {
@@ -35,8 +29,10 @@ function ManagePromotions() {
         }
     });
 
-
-
+    const togglePopout = () => {
+      setShowPopout(!showPopout);
+      refreshPromos();
+    };
 
     function joe() {
         navigate('/')
@@ -66,7 +62,7 @@ function ManagePromotions() {
 
 
             <div className = "table">
-                <Table data={promos} pageType="ManagePromotions" />
+                <Table data={promos} pageType="ManagePromotions" refresh={refreshPromos} />
             </div>
 
         <Footer/>
