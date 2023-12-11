@@ -2,7 +2,7 @@ import EditMoviePopout from '../MovieForms/EditMoviePopout';
 import './Table.css'
 import { useContext, useState } from 'react';
 import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
-import { APIContext } from '../../utils/API';
+import { APIContext, useApiData } from '../../utils/API';
 import EditUserForm from '../UserForms/EditUserForm';
 
 
@@ -13,7 +13,32 @@ import EditUserForm from '../UserForms/EditUserForm';
 
 
 const Table = ({ data, pageType }) => {
+
+
+
+
+
   const api = useContext(APIContext);
+  
+
+  //MovieData
+  // const [movieData, setMovieData] = useState([]);
+  // console.log(movieData);
+  // const [refreshMovies] = useApiData(async (api) => {
+  //   try {
+  //     const response = await api.listMovies();
+  //     if (response.ok)
+  //       setMovieData(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // });
+
+
+
+
+
+
   // const [showUserPopout, setShowUserPopout] = useState(false);
   const [showPopout, setShowPopout] = useState(false);
 
@@ -58,7 +83,7 @@ const Table = ({ data, pageType }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map(item => (
+                  {data.map((item) => (
                     <tr key={item.id}>
                       <td>{item.movieTitle}</td>
                       <td>{item.movieDirector}</td>
@@ -66,7 +91,8 @@ const Table = ({ data, pageType }) => {
                       <td>{item.movieShowDates}</td>
                       <td>      
                         <button onClick={togglePopout}>Edit</button>
-                        {showPopout && <EditMoviePopout onClose={closePopout} />}
+                        {showPopout && <EditMoviePopout onClose={closePopout} movieData={item}/>}
+                        {/** Pass "item" here */}
                         <button onClick={() => removeMovie(item.id)}>Remove</button>
                       </td>
                     </tr>

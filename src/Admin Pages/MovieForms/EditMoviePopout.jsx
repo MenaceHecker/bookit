@@ -1,34 +1,110 @@
 import '../Table/Table.css';
 import './EditMoviePopout.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { APIContext, useApiData } from '../../utils/API';
 
-const EditMoviePopout = ({ onClose } ) => {
-
+const EditMoviePopout = ({ onClose, movieData } ) => {
+  //pass "data here"
+  const api = useContext(APIContext);
     //const [isPopoutOpen, setIsPopoutOpen] = useState(false);
+    useEffect(() => {
+      console.log('Movie Data received:', movieData);
+      if (movieData) {
+        setFormData({
+          
+          movieTitle: movieData.movieTitle,
+          movieCategory: movieData.movieCategory,
+          movieCast: movieData.movieCast,
+          movieDirector: movieData.movieDirector,
+          movieProducer: movieData.movieProducer,
+          movieSynopsis: movieData.movieSynopsis,
+          movieReviews: movieData.movieReviews,
+          movieTrailerPicture: movieData.movieTrailerPicture,
+          movieTrailerVideo: movieData.movieTrailerVideo,
+          movieMpaaRating: movieData.movieMpaaRating,
+          movieShowDates: movieData.movieShowDates,
+          movieShowTimes: movieData.movieShowTimes,
+       
+        });
+      }
+    }, [movieData]);
+
 
     const [formData, setFormData] = useState({
-        newTitle: '',
-        newCategory: '',
-        newCast: '',
-        newDirector: '',
-        newProducer: '',
-        newSynopsis: '',
-        newReviews: '',
-        newTrailerPicture: '',
-        newTrailerVideo: '',
-        newMpaaRating: '',
-        newShowDates: '',
-        newShowTimes: ''
+     
+      movieTitle: '',
+      movieCategory: '',
+      movieCast: '',
+      movieDirector: '',
+      movieProducer: '',
+      movieSynopsis: '',
+      movieReviews: '',
+      movieTrailerPicture: '',
+      movieTrailerVideo: '',
+      movieMpaaRating: '',
+      movieShowDates: '',
+      movieShowTimes: '',
       });
-    
+     
       const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          [name]: value,
+        }));
       };
-    
-      const handleSubmit = (e) => {
+      
+      const handleSubmit = async (e) => {
         e.preventDefault();
-        // form submission logic here, put in database
+        
+        console.log('Form submitted:', formData);
+        setFormData({
+          
+          movieTitle: '',
+          movieCategory: '',
+          movieCast: '',
+          movieDirector: '',
+          movieProducer: '',
+          movieSynopsis: '',
+          movieReviews: '',
+          movieTrailerPicture: '',
+          movieTrailerVideo: '',
+          movieMpaaRating: '',
+          movieShowDates: '',
+          movieShowTimes: '',
+        });
+
+      
+        try {
+
+          const submitData = {
+          
+            movieTitle: formData.movieTitle,
+            movieCategory: formData.movieCategory,
+            movieCast: formData.movieCast,
+            movieDirector: formData.movieDirector,
+            movieProducer: formData.movieProducer,
+            movieSynopsis: formData.movieSynopsis,
+            movieReviews: formData.movieReviews,
+            movieTrailerPicture: formData.movieTrailerPicture,
+            movieTrailerVideo: formData.movieTrailerVideo,
+            movieMpaaRating: formData.movieMpaaRating,
+            movieShowDates: formData.movieShowDates,
+            movieShowTimes: formData.movieShowTimes,
+          };
+          
+          const response = await api.updateMovie(submitData);
+          if (response.ok) {
+            const movieDataResponse = response.message;
+            console.log('Form submitted successfully!', movieDataResponse);
+            onClose();
+          } else {
+            console.error('Error submitting form:', response.message);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+
       };
     
       const handleClose = () => {
@@ -48,13 +124,13 @@ const EditMoviePopout = ({ onClose } ) => {
                   
                     Title:
                     <br />
-                    <input type="text" name="title" value={formData.newTitle} onChange={handleInputChange} />
+                    <input type="text" name="movieTitle" value={formData.movieTitle} onChange={handleInputChange} />
                   </label>
         
                   <label>
                     Category:
                     <br />
-                    <input type="text" name="category" value={formData.newCategory} onChange={handleInputChange} />
+                    <input type="text" name="movieCategory" value={formData.movieCategory} onChange={handleInputChange} />
                   </label>
                 </div>
         
@@ -62,13 +138,13 @@ const EditMoviePopout = ({ onClose } ) => {
                   <label>
                     Cast:
                     <br />
-                    <input type="text" name="cast" value={formData.newCast} onChange={handleInputChange} />
+                    <input type="text" name="movieCast" value={formData.movieCast} onChange={handleInputChange} />
                   </label>
         
                   <label>
                     Director:
                     <br />
-                    <input type="text" name="director" value={formData.newDirector} onChange={handleInputChange} />
+                    <input type="text" name="movieDirector" value={formData.movieDirector} onChange={handleInputChange} />
                   </label>
                 </div>
         
@@ -76,13 +152,13 @@ const EditMoviePopout = ({ onClose } ) => {
                   <label>
                     Producer:
                     <br />
-                    <input type="text" name="producer" value={formData.newProducer} onChange={handleInputChange} />
+                    <input type="text" name="movieProducer" value={formData.movieProducer} onChange={handleInputChange} />
                   </label>
         
                   <label>
                     MPAA Rating:
                     <br />
-                    <input type="text" name="mpaaRating" value={formData.newMpaaRating} onChange={handleInputChange} />
+                    <input type="text" name="movieMpaaRating" value={formData.movieMpaaRating} onChange={handleInputChange} />
                   </label>
                 </div>
         
@@ -90,7 +166,7 @@ const EditMoviePopout = ({ onClose } ) => {
                   <label>
                     Synopsis:
                     <br />
-                    <textarea name="synopsis" value={formData.newSynopsis} onChange={handleInputChange} />
+                    <textarea name="movieSynopsis" value={formData.movieSynopsis} onChange={handleInputChange} />
                   </label>
                 </div>
         
@@ -98,7 +174,7 @@ const EditMoviePopout = ({ onClose } ) => {
                   <label>
                     Reviews:
                     <br />
-                    <textarea name="reviews" value={formData.newReviews} onChange={handleInputChange} />
+                    <textarea name="movieReviews" value={formData.movieReviews} onChange={handleInputChange} />
                   </label>
                 </div>
         
@@ -106,13 +182,13 @@ const EditMoviePopout = ({ onClose } ) => {
                   <label>
                     Trailer Picture:
                     <br />
-                    <input type="text" name="trailerPicture" value={formData.newTrailerPicture} onChange={handleInputChange} />
+                    <input type="text" name="movieTrailerPicture" value={formData.movieTrailerPicture} onChange={handleInputChange} />
                   </label>
         
                   <label>
                     Trailer Video:
                     <br />
-                    <input type="text" name="trailerVideo" value={formData.newTrailerVideo} onChange={handleInputChange} />
+                    <input type="text" name="movieTrailerVideo" value={formData.movieTrailerVideo} onChange={handleInputChange} />
                   </label>
                 </div>
         
@@ -120,7 +196,7 @@ const EditMoviePopout = ({ onClose } ) => {
                   <label>
                     Show Date:
                     <br />
-                    <input type="date" name="showDate" value={formData.newShowDates} onChange={handleInputChange} />
+                    <input type="date" name="movieShowDate" value={formData.movieShowDates} onChange={handleInputChange} />
                   </label>
                 </div>
   
@@ -129,7 +205,7 @@ const EditMoviePopout = ({ onClose } ) => {
                   <label>
                     Show Time:
                     <br />
-                    <input type="time" name="showTime" value={formData.newShowTimes} onChange={handleInputChange} />
+                    <input type="time" name="movieShowTime" value={formData.movieShowTimes} onChange={handleInputChange} />
                   </label>
                 </div>
   
@@ -145,3 +221,4 @@ const EditMoviePopout = ({ onClose } ) => {
 };
 
 export default EditMoviePopout;
+
