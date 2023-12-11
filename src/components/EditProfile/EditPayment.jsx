@@ -1,5 +1,6 @@
 import './EditPayment.css'
 import { useContext, useState } from 'react';
+import { toast } from 'react-toastify';
 import EditPaymentCard from './EditPaymentCard';
 import AddPaymentForm from './AddPaymentForm';
 import { APIContext, useApiData } from '../../utils/API';
@@ -11,26 +12,20 @@ const EditPayment = () => {
   console.log(payments);
 
   const [refreshPayments] = useApiData(async (api) => {
-    try {
-      const response = await api.listCards();
-      if (response.ok)
-        setPayments(response.data);
-      else
-        console.error(response.message);
-    } catch (err) {
-      console.error(err);
-    }
+    const response = await api.listCards();
+    if (response.ok)
+      setPayments(response.data);
+    else if (response.type !== 'aborted')
+      toast.error(`Error fetching cards: ${response.message}`);
   });
 
   const handleDelete = async (id) => {
-    try {
-      const response = await api.deleteCard(id);
-      if (!response.ok)
-        console.error(response.message);
-      refreshPayments();
-    } catch (err) {
-      console.error(err);
-    }
+    const response = await api.deleteCard(id);
+    if (response.ok)
+      toast.success('Card deleted');
+    else
+      toast.error(`Error: ${response.message}`);
+    refreshPayments();
   };
   
     const handleEdit = (id) => {

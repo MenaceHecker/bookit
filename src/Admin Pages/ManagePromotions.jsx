@@ -6,6 +6,7 @@ import Table from "./Table/Table";
 import { useContext, useState } from "react";
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { SessionContext } from '../utils/Session';
 import {useApiData} from "../utils/API";
 
@@ -16,16 +17,12 @@ function ManagePromotions() {
 
     const [promos, setPromos] = useState([]);
     const [refreshPromos] = useApiData(async (api) => {
-        try {
-            const response = await api.listAllPromotions();
-            if (response.ok) {
-                setPromos(response.data);  //setPromos(JSON.parse(response.message));
-                console.log(promos);
-            }
-            else
-                console.error(response.message);
-        } catch (err) {
-            console.error(err);
+        const response = await api.listAllPromotions();
+        if (response.ok) {
+            setPromos(response.data);
+            console.log(promos);
+        } else if (response.type !== 'aborted') {
+            toast.error(`Error fetching promotions: ${response.message}`);
         }
     });
 

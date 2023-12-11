@@ -1,5 +1,6 @@
 import { useContext, useId, useRef, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './header.css';
 import Logo from '../../assets/bookit-high-resolution-logo-colo.png';
 import DropDownMenu from './DropDownMenu';
@@ -23,6 +24,10 @@ const Header = () => {
 
   const executeSearch = useCallback(async () => {
     const response = await api.listMovies();
+    if (!response.ok) {
+      toast.error(`Error fetching movies: ${response.message}`);
+      return;
+    }
     const allMovies = response.data;
     const element = document.getElementById(searchBarId);
     if (!element)

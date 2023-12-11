@@ -10,15 +10,16 @@
 //create AddMovieForm.jsx
 //create EditMoveForm.jsx
 
-import Table from './Table/Table';
-import './ManageMovies.css'
-import AdminHeader from "./AdminHeader/AdminHeader";
-import AdminSideBar from "./AdminSideBar/AdminSideBar";
-import AddMoviePopout from './MovieForms/AddMoviePopout';
 import { useContext, useState } from 'react';
-import './MovieForms/MovieForm.css'
-import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import './ManageMovies.css';
+import './MovieForms/MovieForm.css';
+import AdminHeader from './AdminHeader/AdminHeader';
+import AdminSideBar from './AdminSideBar/AdminSideBar';
+import AddMoviePopout from './MovieForms/AddMoviePopout';
+import Table from './Table/Table';
+import Footer from '../components/footer/footer';
 import { useApiData } from '../utils/API';
 import { SessionContext } from '../utils/Session';
 
@@ -33,13 +34,11 @@ function ManageMovies() {
   };
 
   const [refreshMovies] = useApiData(async (api) => {
-    try {
-      const response = await api.listMovies();
-      if (response.ok)
-        setData(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+    const response = await api.listMovies();
+    if (response.ok)
+      setData(response.data);
+    else if (response.type !== 'aborted')
+      toast.error(`Error fetching movies: ${response.message}`);
   });
 
   const [showPopout, setShowPopout] = useState(false);

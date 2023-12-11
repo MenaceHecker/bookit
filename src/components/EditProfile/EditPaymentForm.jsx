@@ -1,5 +1,6 @@
 import './EditPaymentForm.css';
 import { useContext, useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { APIContext } from '../../utils/API';
 
 const EditPaymentForm = ({setShowPopout, editingCard}) => {
@@ -66,27 +67,22 @@ const EditPaymentForm = ({setShowPopout, editingCard}) => {
         // billingPhoneNumber: '',
       });
 
-      try {
-        // const billingAddress = [formData.billingStreetAddress, formData.billingCity, formData.billingState, formData.billingZipCode].join(' ');
-        const cardData = {
-          cardId: editingCard.cardId,
-          cardNumber: formData.cardNumber,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          securityCode: formData.securityCode,
-          billingAddress: formData.billingAddress,
-          expirationDate: formData.expirationDate
-        };
-        const response = await api.updateCard(cardData);
-        if (response.ok) {
-          const payments = response.message;
-          console.log('Form submitted successfully!', payments);
-          onClose();
-        } else {
-          console.error('Error submitting form:', response.message);
-        }
-      } catch (error) {
-        console.error('Error:', error);
+      // const billingAddress = [formData.billingStreetAddress, formData.billingCity, formData.billingState, formData.billingZipCode].join(' ');
+      const cardData = {
+        cardId: editingCard.cardId,
+        cardNumber: formData.cardNumber,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        securityCode: formData.securityCode,
+        billingAddress: formData.billingAddress,
+        expirationDate: formData.expirationDate
+      };
+      const response = await api.updateCard(cardData);
+      if (response.ok) {
+        toast.success('Card updated');
+        onClose();
+      } else {
+        toast.error(`Error: ${response.message}`);
       }
     };
 

@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './EditPersonal.css';
 import { APIContext, useApiData } from '../../utils/API';
 
@@ -52,42 +53,24 @@ function EditPersonal() {
     console.log('Form submitted:', formData);
 
     //update password
-    try {
+    if (formData.password2 !== '') {
       const response = await api.updatePassword(formData.password, formData.password2);
 
-      if (!response.ok) {
-        console.error('error with password');
-      } else {
-        const sid = response.message;
-        console.log('error', sid);
-
-        // Handle the successful case here
-        // navigate('/');
-      }
-    } catch (error) {
-      console.error('An error occurred:', error);
-      // Handle the error case here
+      if (response.ok)
+        toast.success('Password updated');
+      else
+        toast.error(`Error: ${response.message}`);
     }
 
     //update first name, last name, and subscription.
-    try {
+    if (formData.password2 === '') {
       const response = await api.updateProfile(formData);
 
-      if (!response.ok) {
-        console.error('error with mpc');
-      } else {
-        const sid = response.message;
-        console.log('error', sid);
-
-        // Handle the successful case here
-        // navigate('/');
-      }
-    } catch (error) {
-      console.error('An error occurred:', error);
-      // Handle the error case here
+      if (response.ok)
+        toast.success('Profile updated');
+      else
+        toast.error(`Error: ${response.message}`);
     }
-
-
 
     // setFormData({
     //   email: '',
@@ -96,9 +79,6 @@ function EditPersonal() {
     //   password2: '',
     // });
   };
-
-
-  
 
   const onClose = () => {
     navigate(-1);

@@ -1,6 +1,7 @@
 import EditMoviePopout from '../MovieForms/EditMoviePopout';
 import './Table.css'
 import { useContext, useState } from 'react';
+import { toast } from 'react-toastify';
 import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
 import { APIContext } from '../../utils/API';
 import EditUserForm from '../UserForms/EditUserForm';
@@ -28,28 +29,28 @@ const Table = ({ data, pageType, refresh }) => {
     setShowPopout(false);
   };
   const removeMovie = async (id) => {
-    try {
-      await api.deleteMovie(id);
-    } catch (error) {
-      console.log('Error:', error);
-    }
+    const response = await api.deleteMovie(id);
+    if (response.ok)
+      toast.success('Movie removed');
+    else
+      toast.error(`Error: ${response.message}`);
   };
-  const deletePromo = async(id) => {
-    try {
-      await api.deletePromotion(id);
-      refresh();
-    } catch (error) {
-      console.log('Error:', error);
-    }
+  const deletePromo = async (id) => {
+    const response = await api.deletePromotion(id);
+    if (response.ok)
+      toast.success('Promotion removed');
+    else
+      toast.error(`Error: ${response.message}`);
+    refresh();
   };
-  const sendPromo = async(id) => {
-    try {
-      console.log(await api.sendPromotion(id));
-      setSP(true);
-      refresh();
-    } catch (error) {
-      console.log('Error:', error);
-    }
+  const sendPromo = async (id) => {
+    const response = await api.sendPromotion(id);
+    if (response.ok)
+      toast.success('Promotion sent to subscribers');
+    else
+      toast.error(`Error: ${response.message}`);
+    setSP(true);
+    refresh();
   };
 
         const renderTable = () => {
