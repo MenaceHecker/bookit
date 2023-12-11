@@ -10,26 +10,16 @@ function clearStorage() {
   localStorage.removeItem('currentUser');
 }
 
-async function initSessionData(api, setSessionData) {
+export function getSessionFromStorage() {
   const sessionId = localStorage.getItem('sessionId');
   const currentUserItem = localStorage.getItem('currentUser');
   if (sessionId !== null && currentUserItem !== null) {
     try {
       const currentUser = JSON.parse(currentUserItem);
-      setSessionData({ sessionId, currentUser });
-    } catch {
-      return; // ignore JSON syntax errors
-    }
-    const response = await api.getCurrentUser(sessionId);
-    if (response.ok) {
-      const sessionData = { sessionId, currentUser: response.data };
-      setSessionData(sessionData);
-      saveToStorage(sessionData);
-    } else {
-      setSessionData(null);
-      clearStorage();
-    }
+      return { sessionId, currentUser };
+    } catch {} // ignore JSON syntax errors
   }
+  return null;
 }
 
 class Session {
@@ -84,13 +74,26 @@ class Session {
 
 export const SessionContext = createContext(null);
 
+async function fetchSessionData(api, sessionId, setSessionData) {
+  const response = await api.getCurrentUser(sessionId);
+  if (response.ok) {
+    const sessionData = { sessionId, currentUser: response.data };
+    setSessionData(sessionData);
+    saveToStorage(sessionData);
+  } else {
+    setSessionData(null);
+    clearStorage();
+  }
+}
+
 export function useSession(api, sessionData, setSessionData) {
   const [sessionDataInit, setSessionDataInit] = useState(false);
   useEffect(() => {
     if (!sessionDataInit) {
-      initSessionData(api, setSessionData);
+      if (sessionData !== null)
+        fetchSessionData(api, sessionData.sessionId, setSessionData);
       setSessionDataInit(true);
     }
-  }, [api, setSessionData, sessionDataInit]);
+  }, [api, sessionData, setSessionData, sessionDataInit]);
   return useMemo(() => new Session(api, sessionData, setSessionData), [api, sessionData, setSessionData]);
 } 
