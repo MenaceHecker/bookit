@@ -1,9 +1,7 @@
 
 import './AddUserForm.css';
-import React, { useState } from 'react';
-
+import React, {useContext, useState} from 'react';
 const AddUserForm = ({setShowPopout }) => {
-    
         const [formData, setFormData] = useState({
           email: '',
           firstName: '',
@@ -20,8 +18,9 @@ const AddUserForm = ({setShowPopout }) => {
           setFormData({ ...formData, [name]: value });
         };
       
-        const handleSubmit = (e) => {
+        const handleSubmit = async (e) => {
           e.preventDefault();
+          console.log('Form submitted:', formData);
           // form submission logic here, put in database
         };
       
@@ -29,7 +28,7 @@ const AddUserForm = ({setShowPopout }) => {
           setShowPopout(false);
           // close button logic here, close form
         };
-      
+
         return (
           <div className="user_form">
             <form onSubmit={handleSubmit} className="user_form_container">

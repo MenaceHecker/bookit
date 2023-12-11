@@ -18,12 +18,26 @@ import { useContext, useState } from "react";
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../utils/Session';
+import {useApiData} from "../utils/API";
 
 function ManageUsers() {
     const { currentUser } = useContext(SessionContext);
     const navigate = useNavigate();
     const [showPopout, setShowPopout] = useState(false);
-
+    const [users, setUsers] = useState([]);
+    const [refreshUsers] = useApiData(async (api) => {
+        try {
+            const response = await api.listAllUsers();
+            if (response.ok) {
+                setUsers(response.data);  //setPromos(JSON.parse(response.message));
+                console.log(users);
+            }
+            else
+                console.error(response.message);
+        } catch (err) {
+            console.error(err);
+        }
+    });
     const togglePopout = () => {
       setShowPopout(!showPopout);
     };
@@ -38,28 +52,9 @@ function ManageUsers() {
             </div>
         );
     }
-    
-    const mockData = [
-        {
-          id: 1,
-          email: 'john@uga.edu',
-          firstName: 'John',
-          lastName: 'Doe',
-          verificationStatus: 'verified',
-          type: 'admin',
-        },
-        {
-            id: 2,
-            email: 'jane@uga.edu',
-            firstName: 'Jane',
-            lastName: 'Doe',
-            verificationStatus: 'unverified',
-            type: 'customer',
-          },
-        
-      ];
-    
 
+
+    //refreshUsers();
 
 
 
@@ -68,21 +63,16 @@ function ManageUsers() {
         <div>
             <AdminHeader/>
             <AdminSideBar/>
-
             <div className="center_title">
                 Manage Users
             </div>
-
             <div className="add_users">
-                <button className= "add_users_button" onClick={togglePopout}>Add User</button>
-                {showPopout && <AddUserForm onClose={togglePopout} setShowPopout={setShowPopout}/>} 
+                {/**<button className= "add_users_button" onClick={togglePopout}>Add User</button>
+                {showPopout && <AddUserForm onClose={togglePopout} setShowPopout={setShowPopout}/>}**/}
             </div>
-
             <div className = "table">
-                <Table data={mockData} pageType="ManageUsers" />
+                <Table data={users} pageType="ManageUsers" />
             </div>
-
-
         <Footer/>
         </div>
     );

@@ -51,6 +51,38 @@ const Table = ({ data, pageType, refresh }) => {
       console.log('Error:', error);
     }
   };
+  const deleteUser = async(id) => {
+    try {
+      await api.deleteTargetUser(id);
+      refresh();
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+  const suspendUser = async(user) => {
+    try {
+      const userData = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        address: user.address,
+        phoneNumber: user.phoneNumber,
+        wantsPromotions: user.wantsPromotions,
+        suspended: true,
+      }
+      await api.updateTargetUser(user.id, userData);
+      refresh();
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  }
+  const promoteUser = async(user) => {
+    try {
+      await api.promoteToAdmin(user.id);
+      refresh();
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
 
         const renderTable = () => {
           //ManageMovies.jsx
@@ -103,8 +135,8 @@ const Table = ({ data, pageType, refresh }) => {
                     <th>Email</th>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th>Verification Status</th>
-                    <th>Type</th>
+                    <th>Wants Promos</th>
+                    <th>Suspended</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -114,13 +146,14 @@ const Table = ({ data, pageType, refresh }) => {
                       <td>{item.email}</td>
                       <td>{item.firstName}</td>
                       <td>{item.lastName}</td>
-                      <td>{item.wantsPromotions}</td>
-                      <td>{item.type}</td>
+                      <td>{`${item.wantsPromotions}`}</td>
+                      <td>{`${item.suspended}`}</td>
                       <td>
-                        <button>Suspend</button>
+                        <button onClick={() => suspendUser(item)}>Suspend</button>
+                        <button onClick={() => promoteUser(item)}>Promote</button>
                         <button onClick={togglePopout}>Edit</button>
-                        {showPopout && <EditUserForm  onClose={closePopout}/>}
-                        <button>Delete</button>
+                        {showPopout && <EditUserForm  onClose={closePopout} selected={item}/>}
+                        <button onClick={() => deleteUser(item.id)}>Delete</button>
                       </td>
                     </tr>
                   ))}

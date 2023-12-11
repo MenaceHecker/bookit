@@ -157,7 +157,8 @@ export class API {
   }
 
   async updateTargetUser(targetId, userData) {
-    const url = new URL('api/updateTargetUser', this.#baseUrl);
+    console.log(targetId,userData);
+    const url = this.#newSessionUrl('api/updateTargetUser');
     url.searchParams.append('targetId', targetId);
     const props = ['firstName', 'lastName', 'address', 'phoneNumber', 'wantsPromotions', 'suspended'];
     for (const prop of props)
