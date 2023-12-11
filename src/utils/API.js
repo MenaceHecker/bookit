@@ -189,7 +189,7 @@ export class API {
   }
 
   async deleteTargetUser(targetId) {
-    const url = new URL('api/deleteTargetUser', this.#baseUrl);
+    const url = this.#newSessionUrl('api/deleteTargetUser');
     url.searchParams.append('targetId', targetId);
     return await getResponseText(this.#fetchDelete(url));
   }
@@ -259,7 +259,6 @@ export class API {
   }
 
   async getBooking(bookingId) {
-
     const url = this.#newSessionUrl('api/getBooking');
     url.searchParams.append('bookingId', bookingId);
     return await getResponseJson(this.#fetchGet(url));
