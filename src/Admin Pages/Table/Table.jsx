@@ -12,7 +12,7 @@ import EditUserForm from '../UserForms/EditUserForm';
     //Add new user button?
 
 
-const Table = ({ data, pageType }) => {
+const Table = ({ data, pageType, refresh }) => {
   const api = useContext(APIContext);
   // const [showUserPopout, setShowUserPopout] = useState(false);
   const [showPopout, setShowPopout] = useState(false);
@@ -37,6 +37,7 @@ const Table = ({ data, pageType }) => {
   const deletePromo = async(id) => {
     try {
       await api.deletePromotion(id);
+      refresh();
     } catch (error) {
       console.log('Error:', error);
     }
@@ -45,6 +46,7 @@ const Table = ({ data, pageType }) => {
     try {
       console.log(await api.sendPromotion(id));
       setSP(true);
+      refresh();
     } catch (error) {
       console.log('Error:', error);
     }
