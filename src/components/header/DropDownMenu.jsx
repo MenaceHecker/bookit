@@ -9,9 +9,9 @@ const DropDownMenu = () => {
     const navigate = useNavigate();
     async function logout() {
         if (session.currentUser !== null) {
+            navigate('/');
             await session.logout();
             toast.success('Logged out');
-            navigate('/');
         }
     }
     return (
