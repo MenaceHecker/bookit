@@ -65,6 +65,10 @@ export class API {
     return fetch(url, this.addOptions({ method: 'GET' }));
   }
 
+  #fetchPost(url) {
+    return fetch(url, this.addOptions({ method: 'POST' }));
+  }
+
   #fetchDelete(url) {
     return fetch(url, this.addOptions({ method: 'DELETE' }));
   }
@@ -145,6 +149,28 @@ export class API {
       if (prop in profileData)
         url.searchParams.append(prop, profileData[prop]);
     return await getResponseText(this.#fetchGet(url));
+  }
+
+  async updateTargetUser(targetId, userData) {
+    const url = new URL('api/updateTargetUser', this.#baseUrl);
+    url.searchParams.append('targetId', targetId);
+    const props = ['firstName', 'lastName', 'address', 'phoneNumber', 'wantsPromotions', 'suspended'];
+    for (const prop of props)
+      if (prop in userData)
+        url.searchParams.append(prop, userData[prop]);
+    return await getResponseText(this.#fetchPost(url));
+  }
+
+  async promoteToAdmin(targetId) {
+    const url = this.#newSessionUrl('api/promoteToAdmin');
+    url.searchParams.append('targetId', targetId);
+    return await getResponseText(this.#fetchPost(url));
+  }
+
+  async deleteTargetUser(targetId) {
+    const url = new URL('api/deleteTargetUser', this.#baseUrl);
+    url.searchParams.append('targetId', targetId);
+    return await getResponseText(this.#fetchDelete(url));
   }
 
   async createMovie(movieData) {
@@ -233,6 +259,34 @@ export class API {
   async listOrderEntries() {
     const url = this.#newSessionUrl('api/listOrderEntries');
     return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async createPromotion(promotionData) {
+    const url = this.#newSessionUrl('api/createPromotion');
+    return await getResponseText(this.#fetchPostJson(url, promotionData));
+  }
+
+  async listAllPromotions() {
+    const url = this.#newSessionUrl('api/listAllPromotions');
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async getPromotionFromCode(promoCode) {
+    const url = this.#newSessionUrl('api/getPromotionFromCode');
+    url.searchParams.append('promoCode', promoCode);
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async sendPromotion(promotionId) {
+    const url = this.#newSessionUrl('api/sendPromotion');
+    url.searchParams.append('promotionId', promotionId);
+    return await getResponseText(this.#fetchPost(url));
+  }
+
+  async deletePromotion(promotionId) {
+    const url = this.#newSessionUrl('api/deletePromotion');
+    url.searchParams.append('promotionId', promotionId);
+    return await getResponseText(this.#fetchDelete(url));
   }
 }
 

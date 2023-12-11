@@ -9,7 +9,7 @@ import Activate from './components/Activate/Activate';
 import BookingPage from './components/BookMovie/BookingPage';
 import Checkout from './components/checkout/Checkout';
 import OF from './components/checkout/OF';
-import EditProfile from './components/EditProfile/EditProfile.jsx';
+import EditProfile from './components/EditProfile/EditProfile';
 import CreateNewPassword from './components/ForgotPassword/CreateNewPassword';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import Homepage from './components/Homepage/Homepage';
@@ -19,9 +19,12 @@ import Signup from './components/Signup/Signup';
 import TrailerPage from './components/TrailerPage/TrailerPage';
 import { API, APIContext, useApiData } from './utils/API';
 import { SessionContext, useSession } from './utils/Session';
+import BookMovie from './components/BookMovie/BookMovie';
+
 
 export default function App() {
   const [sessionData, setSessionData] = useState(null);
+  const [checkoutDetails, setCheckoutDetails] = useState(null);
   const api = useMemo(() => {
     const sessionId = sessionData !== null ? sessionData.sessionId : null;
     return new API('http://198.251.67.241:8080', sessionId);
@@ -60,6 +63,14 @@ export default function App() {
           <Route path="/OrderConfirmation" element={<OF/>}/>
           <Route path="/Signup" element={<Signup/>}/>
           <Route path="/TrailerPage" element={<TrailerPage/>}/>
+          <Route
+          path="/BookMovie/:id"
+          element={<BookMovie setCheckoutDetails={setCheckoutDetails} />}
+        />
+        <Route
+          path="/Checkout"
+          element={<Checkout checkoutDetails={checkoutDetails} />}
+        />
         </Routes>
       </SessionContext.Provider>
     </APIContext.Provider>

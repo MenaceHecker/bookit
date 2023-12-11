@@ -148,8 +148,20 @@ const CheckoutU = (props) => {
             [key]: value,
         }));
     };
+    const [validPromo, setVP] = useState(false);
+    const [promo, setPromo] = useState({});
     const handleInputChangePromo = (s) => {
         setPC(s);
+    }
+    const checkPromo = async () => {
+        try {
+            const response = await api.getPromotionFromCode(pCode);
+            setPromo(response.data)
+            console.log(promo);
+            setVP(true);
+        } catch (error) {
+            console.log('Error:', error);
+        }
     }
     return (
         <div id={"checkout_cont"}>
@@ -224,6 +236,12 @@ const CheckoutU = (props) => {
                     ))}</p>
                 </div>
             ))}
+            {validPromo && <p>Total Price: {totalPrice - (totalPrice*(promo.discountPct/100))}</p>}
+            {validPromo && <p id={'orderconf_h1'}>Discount: {promo.name}</p>}
+            {validPromo  && <p>Percentage: {promo.discountPct}</p>}
+            {validPromo   && <p>Description: {promo.description}</p>}
+            {validPromo  && <p>Exp. Date: {promo.expirationDate}</p>}
+
         </div>
             <div className={"right"}>
                 <h2>Enter Promo:</h2>
@@ -231,7 +249,8 @@ const CheckoutU = (props) => {
                     type="text"
                     value={pCode}
                     onChange={(e) => handleInputChangePromo(e.target.value)}
-                />
+                /><button onClick={checkPromo}>Enter</button>
+                {validPromo && <p>Promotional Code Applied</p>}
             </div>
 
             <div className={"right"}>

@@ -12,7 +12,7 @@ import EditUserForm from '../UserForms/EditUserForm';
     //Add new user button?
 
 
-const Table = ({ data, pageType }) => {
+const Table = ({ data, pageType, refresh }) => {
 
 
 
@@ -41,7 +41,7 @@ const Table = ({ data, pageType }) => {
 
   // const [showUserPopout, setShowUserPopout] = useState(false);
   const [showPopout, setShowPopout] = useState(false);
-
+  const [sentPromo, setSP] = useState(false);
       const togglePopout = () => {
         setShowPopout(!showPopout); 
         // setShowUserPopout(!showUserPopout);
@@ -52,10 +52,26 @@ const Table = ({ data, pageType }) => {
   const closePopout = () => {
     setShowPopout(false);
   };
-
   const removeMovie = async (id) => {
     try {
       await api.deleteMovie(id);
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+  const deletePromo = async(id) => {
+    try {
+      await api.deletePromotion(id);
+      refresh();
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+  const sendPromo = async(id) => {
+    try {
+      console.log(await api.sendPromotion(id));
+      setSP(true);
+      refresh();
     } catch (error) {
       console.log('Error:', error);
     }
@@ -144,6 +160,7 @@ const Table = ({ data, pageType }) => {
               <table>
                 <thead>
                   <tr>
+                    <th>Promotion Code</th>
                     <th>Promotion Name</th>
                     <th>Brief Description</th>
                     <th>Percentage</th>
@@ -154,22 +171,25 @@ const Table = ({ data, pageType }) => {
                 <tbody>
                   {data.map(item => (
                     <tr key={item.id}>
-                      <td>{item.promotionName}</td>
-                      <td>{item.promotionDescription}</td>
-                      <td>{item.promotionPercentage}</td>
-                      <td>{item.promotionExpDate}</td>
+                      <td>{item.promoCode}</td>
+                      <td>{item.name}</td>
+                      <td>{item.description}</td>
+                      <td>{item.discountPct}</td>
+                      <td>{item.expirationDate}</td>
                       <td>
                         
                         <button onClick={togglePopout}>Edit</button>
                         {showPopout && <EditPromotionsForm  onClose={closePopout}/>}
 
 
-                        <button>Remove</button>
+                        <button onClick={() => deletePromo(item.id)}>Remove</button>
+                        <button onClick={() => sendPromo(item.id)}>Send</button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+                {sentPromo && <h1>Request Status: Success</h1>}
             </div>
             )
           }

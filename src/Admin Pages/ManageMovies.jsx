@@ -53,7 +53,7 @@ function ManageMovies() {
     function joe() {
         navigate('/')
     }
-    if (!currentUser.privileged) {
+    if (!currentUser?.privileged) {
         return (
             <div className={'center_title'}>
                 <h1>You are not granted access</h1>

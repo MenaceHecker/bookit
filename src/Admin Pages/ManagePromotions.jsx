@@ -7,41 +7,37 @@ import { useContext, useState } from "react";
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../utils/Session';
+import {useApiData} from "../utils/API";
 
 function ManagePromotions() {
     const { currentUser } = useContext(SessionContext);
     const [showPopout, setShowPopout] = useState(false);
     const navigate = useNavigate();
+
+    const [promos, setPromos] = useState([]);
+    const [refreshPromos] = useApiData(async (api) => {
+        try {
+            const response = await api.listAllPromotions();
+            if (response.ok) {
+                setPromos(response.data);  //setPromos(JSON.parse(response.message));
+                console.log(promos);
+            }
+            else
+                console.error(response.message);
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
     const togglePopout = () => {
       setShowPopout(!showPopout);
+      refreshPromos();
     };
-
-
-
-
-    const mockData = [
-        {
-          id: 1,
-          promotionName: 'Halloween Special',
-          promotionDescription: '50% off Scary Movies',
-          promotionPercentage: 30,
-          promotionExpDate: ['2023-09-20', '2023-09-21'],
-        },
-        {
-            id: 1,
-            promotionName: 'Christmas Special',
-            promotionDescription: '30% off Christmas-Themed Movies',
-            promotionPercentage: 30,
-            promotionExpDate: ['2023-09-20', '2023-09-21'],
-        },
-        
-      ];
-
 
     function joe() {
         navigate('/')
     }
-    if (!currentUser.privileged) {
+    if (!currentUser?.privileged) {
         return (
             <div className={'center_title'}>
                 <h1>You are not granted access</h1>
@@ -66,7 +62,7 @@ function ManagePromotions() {
 
 
             <div className = "table">
-                <Table data={mockData} pageType="ManagePromotions" />
+                <Table data={promos} pageType="ManagePromotions" refresh={refreshPromos} />
             </div>
 
         <Footer/>

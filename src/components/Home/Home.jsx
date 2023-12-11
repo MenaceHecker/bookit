@@ -6,9 +6,9 @@ import video2 from '../../assets/trailer2.mp4';
 import video3 from '../../assets/trailer3.mp4';
 
 const movies = [
-  { title: 'Avengers Infinity Wars', trailerLink: 'https://www.youtube.com/watch?v=6ZfuNTqbHE8&t=1s&ab_channel=MarvelEntertainment', video: video1 },
-  { title: 'Thor Ragnarok', trailerLink: 'https://www.youtube.com/watch?v=ue80QwXMRHg', video: video3 },
-  { title: 'Being the Ricardos', trailerLink: 'https://www.youtube.com/watch?v=WvrjCdtB0zM&t=26s', video: video2 },
+  { id: -1, title: 'Avengers Infinity Wars', trailerLink: 'https://www.youtube.com/watch?v=6ZfuNTqbHE8&t=1s&ab_channel=MarvelEntertainment', video: video1 },
+  { id: -2, title: 'Thor Ragnarok', trailerLink: 'https://www.youtube.com/watch?v=ue80QwXMRHg', video: video3 },
+  { id: -3, title: 'Being the Ricardos', trailerLink: 'https://www.youtube.com/watch?v=WvrjCdtB0zM&t=26s', video: video2 },
   // Add more movies as needed
 ];
 
@@ -20,8 +20,8 @@ function Home() {
     window.open(movies[currentMovieIndex].trailerLink, '_blank');
   };
 
-  const bookNow = () => {
-    navigate('/BookingPage');
+  const bookNow = (id, movieTitle) => {
+
   };
 
   const handlePrevMovie = () => {
@@ -37,7 +37,7 @@ function Home() {
       <div className='overlay'>
         <video src={movies[currentMovieIndex].video} autoPlay loop muted />
         <div className='containervid'>
-          <h3 className='title' onClick={bookNow}>
+          <h3 className='title' onClick={() => bookNow(movies[currentMovieIndex].id, movies[currentMovieIndex].title)}>
             {movies[currentMovieIndex].title}
           </h3>
           <div className='rate'>
