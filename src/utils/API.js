@@ -151,10 +151,26 @@ export class API {
     return await getResponseText(this.#fetchGet(url));
   }
 
+  async updateTargetUser(targetId, userData) {
+    const url = new URL('api/updateTargetUser', this.#baseUrl);
+    url.searchParams.append('targetId', targetId);
+    const props = ['firstName', 'lastName', 'address', 'phoneNumber', 'wantsPromotions', 'suspended'];
+    for (const prop of props)
+      if (prop in userData)
+        url.searchParams.append(prop, userData[prop]);
+    return await getResponseText(this.#fetchPost(url));
+  }
+
   async promoteToAdmin(targetId) {
     const url = this.#newSessionUrl('api/promoteToAdmin');
     url.searchParams.append('targetId', targetId);
     return await getResponseText(this.#fetchPost(url));
+  }
+
+  async deleteTargetUser(targetId) {
+    const url = new URL('api/deleteTargetUser', this.#baseUrl);
+    url.searchParams.append('targetId', targetId);
+    return await getResponseText(this.#fetchDelete(url));
   }
 
   async createMovie(movieData) {
