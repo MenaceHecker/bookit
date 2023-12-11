@@ -215,6 +215,28 @@ export class API {
     return await getResponseNum(this.#fetchDelete(url), 'Could not delete movie');
   }
 
+  async listShowrooms() {
+    const url = new URL('api/listShowrooms', this.#baseUrl);
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async createShowing(showingData) {
+    const url = this.#newSessionUrl('api/createShowing');
+    return await getResponseText(this.#fetchPostJson(url, showingData));
+  }
+
+  async listShowings(movieId) {
+    const url = new URL('api/listShowings', this.#baseUrl);
+    url.searchParams.append('movieId', movieId);
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async deleteShowing(showingId) {
+    const url = this.#newSessionUrl('api/deleteShowing');
+    url.searchParams.append('showingId', showingId);
+    return await getResponseText(this.#fetchDelete(url));
+  }
+
   async createCard(cardData) {
     const url = this.#newSessionUrl('api/addCard');
     const props = ['cardNumber', 'firstName', 'lastName', 'securityCode', 'billingAddress', 'expirationDate'];
