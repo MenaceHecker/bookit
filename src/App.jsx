@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { Slide, ToastContainer, toast } from 'react-toastify';
+import { injectStyle } from 'react-toastify/dist/inject-style';
 import 'font-awesome/css/font-awesome.min.css';
 import MainAdmin from './Admin Pages/MainAdmin';
 import ManageMovies from './Admin Pages/ManageMovies';
@@ -21,8 +23,8 @@ import { API, APIContext, useApiData } from './utils/API';
 import { SessionContext, getSessionFromStorage, useSession } from './utils/Session';
 import BookMovie from './components/BookMovie/BookMovie';
 
-
 export default function App() {
+  injectStyle();
   const [sessionData, setSessionData] = useState(getSessionFromStorage);
   const [checkoutDetails, setCheckoutDetails] = useState(null);
   const api = useMemo(() => {
@@ -32,18 +34,20 @@ export default function App() {
   const session = useSession(api, sessionData, setSessionData);
   const [movies, setMovies] = useState([]);
   const [refreshMovies] = useApiData(async (api, tools) => {
-    try {
-      const response = await api.listMovies();
-      if (response.ok)
-        setMovies(response.data);
-      tools.refreshOnTimeout(60000);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+    const response = await api.listMovies();
+    if (response.ok)
+      setMovies(response.data);
+    else if (response.type !== 'aborted')
+      toast.error(`Error fetching listings: ${response.message}`);
+    tools.refreshOnTimeout(60000);
   }, { api });
   return (
     <APIContext.Provider value={api}>
       <SessionContext.Provider value={session}>
+        <ToastContainer
+          position="top-center" autoClose={1000} closeButton={false} transition={Slide}
+          hideProgressBar draggable={false} theme="light"
+        />
         <Routes>
           <Route path="/" element={<Homepage {...{movies, refreshMovies}}/>}/>
           <Route path="/Activate" element={<Activate/>}/>

@@ -1,5 +1,6 @@
 import './AddPaymentForm.css';
 import { useContext, useState } from 'react';
+import { toast } from 'react-toastify';
 import { APIContext } from '../../utils/API';
 
 const AddPaymentForm = ({ setShowPopout, refreshPayments }) => {
@@ -59,21 +60,21 @@ const AddPaymentForm = ({ setShowPopout, refreshPayments }) => {
     //                         @RequestParam String billingAddress, @RequestParam String expirationDate)
   
   const addCard = async (card) => {
-    try {
-      const response = await api.createCard(card);
-      if (!response.ok)
-        console.error(response.message);
-      setFormData({
-        email: '',
-        subscribe: 'off',
-        password: '',
-        password2: '',
-      });
-      setShowPopout(false);
-      refreshPayments();
-    } catch (err) {
-      console.error(err);
+    const response = await api.createCard(card);
+    if (response.ok) {
+      toast.success('Card added');
+    } else {
+      toast.error(`Error: ${response.message}`);
+      return;
     }
+    setFormData({
+      email: '',
+      subscribe: 'off',
+      password: '',
+      password2: '',
+    });
+    setShowPopout(false);
+    refreshPayments();
   };
 
     const handleSubmit = async (e) => {
