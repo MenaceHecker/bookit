@@ -4,14 +4,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { APIContext, useApiData } from '../../utils/API';
 
 const EditMoviePopout = ({ onClose, movieData } ) => {
-  //pass "data here"
+  //pass "movieData" from Table.jsx
   const api = useContext(APIContext);
-    //const [isPopoutOpen, setIsPopoutOpen] = useState(false);
     useEffect(() => {
       console.log('Movie Data received:', movieData);
       if (movieData) {
         setFormData({
-          
+          id: movieData.id,
           movieTitle: movieData.movieTitle,
           movieCategory: movieData.movieCategory,
           movieCast: movieData.movieCast,
@@ -47,19 +46,24 @@ const EditMoviePopout = ({ onClose, movieData } ) => {
       });
      
       const handleInputChange = (e) => {
+        console.log('Input changed:', e.target.name, e.target.value);
         const { name, value } = e.target;
-        setFormData(prevFormData => ({
-          ...prevFormData,
-          [name]: value,
-        }));
+        if (name === 'movieShowDates') {
+          // Handle date input
+          setFormData({ ...formData, [name]: value });
+        } else if (name === 'movieShowTimes') {
+          // Handle time input
+          setFormData({ ...formData, [name]: value });
+        } else {
+          // Handle other inputs
+          setFormData({ ...formData, [name]: value });
+        }
       };
       
       const handleSubmit = async (e) => {
         e.preventDefault();
-        
         console.log('Form submitted:', formData);
         setFormData({
-          
           movieTitle: '',
           movieCategory: '',
           movieCast: '',
@@ -73,12 +77,9 @@ const EditMoviePopout = ({ onClose, movieData } ) => {
           movieShowDates: '',
           movieShowTimes: '',
         });
-
-      
         try {
-
           const submitData = {
-          
+            id: movieData.id,
             movieTitle: formData.movieTitle,
             movieCategory: formData.movieCategory,
             movieCast: formData.movieCast,
@@ -92,11 +93,10 @@ const EditMoviePopout = ({ onClose, movieData } ) => {
             movieShowDates: formData.movieShowDates,
             movieShowTimes: formData.movieShowTimes,
           };
-          
           const response = await api.updateMovie(submitData);
           if (response.ok) {
-            const movieDataResponse = response.message;
-            console.log('Form submitted successfully!', movieDataResponse);
+            const data = response.message;
+            console.log('Form submitted successfully!', data);
             onClose();
           } else {
             console.error('Error submitting form:', response.message);
@@ -109,7 +109,6 @@ const EditMoviePopout = ({ onClose, movieData } ) => {
     
       const handleClose = () => {
         onClose();
-        // close button logic here, close form
       };
 
     return (
@@ -196,7 +195,7 @@ const EditMoviePopout = ({ onClose, movieData } ) => {
                   <label>
                     Show Date:
                     <br />
-                    <input type="date" name="movieShowDate" value={formData.movieShowDates} onChange={handleInputChange} />
+                    <input type="date" name="movieShowDates" value={formData.movieShowDates} onChange={handleInputChange} />
                   </label>
                 </div>
   
@@ -205,7 +204,7 @@ const EditMoviePopout = ({ onClose, movieData } ) => {
                   <label>
                     Show Time:
                     <br />
-                    <input type="time" name="movieShowTime" value={formData.movieShowTimes} onChange={handleInputChange} />
+                    <input type="time" name="movieShowTimes" value={formData.movieShowTimes} onChange={handleInputChange} />
                   </label>
                 </div>
   

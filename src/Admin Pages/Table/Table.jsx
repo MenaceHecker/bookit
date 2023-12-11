@@ -14,36 +14,19 @@ import EditUserForm from '../UserForms/EditUserForm';
 
 const Table = ({ data, pageType, refresh }) => {
 
+  //Select a Certain movie for Editing
+  const [selectedMovieData, setSelectedMovieData] = useState(null);
 
 
 
 
   const api = useContext(APIContext);
-  
-
-  //MovieData
-  // const [movieData, setMovieData] = useState([]);
-  // console.log(movieData);
-  // const [refreshMovies] = useApiData(async (api) => {
-  //   try {
-  //     const response = await api.listMovies();
-  //     if (response.ok)
-  //       setMovieData(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // });
-
-
-
-
-
-
   // const [showUserPopout, setShowUserPopout] = useState(false);
   const [showPopout, setShowPopout] = useState(false);
   const [sentPromo, setSP] = useState(false);
-      const togglePopout = () => {
+      const togglePopout = (movieData) => {
         setShowPopout(!showPopout); 
+        setSelectedMovieData(movieData);
         // setShowUserPopout(!showUserPopout);
       };
 
@@ -106,9 +89,10 @@ const Table = ({ data, pageType, refresh }) => {
                       <td>(TODO)</td>
                       <td>{item.movieShowDates}</td>
                       <td>      
-                        <button onClick={togglePopout}>Edit</button>
-                        {showPopout && <EditMoviePopout onClose={closePopout} movieData={item}/>}
-                        {/** Pass "item" here */}
+                        <button onClick={() => togglePopout(item)}>Edit</button>
+                        {showPopout && selectedMovieData === item && (
+                          <EditMoviePopout onClose={closePopout} movieData={selectedMovieData} />
+                        )}
                         <button onClick={() => removeMovie(item.id)}>Remove</button>
                       </td>
                     </tr>

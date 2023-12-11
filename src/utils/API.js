@@ -184,8 +184,8 @@ export class API {
   }
 
   async updateMovie(movieData) {
-    const url = new URL('api/updateMovie', this.#baseUrl);
-    return await getResponseJson(this.#fetchPostJson(url, movieData));
+    const url = this.#newSessionUrl('api/updateMovie')
+    return await getResponseText(this.#fetchPostJson(url, movieData));
   }
 
   async deleteMovie(id) {
