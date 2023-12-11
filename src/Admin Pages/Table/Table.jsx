@@ -60,12 +60,14 @@ const Table = ({ data, pageType, refresh }) => {
     else
       toast.error(`Error: ${response.message}`);
     setSP(true);
-    refresh();
+    if (refresh)
+      refresh();
   };
   const deleteUser = async(id) => {
     try {
       await api.deleteTargetUser(id);
-      refresh();
+      if (refresh)
+        refresh();
     } catch (error) {
       console.log('Error:', error);
     }

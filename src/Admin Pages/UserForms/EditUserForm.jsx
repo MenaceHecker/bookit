@@ -14,11 +14,15 @@ const EditUserForm = ({onClose, selected}) => {
         });
 
         const handleInputChange = (e) => {
-          const { name, value } = e.target;
-          setFormData({ ...formData, [name]: value });
+            const { name, value, type, checked } = e.target;
+            setFormData({
+                ...formData,
+                [name]: type === 'checkbox' ? checked : value,
+            });
         };
-      
-        const handleSubmit = async (e) => {
+
+
+    const handleSubmit = async (e) => {
           e.preventDefault();
             try {
                 console.log(formData);
@@ -50,10 +54,6 @@ const EditUserForm = ({onClose, selected}) => {
                   <br />
                   <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} />
                 </label>
-                  <label>
-                      Subscribe/Unsubscribe to promotions?
-                      <input type="checkbox" name="wantsPromotions" checked={formData.wantsPromotions} onChange={handleInputChange}/>
-                  </label>
               </div>
       
               <div className="edit_user_form_row">
@@ -71,10 +71,6 @@ const EditUserForm = ({onClose, selected}) => {
                       <input type="text" name="address" value={formData.address} onChange={handleInputChange} />
 
                   </label>
-                      <label>
-                          Suspended
-                          <input type="checkbox" name="suspended" checked={formData.suspended} onChange={handleInputChange}/>
-                      </label>
                   </div>
                   <div className="edit_user_form_row">
                   <label>
@@ -83,12 +79,18 @@ const EditUserForm = ({onClose, selected}) => {
                       <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange}/>
                   </label>
                   </div>
-
-              <div className="edit_user_form_row">
-
-
-                
-              </div>
+                <div className="edit_user_form_row">
+                <label>
+                    Suspended:
+                    <input type="checkbox" name="suspended" checked={formData.suspended} onChange={handleInputChange}/>
+                </label>
+                </div>
+                <div className="edit_user_form_row">
+                    <label>
+                        Subscribe/Unsubscribe to promotions?:
+                        <input type="checkbox" name="wantsPromotions" checked={formData.wantsPromotions} onChange={handleInputChange}/>
+                    </label>
+                </div>
 
               <div className = "edit_user_button_row">
                 <button type="submit">Submit</button>
