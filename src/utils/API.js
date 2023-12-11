@@ -151,6 +151,12 @@ export class API {
     return await getResponseText(this.#fetchGet(url));
   }
 
+  async promoteToAdmin(targetId) {
+    const url = this.#newSessionUrl('api/promoteToAdmin');
+    url.searchParams.append('targetId', targetId);
+    return await getResponseText(this.#fetchPost(url));
+  }
+
   async createMovie(movieData) {
     const url = this.#newSessionUrl('api/newmovie');
     return await getResponseText(this.#fetchPostJson(url, movieData));
