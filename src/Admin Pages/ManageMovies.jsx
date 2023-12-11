@@ -23,23 +23,14 @@ import Footer from '../components/footer/footer';
 import { useApiData } from '../utils/API';
 import { SessionContext } from '../utils/Session';
 
-function ManageMovies() {
+function ManageMovies({ movies, refreshMovies }) {
   const { currentUser } = useContext(SessionContext);
   const navigate = useNavigate();
   const [movieType, setMovieType] = useState('currentlyShowing'); //This will allow the admin to switch between the "Currently Showing" movies and the "Coming soon" movies
   //different data from the database will be fetched depending on state
-  const [data, setData] = useState([]);
   const handleMovieTypeChange = (type) => {
     setMovieType(type);
   };
-
-  const [refreshMovies] = useApiData(async (api) => {
-    const response = await api.listMovies();
-    if (response.ok)
-      setData(response.data);
-    else if (response.type !== 'aborted')
-      toast.error(`Error fetching movies: ${response.message}`);
-  });
 
   const [showPopout, setShowPopout] = useState(false);
 
@@ -81,7 +72,7 @@ function ManageMovies() {
       </div>
 
       <div className="table">
-        <Table data={data} pageType="ManageMovies" movieType={movieType}  />
+        <Table data={movies} pageType="ManageMovies" movieType={movieType} refresh={refreshMovies}/>
       </div>
       <Footer/>
     </div>
