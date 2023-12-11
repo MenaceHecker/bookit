@@ -53,7 +53,7 @@ const Movies = ({ movies, refreshMovies }) => {
 
   return (
     <>
-      <section className="movie_section">
+      <section id='movies' className="movie_section">
         <h5 className='title'>Now Showing</h5>
         <div className='container movie__container'>
           {movies.filter(({ movieShowDates }) => showDatesCurrent(movieShowDates)).map(displayMovie)}
