@@ -17,6 +17,7 @@ import AddUserForm from "./UserForms/AddUserForm";
 import { useContext, useState } from "react";
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { SessionContext } from '../utils/Session';
 import {useApiData} from "../utils/API";
 
@@ -26,16 +27,11 @@ function ManageUsers() {
     const [showPopout, setShowPopout] = useState(false);
     const [users, setUsers] = useState([]);
     const [refreshUsers] = useApiData(async (api) => {
-        try {
-            const response = await api.listAllUsers();
-            if (response.ok) {
-                setUsers(response.data);  //setPromos(JSON.parse(response.message));
-                console.log(users);
-            }
-            else
-                console.error(response.message);
-        } catch (err) {
-            console.error(err);
+        const response = await api.listAllUsers();
+        if (response.ok) {
+            setUsers(response.data);
+        } else if (response.type !== 'aborted') {
+            toast.error(`Error fetching users: ${response.message}`);
         }
     });
     const togglePopout = () => {
@@ -53,12 +49,6 @@ function ManageUsers() {
         );
     }
 
-
-    //refreshUsers();
-
-
-
-
     return (
         <div>
             <AdminHeader/>
@@ -71,7 +61,11 @@ function ManageUsers() {
                 {showPopout && <AddUserForm onClose={togglePopout} setShowPopout={setShowPopout}/>}**/}
             </div>
             <div className = "table">
+<<<<<<< HEAD
                 <Table data={users} pageType="ManageUsers" refresh={refreshUsers} />
+=======
+                <Table data={users} pageType="ManageUsers" refresh={refreshUsers}/>
+>>>>>>> f471757 (Add toasts to ManageUsers)
             </div>
         <Footer/>
         </div>
