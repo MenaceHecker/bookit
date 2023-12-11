@@ -128,7 +128,7 @@ export class API {
 
   async createCustomer(customerData) {
     const url = new URL('api/add', this.#baseUrl);
-    const props = ['email', 'password', 'firstName', 'lastName', 'phoneNumber'];
+    const props = ['email', 'password', 'firstName', 'lastName', 'phoneNumber', 'address'];
     for (const prop of props)
       url.searchParams.append(prop, customerData[prop]);
     if ('wantsPromotions' in customerData)
