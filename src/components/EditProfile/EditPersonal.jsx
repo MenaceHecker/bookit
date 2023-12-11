@@ -32,11 +32,12 @@ function EditPersonal() {
       document.getElementById('firstNameInput').placeholder = userData.firstName;
       document.getElementById('lastNameInput').placeholder = userData.lastName;
 
-      setFormData({
+      setFormData((formData) => ({
+        ...formData,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        wantsPromotions: userData.wantsPromotions,
-      });
+        wantsPromotions: userData.wantsPromotions
+      }));
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
