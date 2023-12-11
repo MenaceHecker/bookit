@@ -35,8 +35,7 @@ const Table = ({ data, pageType, refresh }) => {
   // Add a function to close the popout
   const closePopout = () => {
     setShowPopout(false);
-    if (refresh)
-      refresh();
+    refresh();
   };
   const removeMovie = async (id) => {
     const response = await api.deleteMovie(id);
@@ -44,6 +43,7 @@ const Table = ({ data, pageType, refresh }) => {
       toast.success('Movie removed');
     else
       toast.error(`Error: ${response.message}`);
+    refresh();
   };
   const deletePromo = async (id) => {
     const response = await api.deletePromotion(id);
@@ -51,8 +51,7 @@ const Table = ({ data, pageType, refresh }) => {
       toast.success('Promotion removed');
     else
       toast.error(`Error: ${response.message}`);
-    if (refresh)
-      refresh();
+    refresh();
   };
   const sendPromo = async (id) => {
     const response = await api.sendPromotion(id);
@@ -61,41 +60,35 @@ const Table = ({ data, pageType, refresh }) => {
     else
       toast.error(`Error: ${response.message}`);
     setSP(true);
-    if (refresh)
-      refresh();
+    refresh();
   };
-  const deleteUser = async(id) => {
-    try {
-      await api.deleteTargetUser(id);
-      if (refresh)
-        refresh();
-    } catch (error) {
-      console.log('Error:', error);
-    }
+  const deleteUser = async (id) => {
+    const response = await api.deleteTargetUser(id);
+    if (response.ok)
+      toast.success('User removed');
+    else
+      toast.error(`Error: ${response.message}`);
+    refresh();
   };
-  const suspendUser = async(user) => {
-    try {
-      const userData = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        address: user.address,
-        phoneNumber: user.phoneNumber,
-        wantsPromotions: user.wantsPromotions,
-        suspended: true,
-      }
-      await api.updateTargetUser(user.id, userData);
-      refresh();
-    } catch (error) {
-      console.log('Error:', error);
-    }
+  const suspendUser = async (user) => {
+    const response = await api.updateTargetUser(user.id, { suspended: true });
+    if (response.ok)
+      toast.success('User suspended');
+    else
+      toast.error(`Error: ${response.message}`);
+    refresh();
   }
-  const promoteUser = async(user) => {
-    try {
-      await api.promoteToAdmin(user.id);
-      refresh();
-    } catch (error) {
-      console.log('Error:', error);
+  const promoteUser = async (user) => {
+    if (user.privileged) {
+      toast.info('User is already an admin');
+      return;
     }
+    const response = await api.promoteToAdmin(user.id);
+    if (response.ok)
+      toast.success('User promoted to admin');
+    else
+      toast.error(`Error: ${response.message}`);
+    refresh();
   };
 
         const renderTable = () => {
