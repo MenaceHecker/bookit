@@ -3,11 +3,13 @@ import AdminSideBar from "./AdminSideBar/AdminSideBar";
 import AddPromotionsForm from "./PromotionsForm/AddPromotionsForm";
 import './ManagePromotions.css';
 import Table from "./Table/Table";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { SessionContext } from '../utils/Session';
 
 function ManagePromotions() {
+    const { currentUser } = useContext(SessionContext);
     const [showPopout, setShowPopout] = useState(false);
     const navigate = useNavigate();
     const togglePopout = () => {
@@ -39,7 +41,7 @@ function ManagePromotions() {
     function joe() {
         navigate('/')
     }
-    if (+localStorage.getItem('isPrivileged') !== 1) {
+    if (!currentUser.privileged) {
         return (
             <div className={'center_title'}>
                 <h1>You are not granted access</h1>

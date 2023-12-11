@@ -1,8 +1,11 @@
 import React, {useState, useContext, useEffect} from 'react';
 import './check.css';
 import { APIContext, useApiData } from '../../utils/API';
-
+import { useNavigate } from 'react-router-dom';
 const CheckoutU = (props) => {
+    let navigate = useNavigate();
+    let totalPrice = 0.0;
+    let [pCode, setPC] = useState('');
     const {
         id,
         selectedTickets,
@@ -29,6 +32,10 @@ const CheckoutU = (props) => {
         });
     const api = useContext(APIContext);
     const [payments, setPayments] = useState([]);
+    const [selectedPayment, setSelectedPayment] = useState(null);
+    const handlePaymentChange = (paymentMethod) => {
+        setSelectedPayment(paymentMethod);
+    };
     const [refreshPayments] = useApiData(async (api) => {
         try {
           const response = await api.listCards();
@@ -46,12 +53,12 @@ const CheckoutU = (props) => {
             const response = await api.createCard(card);
             if (!response.ok)
                 console.error(response.message);
-            setPFD({
+            /*setPFD({
                 email: '',
                 subscribe: 'off',
                 password: '',
                 password2: '',
-            });
+            });*/
             refreshPayments();
         } catch (err) {
             console.error(err);
@@ -63,24 +70,45 @@ const CheckoutU = (props) => {
         addCard(paymentFormData);
     };
     const submit = async (e) => {
-
+        e.preventDefault();
+        if (selectedPayment) {
+        const book = {
+            showingId: id,
+            cardId: selectedPayment.cardId,
+            promoCode: pCode,
+            tickets: selectedTickets,
+        }
+            try {
+                const response = await api.createBooking(book);
+                if (response.ok)
+                    navigate('/OF');
+                else
+                    console.error(response.message);
+            } catch (err) {
+                console.error(err);
+            }
+        } else {
+            console.log('No payment method selected');
+        }
     }
 
     let items = [], count = 1;
     // logic for generating purchases
     if (selectedTickets.child > 0) {
         items.push(count + '. Child Tickets: ' + selectedTickets.child + '    $' + selectedTickets.child*childPrice);
+        totalPrice += selectedTickets.child*childPrice;
         count++;
     }
     if (selectedTickets.adult > 0) {
         items.push(count + '. Adult Tickets: ' + selectedTickets.adult + '    $' + selectedTickets.adult*adultPrice);
+        totalPrice += selectedTickets.adult*adultPrice;
         count++;
     }
     if (selectedTickets.senior > 0) {
         items.push(count + '. Senior Tickets: ' + selectedTickets.senior + '    $' + selectedTickets.senior*seniorPrice);
+        totalPrice += selectedTickets.senior*seniorPrice;
         count++;
     }
-
     //Dummy Payment Methods
     let methods = [{name:"Card name: Joe Shamlock", number: "Card: ****98"},{name:"Card name: Johnny Jackson", number:"Card: ****71"}, {name:"Card name: Jeffrey Humor", number:"Card: ****25"}]
 
@@ -120,7 +148,9 @@ const CheckoutU = (props) => {
             [key]: value,
         }));
     };
-
+    const handleInputChangePromo = (s) => {
+        setPC(s);
+    }
     return (
         <div id={"checkout_cont"}>
         <div className={"left"}>
@@ -195,19 +225,32 @@ const CheckoutU = (props) => {
                 </div>
             ))}
         </div>
+            <div className={"right"}>
+                <h2>Enter Promo:</h2>
+                <input
+                    type="text"
+                    value={pCode}
+                    onChange={(e) => handleInputChangePromo(e.target.value)}
+                />
+            </div>
 
             <div className={"right"}>
                 {payments.map((paymentMethod) => (
                     <div key={paymentMethod.cardId} id={"inp_cont"}>
                         <div id={"list_slot"}>
-                            <input type="radio" value="Male" name="gender" />
+                            <input
+                                type="radio"
+                                value={paymentMethod.cardId}
+                                name="paymentMethod"
+                                onChange={() => handlePaymentChange(paymentMethod)}
+                            />
                             <p id={'orderconf_h1'}>{paymentMethod.firstName} {paymentMethod.lastName}</p>
                             <p id={'orderconf_h1'}>{paymentMethod.lastFourDigits}</p>
                             <p id={'orderconf_h1'}>{paymentMethod.expirationDate}</p>
                         </div>
                     </div>
                 ))}
-                <button  id={"checkout_button"} onClick={submit}>Complete Purchase</button>
+                <button id={"checkout_button"} onClick={submit}>Complete Purchase</button>
             </div>
         </div>
     );

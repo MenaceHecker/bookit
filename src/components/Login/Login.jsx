@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import Header from '../header/header';
 import Footer from '../footer/footer';
-import { APIContext } from '../../utils/API';
+import { SessionContext } from '../../utils/Session';
 
 function Login() {
-  const api = useContext(APIContext);
+  const session = useContext(SessionContext);
   const navigate = useNavigate();
   const [isUp, setIsUp] = useState(false);
   const [formData, setFormData] = useState({
@@ -24,18 +24,16 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.login(formData.email, formData.password);
+      const response = await session.login(formData.email, formData.password);
       if (!response.ok) {
         console.error('Login failed');
         setIsUp(true);
       } else {
         const data = response.data;
         console.log(data);
-        localStorage.setItem('sessionId', data.sessionId);
-        localStorage.setItem('isPrivileged', +data.isPrivileged);
         console.log('Login successful:', data);
         // Handle the successful case here
-        if (formData.email === 'bookit@example.com') {
+        if (data.privileged) {
           navigate('/ManageMovies');
         } else {
           navigate('/');

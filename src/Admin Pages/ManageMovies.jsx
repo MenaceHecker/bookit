@@ -15,13 +15,15 @@ import './ManageMovies.css'
 import AdminHeader from "./AdminHeader/AdminHeader";
 import AdminSideBar from "./AdminSideBar/AdminSideBar";
 import AddMoviePopout from './MovieForms/AddMoviePopout';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import './MovieForms/MovieForm.css'
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
 import { useApiData } from '../utils/API';
+import { SessionContext } from '../utils/Session';
 
 function ManageMovies() {
+  const { currentUser } = useContext(SessionContext);
   const navigate = useNavigate();
   const [movieType, setMovieType] = useState('currentlyShowing'); //This will allow the admin to switch between the "Currently Showing" movies and the "Coming soon" movies
   //different data from the database will be fetched depending on state
@@ -51,7 +53,7 @@ function ManageMovies() {
     function joe() {
         navigate('/')
     }
-    if (+localStorage.getItem('isPrivileged') !== 1) {
+    if (!currentUser.privileged) {
         return (
             <div className={'center_title'}>
                 <h1>You are not granted access</h1>
