@@ -18,12 +18,12 @@ import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import TrailerPage from './components/TrailerPage/TrailerPage';
 import { API, APIContext, useApiData } from './utils/API';
-import { SessionContext, useSession } from './utils/Session';
+import { SessionContext, getSessionFromStorage, useSession } from './utils/Session';
 import BookMovie from './components/BookMovie/BookMovie';
 
 
 export default function App() {
-  const [sessionData, setSessionData] = useState(null);
+  const [sessionData, setSessionData] = useState(getSessionFromStorage);
   const [checkoutDetails, setCheckoutDetails] = useState(null);
   const api = useMemo(() => {
     const sessionId = sessionData !== null ? sessionData.sessionId : null;
