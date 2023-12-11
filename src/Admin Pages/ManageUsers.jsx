@@ -71,7 +71,7 @@ function ManageUsers() {
                 {showPopout && <AddUserForm onClose={togglePopout} setShowPopout={setShowPopout}/>}**/}
             </div>
             <div className = "table">
-                <Table data={users} pageType="ManageUsers" />
+                <Table data={users} pageType="ManageUsers" refresh={refreshUsers} />
             </div>
         <Footer/>
         </div>

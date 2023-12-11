@@ -51,7 +51,8 @@ const Table = ({ data, pageType, refresh }) => {
       toast.success('Promotion removed');
     else
       toast.error(`Error: ${response.message}`);
-    refresh();
+    if (refresh)
+      refresh();
   };
   const sendPromo = async (id) => {
     const response = await api.sendPromotion(id);
