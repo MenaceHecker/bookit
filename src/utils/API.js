@@ -65,6 +65,10 @@ export class API {
     return fetch(url, this.addOptions({ method: 'GET' }));
   }
 
+  #fetchPost(url) {
+    return fetch(url, this.addOptions({ method: 'POST' }));
+  }
+
   #fetchDelete(url) {
     return fetch(url, this.addOptions({ method: 'DELETE' }));
   }
@@ -233,6 +237,34 @@ export class API {
   async listOrderEntries() {
     const url = this.#newSessionUrl('api/listOrderEntries');
     return await getResponseJson(this.#fetchGet(url));
+  }
+
+  async createPromotion(promotionData) {
+    const url = this.#newSessionUrl('api/createPromotion');
+    return await getResponseText(this.#fetchPostJson(url, promotionData));
+  }
+
+  async listAllPromotions() {
+    const url = this.#newSessionUrl('api/listAllPromotions');
+    return await getResponseText(this.#fetchGet(url));
+  }
+
+  async getPromotionFromCode(promoCode) {
+    const url = this.#newSessionUrl('api/listAllPromotions');
+    url.searchParams.append('promoCode', promoCode);
+    return await getResponseText(this.#fetchGet(url));
+  }
+
+  async sendPromotion(promotionId) {
+    const url = this.#newSessionUrl('api/sendPromotion');
+    url.searchParams.append('promotionId', promotionId);
+    return await getResponseText(this.#fetchPost(url));
+  }
+
+  async deletePromotion(promotionId) {
+    const url = this.#newSessionUrl('api/deletePromotion');
+    url.searchParams.append('promotionId', promotionId);
+    return await getResponseText(this.#fetchDelete(url));
   }
 }
 
