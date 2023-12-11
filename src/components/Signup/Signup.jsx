@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './Signup.css';
 import Header from '../header/header';
 import Footer from '../footer/footer';
@@ -35,23 +36,16 @@ const Signup = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
   if (formData.password !== formData.confirmPassword) {
-    console.log("Passwords do not match");
+    toast.error('Error: Passwords do not match');
     return;
   }
 
-  try {
-    const response = await api.createCustomer(formData);
-    if (!response.ok) {
-      console.error('Failed to add a new user');
-      // Display a toast or an alert message to inform the user that the registration failed
-    } else {
-      console.log('New user added successfully');
-      // Handle successful user registration here
-      navigate('/Activate');
-    }
-  } catch (error) {
-    console.error('An error occurred:', error);
-    // Handle the error case here
+  const response = await api.createCustomer(formData);
+  if (response.ok) {
+    toast.success('Signed up');
+    navigate('/Activate');
+  } else {
+    toast.error(`Error: ${response.message}`);
   }
 };
 

@@ -1,18 +1,23 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 async function getResponseText(promise) {
+  if (promise === null)
+    return { ok: false, message: 'Not logged in' };
   try {
     const response = await promise;
     return { ok: response.ok, message: await response.text() };
   } catch (err) {
     switch (err.name) {
-      case 'TypeError': throw new Error('Connection error', { cause: err });
+      case 'AbortError': return { ok: false, type: 'aborted', message: 'Request aborted' };
+      case 'TypeError': return { ok: false, message: 'Connection error' };
       default: throw err;
     }
   }
 }
 
 async function getResponseJson(promise) {
+  if (promise === null)
+    return { ok: false, message: 'Not logged in' };
   try {
     const response = await promise;
     if (!response.ok)
@@ -20,14 +25,17 @@ async function getResponseJson(promise) {
     return { ok: true, data: await response.json() };
   } catch (err) {
     switch (err.name) {
+      case 'AbortError': return { ok: false, type: 'aborted', message: 'Request aborted' };
       case 'SyntaxError': throw new Error('Unexpected response', { cause: err });
-      case 'TypeError': throw new Error('Connection error', { cause: err });
+      case 'TypeError': return { ok: false, message: 'Connection error' };
       default: throw err;
     }
   }
 }
 
 async function getResponseNum(promise, errorMessage) {
+  if (promise === null)
+    return { ok: false, message: 'Not logged in' };
   const response = await getResponseJson(promise);
   if (!response.ok)
     return response;
@@ -55,25 +63,33 @@ export class API {
   #newSessionUrl(path, prop = 'sid', overrideId = null) {
     const sessionId = overrideId ?? this.#sessionId;
     if (sessionId === null)
-      throw new Error('Not logged in');
+      return null;
     const url = new URL(path, this.#baseUrl);
     url.searchParams.append(prop, sessionId);
     return url;
   }
 
   #fetchGet(url) {
+    if (url === null)
+      return null;
     return fetch(url, this.addOptions({ method: 'GET' }));
   }
 
   #fetchPost(url) {
+    if (url === null)
+      return null;
     return fetch(url, this.addOptions({ method: 'POST' }));
   }
 
   #fetchDelete(url) {
+    if (url === null)
+      return null;
     return fetch(url, this.addOptions({ method: 'DELETE' }));
   }
 
   #fetchPostJson(url, data) {
+    if (url === null)
+      return null;
     return fetch(url, this.addOptions({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

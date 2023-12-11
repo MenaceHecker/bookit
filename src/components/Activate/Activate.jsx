@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './Activate.css';
 import Header from '../header/header';
 import Footer from '../footer/footer';
@@ -20,21 +21,13 @@ function Activate() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await api.activateCustomer(formData.code);
-      const data = response.data;
+    const response = await api.activateCustomer(formData.code);
 
-      if (response.ok) {
-        console.log('Account activated');
-        navigate('/');
-      } else {
-        console.error('Activation failed:', data);
-        // Handle activation failure here
-      }
-    } catch (error) {
-      //console.error('Error activating account:', error);
-      navigate('/Login');
-      // Handle error case here
+    if (response.ok) {
+      toast.success('Account activated');
+      navigate('/');
+    } else {
+      toast.error(`Error: ${response.message}`);
     }
   };
 

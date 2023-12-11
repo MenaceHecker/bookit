@@ -2,6 +2,8 @@ import React, {useState, useContext, useEffect} from 'react';
 import './check.css';
 import { APIContext, useApiData } from '../../utils/API';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 const CheckoutU = (props) => {
     let navigate = useNavigate();
     let totalPrice = 0.0;
@@ -41,28 +43,26 @@ const CheckoutU = (props) => {
           const response = await api.listCards();
           if (response.ok)
             setPayments(response.data);
-          else
-            console.error(response.message);
+          else if (response.type !== 'aborted')
+            toast.error(`Error fetching cards: ${response.message}`);
         } catch (err) {
           console.error(err);
         }
       });
 
     const addCard = async (card) => {
-        try {
-            const response = await api.createCard(card);
-            if (!response.ok)
-                console.error(response.message);
-            /*setPFD({
-                email: '',
-                subscribe: 'off',
-                password: '',
-                password2: '',
-            });*/
-            refreshPayments();
-        } catch (err) {
-            console.error(err);
-        }
+        const response = await api.createCard(card);
+        if (response.ok)
+            toast.success('Card added');
+        else
+            toast.error(`Error: ${response.message}`);
+        /*setPFD({
+            email: '',
+            subscribe: 'off',
+            password: '',
+            password2: '',
+        });*/
+        refreshPayments();
     };
     const save_payment = async (e) => {
         e.preventDefault();
@@ -72,23 +72,21 @@ const CheckoutU = (props) => {
     const submit = async (e) => {
         e.preventDefault();
         if (selectedPayment) {
-        const book = {
-            showingId: id,
-            cardId: selectedPayment.cardId,
-            promoCode: pCode,
-            tickets: selectedTickets,
-        }
-            try {
-                const response = await api.createBooking(book);
-                if (response.ok)
-                    navigate('/OF');
-                else
-                    console.error(response.message);
-            } catch (err) {
-                console.error(err);
+            const book = {
+                showingId: id,
+                cardId: selectedPayment.cardId,
+                promoCode: pCode,
+                tickets: selectedTickets,
+            };
+            const response = await api.createBooking(book);
+            if (response.ok) {
+                toast.success('Tickets have been booked');
+                navigate('/OF');
+            } else {
+                toast.error(`Error: ${response.message}`);
             }
         } else {
-            console.log('No payment method selected');
+            toast.error(`Error: No payment method selected`);
         }
     }
 
@@ -154,14 +152,10 @@ const CheckoutU = (props) => {
         setPC(s);
     }
     const checkPromo = async () => {
-        try {
-            const response = await api.getPromotionFromCode(pCode);
-            setPromo(response.data)
-            console.log(promo);
-            setVP(true);
-        } catch (error) {
-            console.log('Error:', error);
-        }
+        const response = await api.getPromotionFromCode(pCode);
+        setPromo(response.data);
+        console.log(promo);
+        setVP(true);
     }
     return (
         <div id={"checkout_cont"}>

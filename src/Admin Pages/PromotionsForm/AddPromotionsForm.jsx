@@ -1,5 +1,6 @@
 import './AddPromotionsForm.css'
 import {useContext, useState} from 'react';
+import { toast } from 'react-toastify';
 import {API, APIContext, useApiData} from "../../utils/API";
 //Subject
 //Body
@@ -28,24 +29,20 @@ function AddPromotionsForm({setShowPopout}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form submitted:', formData);
-        try {
-            const promotionData = {
-                promoCode: formData.promoCode,
-                discountPct: formData.promotionPercentage,
-                expirationDate: formData.promotionExpDate,
-                name: formData.promotionName,
-                description: formData.promotionDescription
-            }
-            const response = await api.createPromotion(promotionData);
-            console.log(response);
-            setShowPopout(false);
-
-            if (!response.ok) {
-                console.error(response.message);
-            }
-        } catch (err) {
-            console.error(err);
+        const promotionData = {
+            promoCode: formData.promoCode,
+            discountPct: formData.promotionPercentage,
+            expirationDate: formData.promotionExpDate,
+            name: formData.promotionName,
+            description: formData.promotionDescription
         }
+        const response = await api.createPromotion(promotionData);
+        setShowPopout(false);
+
+        if (response.ok)
+            toast.success('Promotion added');
+        else
+            toast.error(`Error: ${response.message}`);
         /*
         setFormData({
           promotionName: '',
