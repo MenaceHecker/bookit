@@ -2,36 +2,24 @@ import { useContext } from 'react';
 import './DropDownMenu.css';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { APIContext } from '../../utils/API';
+import { SessionContext } from '../../utils/Session';
 
 const DropDownMenu = () => {
-    const api = useContext(APIContext);
-    const c = localStorage.getItem('sessionId');
+    const session = useContext(SessionContext);
     const navigate = useNavigate();
     async function logout() {
-        try {
-            const response = await api.logout();
-            if (!response.ok) {
-                console.error('Logout failed');
-                console.log(localStorage.getItem('sessionId'))
-                navigate('/');
-            } else {
-                //const data = await response.text();
-                console.log('Logout successful:');
-                localStorage.clear();
-                // Handle the successful case here
-                navigate('/');
-            }
-        } catch (error) {
-            console.error('An error occurred:', error);
-            // Handle the error case here
+        if (session.currentUser !== null) {
+            await session.logout();
+            console.log('Logout successful');
+            // Handle the successful case here
+            navigate('/');
         }
     }
     return (
         <div className="dropdown">
             <i className='fa fa-user'></i>
             <ul>
-                {typeof c === "string" && c !== 'null' ? (
+                {session.currentUser !== null ? (
                     <>
                         <li onClick={logout}>Log out</li>
                         <li><Link to="/EditProfile">Edit Profile</Link></li>

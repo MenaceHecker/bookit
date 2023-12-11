@@ -24,7 +24,10 @@ const Header = () => {
   const executeSearch = useCallback(async () => {
     const response = await api.listMovies();
     const allMovies = response.data;
-    const query = document.getElementById(searchBarId).value.toLowerCase();
+    const element = document.getElementById(searchBarId);
+    if (!element)
+      return;
+    const query = element.value.toLowerCase();
   
     const filterByStatusAndCategory = (movies, showCurrently, showComingSoon, categoryQuery = '') => {
       return movies.filter(({ movieTitle, movieShowDates, movieCategory }) => {

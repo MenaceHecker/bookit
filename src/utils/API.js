@@ -40,18 +40,20 @@ async function getResponseNum(promise, errorMessage) {
 
 export class API {
   #baseUrl;
+  #sessionId;
 
-  constructor(baseUrl) {
+  constructor(baseUrl, sessionId) {
     new URL(baseUrl); // throw exception if base URL is invalid
     this.#baseUrl = baseUrl;
+    this.#sessionId = sessionId;
   }
 
   addOptions(fetchOptions) {
     return fetchOptions;
   }
 
-  #newSessionUrl(path, prop = 'sid') {
-    const sessionId = localStorage.getItem('sessionId');
+  #newSessionUrl(path, prop = 'sid', overrideId = null) {
+    const sessionId = overrideId ?? this.#sessionId;
     if (sessionId === null)
       throw new Error('Not logged in');
     const url = new URL(path, this.#baseUrl);
@@ -76,7 +78,7 @@ export class API {
   }
 
   withSignal(abortSignal) {
-    return new AbortableAPI(this.#baseUrl, abortSignal);
+    return new AbortableAPI(this.#baseUrl, this.#sessionId, abortSignal);
   }
 
   async login(email, password) {
@@ -120,8 +122,8 @@ export class API {
     return await getResponseText(this.#fetchGet(url));
   }
 
-  async getCurrentUser() {
-    const url = this.#newSessionUrl('api/getCurrentUser');
+  async getCurrentUser(sessionId = null) {
+    const url = this.#newSessionUrl('api/getCurrentUser', 'sid', sessionId);
     return await getResponseJson(this.#fetchGet(url));
   }
 
@@ -237,8 +239,8 @@ export class API {
 class AbortableAPI extends API {
   #signal;
 
-  constructor(baseUrl, abortSignal) {
-    super(baseUrl);
+  constructor(baseUrl, sessionId, abortSignal) {
+    super(baseUrl, sessionId);
     this.#signal = abortSignal;
   }
 

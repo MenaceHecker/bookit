@@ -14,10 +14,13 @@ import AdminSideBar from "./AdminSideBar/AdminSideBar";
 import Table from "./Table/Table";
 import './ManageUsers.css';
 import AddUserForm from "./UserForms/AddUserForm";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Footer from "../components/footer/footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { SessionContext } from '../utils/Session';
+
 function ManageUsers() {
+    const { currentUser } = useContext(SessionContext);
     const navigate = useNavigate();
     const [showPopout, setShowPopout] = useState(false);
 
@@ -27,7 +30,7 @@ function ManageUsers() {
     function joe() {
         navigate('/')
     }
-    if (+localStorage.getItem('isPrivileged') !== 1) {
+    if (!currentUser.privileged) {
         return (
             <div className={'center_title'}>
                 <h1>You are not granted access</h1>
