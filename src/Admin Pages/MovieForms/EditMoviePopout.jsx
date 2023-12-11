@@ -1,9 +1,10 @@
 import '../Table/Table.css';
 import './EditMoviePopout.css';
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { toast } from 'react-toastify';
 import { APIContext, useApiData } from '../../utils/API';
 
-const EditMoviePopout = ({ onClose, movieData } ) => {
+const EditMoviePopout = ({ onClose, movieData }) => {
   //pass "movieData" from Table.jsx
   const api = useContext(APIContext);
     useEffect(() => {
@@ -77,32 +78,27 @@ const EditMoviePopout = ({ onClose, movieData } ) => {
           movieShowDates: '',
           movieShowTimes: '',
         });
-        try {
-          const submitData = {
-            id: movieData.id,
-            movieTitle: formData.movieTitle,
-            movieCategory: formData.movieCategory,
-            movieCast: formData.movieCast,
-            movieDirector: formData.movieDirector,
-            movieProducer: formData.movieProducer,
-            movieSynopsis: formData.movieSynopsis,
-            movieReviews: formData.movieReviews,
-            movieTrailerPicture: formData.movieTrailerPicture,
-            movieTrailerVideo: formData.movieTrailerVideo,
-            movieMpaaRating: formData.movieMpaaRating,
-            movieShowDates: formData.movieShowDates,
-            movieShowTimes: formData.movieShowTimes,
-          };
-          const response = await api.updateMovie(submitData);
-          if (response.ok) {
-            const data = response.message;
-            console.log('Form submitted successfully!', data);
-            onClose();
-          } else {
-            console.error('Error submitting form:', response.message);
-          }
-        } catch (error) {
-          console.error('Error:', error);
+        const submitData = {
+          id: movieData.id,
+          movieTitle: formData.movieTitle,
+          movieCategory: formData.movieCategory,
+          movieCast: formData.movieCast,
+          movieDirector: formData.movieDirector,
+          movieProducer: formData.movieProducer,
+          movieSynopsis: formData.movieSynopsis,
+          movieReviews: formData.movieReviews,
+          movieTrailerPicture: formData.movieTrailerPicture,
+          movieTrailerVideo: formData.movieTrailerVideo,
+          movieMpaaRating: formData.movieMpaaRating,
+          movieShowDates: formData.movieShowDates,
+          movieShowTimes: formData.movieShowTimes,
+        };
+        const response = await api.updateMovie(submitData);
+        if (response.ok) {
+          toast.success('Movie updated');
+          onClose();
+        } else {
+          toast.error(`Error: ${response.message}`);
         }
 
       };
