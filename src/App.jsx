@@ -18,9 +18,18 @@ import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import TrailerPage from './components/TrailerPage/TrailerPage';
 import { API, APIContext, useApiData } from './utils/API';
+import { SessionContext, useSession } from './utils/Session';
+import BookMovie from './components/BookMovie/BookMovie';
+
 
 export default function App() {
-  const api = useMemo(() => new API('http://198.251.67.241:8080'), []);
+  const [sessionData, setSessionData] = useState(null);
+  const [checkoutDetails, setCheckoutDetails] = useState(null);
+  const api = useMemo(() => {
+    const sessionId = sessionData !== null ? sessionData.sessionId : null;
+    return new API('http://198.251.67.241:8080', sessionId);
+  }, [sessionData]);
+  const session = useSession(api, sessionData, setSessionData);
   const [movies, setMovies] = useState([]);
   const [refreshMovies] = useApiData(async (api, tools) => {
     try {
@@ -34,26 +43,36 @@ export default function App() {
   }, { api });
   return (
     <APIContext.Provider value={api}>
-      <Routes>
-        <Route path="/" element={<Homepage {...{movies, refreshMovies}}/>}/>
-        <Route path="/Activate" element={<Activate/>}/>
-        <Route path="/admin" element={<MainAdmin/>}/>
-        <Route path="/BookingPage/:id/*" element={<BookingPage {...{movies,refreshMovies}}/>}/>
-        <Route path="/Checkout/:encodedDetails/" element={<Checkout/>}/>
-        <Route path="/CreateNewPassword" element={<CreateNewPassword/>}/>
-        <Route path="/EditProfile" element={<EditProfile/>}/>
-        <Route path="/ForgotPassword" element={<ForgotPassword/>}/>
-        <Route path="/Homepage" element={<Homepage {...{movies, refreshMovies}}/>}/>
-        <Route path="/Listing/:id/*" element={<Listings {...{movies, refreshMovies}}/>}/>
-        <Route path="/Login" element={<Login/>}/>
-        <Route path="/MainAdmin" element={<MainAdmin/>}/>
-        <Route path="/ManageMovies" element={<ManageMovies/>}/>
-        <Route path="/ManagePromotions" element={<ManagePromotions/>}/>
-        <Route path="/ManageUsers" element={<ManageUsers/>}/>
-        <Route path="/OrderConfirmation" element={<OF/>}/>
-        <Route path="/Signup" element={<Signup/>}/>
-        <Route path="/TrailerPage" element={<TrailerPage/>}/>
-      </Routes>
+      <SessionContext.Provider value={session}>
+        <Routes>
+          <Route path="/" element={<Homepage {...{movies, refreshMovies}}/>}/>
+          <Route path="/Activate" element={<Activate/>}/>
+          <Route path="/admin" element={<MainAdmin/>}/>
+          <Route path="/BookingPage/:id/*" element={<BookingPage {...{movies,refreshMovies}}/>}/>
+          <Route path="/Checkout/:encodedDetails/" element={<Checkout/>}/>
+          <Route path="/CreateNewPassword" element={<CreateNewPassword/>}/>
+          <Route path="/EditProfile" element={<EditProfile/>}/>
+          <Route path="/ForgotPassword" element={<ForgotPassword/>}/>
+          <Route path="/Homepage" element={<Homepage {...{movies, refreshMovies}}/>}/>
+          <Route path="/Listing/:id/*" element={<Listings {...{movies, refreshMovies}}/>}/>
+          <Route path="/Login" element={<Login/>}/>
+          <Route path="/MainAdmin" element={<MainAdmin/>}/>
+          <Route path="/ManageMovies" element={<ManageMovies/>}/>
+          <Route path="/ManagePromotions" element={<ManagePromotions/>}/>
+          <Route path="/ManageUsers" element={<ManageUsers/>}/>
+          <Route path="/OrderConfirmation" element={<OF/>}/>
+          <Route path="/Signup" element={<Signup/>}/>
+          <Route path="/TrailerPage" element={<TrailerPage/>}/>
+          <Route
+          path="/BookMovie/:id"
+          element={<BookMovie setCheckoutDetails={setCheckoutDetails} />}
+        />
+        <Route
+          path="/Checkout"
+          element={<Checkout checkoutDetails={checkoutDetails} />}
+        />
+        </Routes>
+      </SessionContext.Provider>
     </APIContext.Provider>
   );
 }

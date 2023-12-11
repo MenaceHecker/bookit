@@ -1,25 +1,36 @@
 import './EditPaymentForm.css';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { APIContext } from '../../utils/API';
 
-const EditPaymentForm = ({setShowPopout}) => {
+const EditPaymentForm = ({setShowPopout, editingCard}) => {
+
+  useEffect(() => {
+    if (editingCard) {
+      setFormData({
+        
+        firstName: editingCard.firstName,
+        lastName: editingCard.lastName,
+        cardNumber: editingCard.lastFourDigits,
+        expirationDate: editingCard.expirationDate,
+        securityCode: editingCard.securityCode,
+        billingAddress: editingCard.billingAddress,
+     
+      });
+    }
+  }, [editingCard]);
+
   const api = useContext(APIContext);
     const [formData, setFormData] = useState({
       //Payment Information/Card Info
-      cardFirstName: '',
-      cardLastName: '',
-      cardNumber: '',
-      expirationDate: '',
-      securityCode: '',
-      //Billing Address
-      billingFirstName: '',
-      billingLastName: '',
-      billingStreetAddress: '',
-      billingCity: '',
-      billingState: '',
-      billingCountry: '',
-      billingZipCode: '',
-      billingPhoneNumber: '',
+      
+        firstName: '',
+        lastName: '',
+        cardNumber: '',
+        expirationDate: '',
+        securityCode:'',
+        // billingFirstName: editingCard.billingFirstName,
+        // billingLastName: editingCard.billingLastName,
+        billingAddress: '',
  
     });
   
@@ -38,33 +49,35 @@ const EditPaymentForm = ({setShowPopout}) => {
       console.log('Form submitted:', formData);
       setFormData({
         //Payment Information/Card Info
-        cardFirstName: '',
-        cardLastName: '',
+       
+        firstName: '',
+        lastName: '',
         cardNumber: '',
         expirationDate: '',
         securityCode: '',
         //Billing Address
-        billingFirstName: '',
-        billingLastName: '',
-        billingStreetAddress: '',
-        billingCity: '',
-        billingState: '',
-        billingCountry: '',
-        billingZipCode: '',
-        billingPhoneNumber: '',
+        // billingFirstName: '',
+        // billingLastName: '',
+        billingAddress: '',
+        // billingCity: '',
+        // billingState: '',
+        // billingCountry: '',
+        // billingZipCode: '',
+        // billingPhoneNumber: '',
       });
 
       try {
-        const billingAddress = [formData.billingStreetAddress, formData.billingCity, formData.billingState, formData.billingZipCode].join(' ');
+        // const billingAddress = [formData.billingStreetAddress, formData.billingCity, formData.billingState, formData.billingZipCode].join(' ');
         const cardData = {
+          cardId: editingCard.cardId,
           cardNumber: formData.cardNumber,
-          firstName: formData.cardFirstName,
-          lastName: formData.cardLastName,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           securityCode: formData.securityCode,
-          billingAddress,
-          expirationData: formData.expirationDate
+          billingAddress: formData.billingAddress,
+          expirationDate: formData.expirationDate
         };
-        const response = api.createCard(cardData);
+        const response = await api.updateCard(cardData);
         if (response.ok) {
           const payments = response.message;
           console.log('Form submitted successfully!', payments);
@@ -100,8 +113,8 @@ const EditPaymentForm = ({setShowPopout}) => {
                     First Name
                     <input
                       type="text"
-                      name="cardFirstName"
-                      value={formData.cardFirstName}
+                      name="firstName"
+                      value={formData.firstName}
                       onChange={handleChange}
                       placeholder="Card First Name"
                     />
@@ -112,8 +125,8 @@ const EditPaymentForm = ({setShowPopout}) => {
                     Last Name
                     <input
                       type="text"
-                      name="cardLastName"
-                      value={formData.cardLastName}
+                      name="lastName"
+                      value={formData.lastName}
                       onChange={handleChange}
                       placeholder="Card Last Name"
                     />
@@ -157,7 +170,7 @@ const EditPaymentForm = ({setShowPopout}) => {
                 
                 <h3 className="edit_payment_form_h3">Edit Billing Address</h3>
                 <div className="edit_payment_form_row">
-                  <div className="edit_payment_form_column">
+                  {/* <div className="edit_payment_form_column">
                     First Name 
                     <input
                       type="text"
@@ -167,8 +180,8 @@ const EditPaymentForm = ({setShowPopout}) => {
                       placeholder="Billing First Name"
                     />
                   </div>
-  
-                  <div className="edit_payment_form_column">
+   */}
+                  {/* <div className="edit_payment_form_column">
                     Last Name
                     <input
                       type="text"
@@ -177,24 +190,24 @@ const EditPaymentForm = ({setShowPopout}) => {
                       onChange={handleChange}
                       placeholder="Billing Last name"
                     />
-                  </div>
+                  </div> */}
                 
-                  <div className="edit_payment_form_column">
+                  {/* <div className="edit_payment_form_column"> */}
                     Billing Street Address
                     <input
                       type="text"
-                      name="billingStreetAddress"
-                      value={formData.billingStreetAddress}
+                      name="billingAddress"
+                      value={formData.billingAddress}
                       onChange={handleChange}
-                      placeholder="Billing Street Address"
+                      placeholder="Billing Address"
                     />
                   </div>
   
-                  <div className="edit_payment_form_column">
+                  {/* <div className="edit_payment_form_column">
                     Billing City
                     <input
                       type="text"
-                      name=" billingCity"
+                      name="billingCity"
                       value={formData.billingCity}
                       onChange={handleChange}
                       placeholder="Billing City"
@@ -237,7 +250,7 @@ const EditPaymentForm = ({setShowPopout}) => {
                     />
                   </div>
                 </div>
-  
+   */}
                 
                 <button type="submit">Submit</button>
                 <button className="close-button" onClick={onClose}>Close</button>

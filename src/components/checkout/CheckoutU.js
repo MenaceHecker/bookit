@@ -1,8 +1,11 @@
 import React, {useState, useContext, useEffect} from 'react';
 import './check.css';
 import { APIContext, useApiData } from '../../utils/API';
-
+import { useNavigate } from 'react-router-dom';
 const CheckoutU = (props) => {
+    let navigate = useNavigate();
+    let totalPrice = 0.0;
+    let [pCode, setPC] = useState('');
     const {
         id,
         selectedTickets,
@@ -12,11 +15,27 @@ const CheckoutU = (props) => {
     } = props;
     console.log("Selected Seats:", selectedSeats);
     const childPrice = 11.99, adultPrice = 48.99, seniorPrice = 2.99;
-
+    const [paymentFormData, setPFD] = useState({
+        //Payment Information/Card Info
+        firstName: '',
+        lastName: '',
+        cardNumber: '',
+        expirationDate: '',
+        billingStreetAddress: '',
+        code: '',
+    });
+    const [billingFormData, setBFD] = useState(
+        {
+            firstName: '',
+            lastName: '',
+            billingStreetAddress: '',
+        });
     const api = useContext(APIContext);
     const [payments, setPayments] = useState([]);
-    //console.log(payments);
-
+    const [selectedPayment, setSelectedPayment] = useState(null);
+    const handlePaymentChange = (paymentMethod) => {
+        setSelectedPayment(paymentMethod);
+    };
     const [refreshPayments] = useApiData(async (api) => {
         try {
           const response = await api.listCards();
@@ -29,93 +48,115 @@ const CheckoutU = (props) => {
         }
       });
 
-    //Billing Information
-    const [fields, setFields] = useState(
-        [{ value: 'Country' }, {value: 'Name'}, {value: 'Address'}, {value: 'City'},
-            {value: 'State'},{value: 'Zip Code'}, {value: 'Phone Number'}]);
-
-    //Payment Information
-    const [fields2, setFields2] = useState(
-        [{ value: 'Name on Card' }, {value: 'Billing Address'}, {value: 'Card Number'}, {value: 'Expiration'},
-            {value:'Security Code'}]);
-
+    const addCard = async (card) => {
+        try {
+            const response = await api.createCard(card);
+            if (!response.ok)
+                console.error(response.message);
+            /*setPFD({
+                email: '',
+                subscribe: 'off',
+                password: '',
+                password2: '',
+            });*/
+            refreshPayments();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    const save_payment = async (e) => {
+        e.preventDefault();
+        console.log('Form submitted:', paymentFormData);
+        addCard(paymentFormData);
+    };
+    const submit = async (e) => {
+        e.preventDefault();
+        if (selectedPayment) {
+        const book = {
+            showingId: id,
+            cardId: selectedPayment.cardId,
+            promoCode: pCode,
+            tickets: selectedTickets,
+        }
+            try {
+                const response = await api.createBooking(book);
+                if (response.ok)
+                    navigate('/OF');
+                else
+                    console.error(response.message);
+            } catch (err) {
+                console.error(err);
+            }
+        } else {
+            console.log('No payment method selected');
+        }
+    }
 
     let items = [], count = 1;
     // logic for generating purchases
     if (selectedTickets.child > 0) {
         items.push(count + '. Child Tickets: ' + selectedTickets.child + '    $' + selectedTickets.child*childPrice);
+        totalPrice += selectedTickets.child*childPrice;
         count++;
     }
     if (selectedTickets.adult > 0) {
         items.push(count + '. Adult Tickets: ' + selectedTickets.adult + '    $' + selectedTickets.adult*adultPrice);
+        totalPrice += selectedTickets.adult*adultPrice;
         count++;
     }
     if (selectedTickets.senior > 0) {
         items.push(count + '. Senior Tickets: ' + selectedTickets.senior + '    $' + selectedTickets.senior*seniorPrice);
+        totalPrice += selectedTickets.senior*seniorPrice;
         count++;
     }
-
     //Dummy Payment Methods
     let methods = [{name:"Card name: Joe Shamlock", number: "Card: ****98"},{name:"Card name: Johnny Jackson", number:"Card: ****71"}, {name:"Card name: Jeffrey Humor", number:"Card: ****25"}]
 
 
-
+/*
     const handleInputChange = (index, event) => {
-        const values = [...fields];
+        const values = [...billingFormData];
         values[index].value = event.target.value;
-        setFields(values);
+        setBFD(values);
     };
     const handleClear = (index, event) => {
-        const values = [...fields];
+        const values = [...billingFormData];
         values[index].value = '';
-        setFields(values);
+        setBFD(values);
     }
     const handleInputChange2 = (index, event) => {
-        const values = [...fields2];
+        const values = [...paymentFormData];
         values[index].value = event.target.value;
-        setFields2(values);
+        setPFD(values);
     };
     const handleClear2 = (index, event) => {
-        const values = [...fields2];
+        const values = [...paymentFormData];
         values[index].value = '';
-        setFields2(values);
+        setPFD(values);
     }
+    */
 
-    const submit = async () => {
-        try {
-            const response = await fetch('http://198.251.67.241:8080/api/billing', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(fields),
-            });
-
-            const data = await response.json();
-            console.log('Submitted successfully:', data);
-        } catch (error) {
-            console.error('Error submitting data:', error);
-        }
+    const handleInputChange = (key, value) => {
+        setPFD((prevData) => ({
+            ...prevData,
+            [key]: value,
+        }));
     };
-
+    const handleInputChange2 = (key, value) => {
+        setBFD((prevData) => ({
+            ...prevData,
+            [key]: value,
+        }));
+    };
+    const handleInputChangePromo = (s) => {
+        setPC(s);
+    }
     return (
         <div id={"checkout_cont"}>
         <div className={"left"}>
-            <h1 id={'orderconf_h1'}>Billing Information</h1>
-            {fields.map((field, index) => (
-                <div key={index} id={"inp_cont"}>
-                    <input
-                        id={'ibox'}
-                        type="text"
-                        value={field.value}
-                        onChange={(e) => handleInputChange(index, e)}
-                        onClick={(e) => handleClear(index, e)}
-                    />
-                </div>
-            ))}
-
+            {/*
             <h1 id={'orderconf_h1'}>Payment Information</h1>
-            {fields2.map((field, index) => (
+            {paymentFormData.map((field, index) => (
                 <div key={index} id={"inp_cont"}>
                     <input
                         id={'ibox'}
@@ -126,10 +167,48 @@ const CheckoutU = (props) => {
                     />
                 </div>
             ))}
+
+            <h1 id={'orderconf_h1'}>Billing Information</h1>
+            {billingFormData.map((field, index) => (
+                <div key={index} id={"inp_cont"}>
+                    <input
+                        id={'ibox'}
+                        type="text"
+                        value={field.value}
+                        onChange={(e) => handleInputChange(index, e)}
+                        onClick={(e) => handleClear(index, e)}
+                    />
+                </div>
+            ))}
+            */}
+            <h1 id={'orderconf_h1'}>Payment Information</h1>
+            {Object.keys(paymentFormData).map((key) => (
+                <div key={key} id={"inp_cont"}>
+                    <p htmlFor={key}>{key}</p>
+                    <input
+                        id={'ibox'}
+                        type="text"
+                        value={paymentFormData[key]}
+                        onChange={(e) => handleInputChange(key, e.target.value)}
+                    />
+                </div>
+            ))}
+            <h1 id={'orderconf_h1'}>Billing Information</h1>
+            {Object.keys(billingFormData).map((key) => (
+                <div key={key} id={"inp_cont"}>
+                    <p htmlFor={key}>{key}</p>
+                    <input
+                        id={'ibox'}
+                        type="text"
+                        value={billingFormData[key]}
+                        onChange={(e) => handleInputChange2(key, e.target.value)}
+                    />
+                </div>
+            ))}
+
             
             <div id={"buttongroup"}>
-                <button id={"checkout_button"} onClick={submit}>Submit</button>
-                <button id={"checkout_button"} onClick={submit}>Save Payment Method</button>
+                <button id={"checkout_button"} onClick={save_payment}>Save Payment Method</button>
             </div>
         </div>
 
@@ -146,19 +225,32 @@ const CheckoutU = (props) => {
                 </div>
             ))}
         </div>
+            <div className={"right"}>
+                <h2>Enter Promo:</h2>
+                <input
+                    type="text"
+                    value={pCode}
+                    onChange={(e) => handleInputChangePromo(e.target.value)}
+                />
+            </div>
 
             <div className={"right"}>
                 {payments.map((paymentMethod) => (
                     <div key={paymentMethod.cardId} id={"inp_cont"}>
                         <div id={"list_slot"}>
-                            <input type="radio" value="Male" name="gender" />
+                            <input
+                                type="radio"
+                                value={paymentMethod.cardId}
+                                name="paymentMethod"
+                                onChange={() => handlePaymentChange(paymentMethod)}
+                            />
                             <p id={'orderconf_h1'}>{paymentMethod.firstName} {paymentMethod.lastName}</p>
                             <p id={'orderconf_h1'}>{paymentMethod.lastFourDigits}</p>
                             <p id={'orderconf_h1'}>{paymentMethod.expirationDate}</p>
                         </div>
                     </div>
                 ))}
-                <button id={"checkout_button"}>Complete Purchase</button>
+                <button id={"checkout_button"} onClick={submit}>Complete Purchase</button>
             </div>
         </div>
     );
