@@ -250,7 +250,7 @@ export class API {
   }
 
   async getPromotionFromCode(promoCode) {
-    const url = this.#newSessionUrl('api/listAllPromotions');
+    const url = this.#newSessionUrl('api/getPromotionFromCode');
     url.searchParams.append('promoCode', promoCode);
     return await getResponseJson(this.#fetchGet(url));
   }
