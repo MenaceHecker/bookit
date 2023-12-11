@@ -3,10 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './CreateNewPassword.css';
 import Header from '../header/header';
 import Footer from '../footer/footer';
-import { APIContext } from '../../utils/API';
+import { SessionContext } from '../../utils/Session';
 
 function CreateNewPassword() {
-  const api = useContext(APIContext);
+  const session = useContext(SessionContext);
   const navigate = useNavigate();
   const { search } = useLocation();
   
@@ -22,19 +22,17 @@ function CreateNewPassword() {
 
   const loginWithPasswordToken = async (token, newPassword) => {
     try {
-      const response = await api.loginWithPasswordToken(token, newPassword);
+      const response = await session.loginWithPasswordToken(token, newPassword);
       if (!response.ok) {
         console.error(response.message);
         return;        
       }
-      const data = await response.data;
+      const currentUser = response.data;
       setFormData({
         newPassword: '',
         confirmNewPassword:'',
       });
-      localStorage.setItem('sessionId', data.sessionId);
-      localStorage.setItem('isPrivileged', +data.isPrivileged);
-      if (data.isPrivileged) {
+      if (currentUser.privileged) {
         navigate('/ManageMovies');
       } else {
         navigate('/');
