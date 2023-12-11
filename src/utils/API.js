@@ -246,13 +246,13 @@ export class API {
 
   async listAllPromotions() {
     const url = this.#newSessionUrl('api/listAllPromotions');
-    return await getResponseText(this.#fetchGet(url));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async getPromotionFromCode(promoCode) {
     const url = this.#newSessionUrl('api/listAllPromotions');
     url.searchParams.append('promoCode', promoCode);
-    return await getResponseText(this.#fetchGet(url));
+    return await getResponseJson(this.#fetchGet(url));
   }
 
   async sendPromotion(promotionId) {
