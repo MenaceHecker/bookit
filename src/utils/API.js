@@ -131,6 +131,11 @@ export class API {
     return await getResponseJson(this.#fetchGet(url));
   }
 
+  async listAllUsers() {
+    const url = this.#newSessionUrl('api/all');
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
   async updatePassword(oldPassword, newPassword) {
     const url = this.#newSessionUrl('api/updatePassword');
     url.searchParams.append('oldPassword', oldPassword);
