@@ -165,8 +165,11 @@ const Table = ({ data, pageType, refresh }) => {
                       <td>{`${item.suspended}`}</td>
                       <td>
                         <button onClick={() => suspendUser(item)}>Suspend</button>
+                        <br/>
                         <button onClick={() => promoteUser(item)}>Promote</button>
+                        <br/>
                         <button onClick={togglePopout}>Edit</button>
+                        <br/>
                         {showPopout && <EditUserForm  onClose={closePopout} selected={item}/>}
                         <button onClick={() => deleteUser(item.id)}>Delete</button>
                       </td>
