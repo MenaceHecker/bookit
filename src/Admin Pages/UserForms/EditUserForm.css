@@ -1,0 +1,87 @@
+.edit_user_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+  }
+  
+  .edit_user_form_container {
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid red;
+    width: 40%;
+    height: 40%;
+    margin-top: 15px;
+    margin-left: 520px;
+    margin-right: 700px;
+    position: fixed;
+    left: 15px; /* Adjust the left position */
+    top: 200px; /* Adjust the top position */
+    right: 400px;
+  }
+  
+  .edit_user_form_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .edit_user_form_row label {
+    text-align: left;
+    width: 45%; 
+  }
+  
+  .edit_user_form_row input {
+    width: 50%; 
+  }
+  
+  .edit_close_button {
+    
+    background-color: transparent;
+    margin: 8px ;
+    margin-left: 8px;
+    padding: 8px;
+    background-color: #141414;
+    color: white;
+    border: none;
+    cursor: pointer;
+    
+    
+  }
+
+  .edit_user_form button  { 
+    background-color: transparent;
+    margin: 8px ;
+    margin-left: 8px;
+    padding: 8px;
+    background-color: #141414;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    
+  
+  }
+  
+  .edit_user_form button[type="submit"] {
+    
+    margin-right: 8px;
+    padding: 8px;
+    background-color: #141414;
+    color: white;
+    border: none;
+    cursor: pointer;
+    
+  }
+  
+  .edit_user_button_row {
+    margin-top: 20px;
+    display:flex;
+    flex-direction:row;
+    justify-content: center;
+  }
+  
