@@ -8,11 +8,13 @@ const AddUserForm = ({setShowPopout }) => {
           email: '',
           firstName: '',
           lastName: '',
-          verificationStatus: '',
-          type: '',
+          password: '',
+          // verificationStatus: '',
+          type: '', //customer or administrator
+          wantsPromotions: false,//wants promotions
   
         });
-      
+      //
         const handleInputChange = (e) => {
           const { name, value } = e.target;
           setFormData({ ...formData, [name]: value });
@@ -55,9 +57,8 @@ const AddUserForm = ({setShowPopout }) => {
                 </label>
       
                 <label>
-                  Verification Status:
-                  <br />
-                  <input type="text" name="verificationStatus" value={formData.verificationStatus} onChange={handleInputChange} />
+                  Subscribe/Unsubscribe to promotions?
+                  <input type="checkbox" name="wantsPromotions" checked={formData.wantsPromotions} onChange={handleInputChange}/>
                 </label>
               </div>
 

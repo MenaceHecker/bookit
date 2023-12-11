@@ -1,16 +1,18 @@
 
-import './AddUserForm.css';
+import './EditUserForm.css';
 import React, { useState } from 'react';
 
-const EditUserForm = ({setShowPopout }) => {
+const EditUserForm = ({onClose}) => {
     
         const [formData, setFormData] = useState({
           email: '',
           firstName: '',
           lastName: '',
-          verificationStatus: '',
-          type: '',
-  
+          //verificationStatus: '',
+          password: '',
+          type: '', //customer or administrator
+          wantsPromotions: '',
+          
         });
       
         const handleInputChange = (e) => {
@@ -23,16 +25,16 @@ const EditUserForm = ({setShowPopout }) => {
           // form submission logic here, put in database
         };
       
-        const onClose = () => {
-          setShowPopout(false);
+        const handleClose = () => {
+            onClose();
           // close button logic here, close form
         };
       
         return (
-          <div className="user_form">
-            <form onSubmit={handleSubmit} className="user_form_container">
+          <div className="edit_user_form">
+            <form onSubmit={handleSubmit} className="edit_user_form_container">
             
-              <div className="user_form_row">
+              <div className="edit_user_form_row">
                 <label>
         
                   Email:
@@ -47,21 +49,21 @@ const EditUserForm = ({setShowPopout }) => {
                 </label>
               </div>
       
-              <div className="user_form_row">
+              <div className="edit_user_form_row">
                 <label>
                   Last Name:
                   <br />
                   <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} />
                 </label>
       
+                
                 <label>
-                  Verification Status:
-                  <br />
-                  <input type="text" name="verificationStatus" value={formData.verificationStatus} onChange={handleInputChange} />
+                  Subscribe/Unsubscribe to promotions?
+                  <input type="checkbox" name="wantsPromotions" checked={formData.wantsPromotions} onChange={handleInputChange}/>
                 </label>
               </div>
 
-              <div className="user_form_row">
+              <div className="edit_user_form_row">
                 <label>
                   Type:
                   <br />
@@ -71,9 +73,9 @@ const EditUserForm = ({setShowPopout }) => {
                 
               </div>
 
-              <div className = "user_button_row">
+              <div className = "edit_user_button_row">
                 <button type="submit">Submit</button>
-                <button type = "button" onClick={onClose}>Close</button>
+                <button type = "button" onClick={handleClose}>Close</button>
               </div>
             </form>
             

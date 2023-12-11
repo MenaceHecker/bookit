@@ -70,14 +70,14 @@ const EditPaymentForm = ({setShowPopout, editingCard}) => {
         // const billingAddress = [formData.billingStreetAddress, formData.billingCity, formData.billingState, formData.billingZipCode].join(' ');
         const cardData = {
           cardId: editingCard.cardId,
-          lastFourDigits: formData.cardNumber,
+          cardNumber: formData.cardNumber,
           firstName: formData.firstName,
           lastName: formData.lastName,
           securityCode: formData.securityCode,
           billingAddress: formData.billingAddress,
           expirationDate: formData.expirationDate
         };
-        const response = api.updateCard(cardData);
+        const response = await api.updateCard(cardData);
         if (response.ok) {
           const payments = response.message;
           console.log('Form submitted successfully!', payments);

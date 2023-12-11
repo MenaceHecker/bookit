@@ -3,6 +3,7 @@ import './Table.css'
 import { useContext, useState } from 'react';
 import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
 import { APIContext } from '../../utils/API';
+import EditUserForm from '../UserForms/EditUserForm';
 
 
 //For ManageMovies.jsx: Movie name, Movie director, Rooms, Booking Date(s), Action buttons (add, remove, edit)
@@ -13,10 +14,12 @@ import { APIContext } from '../../utils/API';
 
 const Table = ({ data, pageType }) => {
   const api = useContext(APIContext);
+  // const [showUserPopout, setShowUserPopout] = useState(false);
   const [showPopout, setShowPopout] = useState(false);
 
       const togglePopout = () => {
-        setShowPopout(!showPopout);
+        setShowPopout(!showPopout); 
+        // setShowUserPopout(!showUserPopout);
       };
 
      
@@ -95,11 +98,12 @@ const Table = ({ data, pageType }) => {
                       <td>{item.email}</td>
                       <td>{item.firstName}</td>
                       <td>{item.lastName}</td>
-                      <td>{item.verificationStatus}</td>
+                      <td>{item.wantsPromotions}</td>
                       <td>{item.type}</td>
                       <td>
                         <button>Suspend</button>
-                        <button>Edit</button>
+                        <button onClick={togglePopout}>Edit</button>
+                        {showPopout && <EditUserForm  onClose={closePopout}/>}
                         <button>Delete</button>
                       </td>
                     </tr>
