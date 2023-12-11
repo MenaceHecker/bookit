@@ -28,11 +28,10 @@ function ManageUsers() {
     const [users, setUsers] = useState([]);
     const [refreshUsers] = useApiData(async (api) => {
         const response = await api.listAllUsers();
-        if (response.ok) {
+        if (response.ok)
             setUsers(response.data);
-        } else if (response.type !== 'aborted') {
+        else if (response.type !== 'aborted')
             toast.error(`Error fetching users: ${response.message}`);
-        }
     });
     const togglePopout = () => {
       setShowPopout(!showPopout);
@@ -61,11 +60,7 @@ function ManageUsers() {
                 {showPopout && <AddUserForm onClose={togglePopout} setShowPopout={setShowPopout}/>}**/}
             </div>
             <div className = "table">
-<<<<<<< HEAD
-                <Table data={users} pageType="ManageUsers" refresh={refreshUsers} />
-=======
                 <Table data={users} pageType="ManageUsers" refresh={refreshUsers}/>
->>>>>>> f471757 (Add toasts to ManageUsers)
             </div>
         <Footer/>
         </div>
