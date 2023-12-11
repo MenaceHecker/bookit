@@ -35,8 +35,10 @@ const CheckoutU = (props) => {
     const api = useContext(APIContext);
     const [payments, setPayments] = useState([]);
     const [selectedPayment, setSelectedPayment] = useState(null);
+    const [previousPaymentSelected, setPPS] = useState(false);
     const handlePaymentChange = (paymentMethod) => {
-        setSelectedPayment(paymentMethod);
+        setSelectedPayment(selectedPayment === paymentMethod ? null : paymentMethod);
+        setPPS(!previousPaymentSelected);
     };
     const [refreshPayments] = useApiData(async (api) => {
         try {
@@ -188,7 +190,7 @@ const CheckoutU = (props) => {
             ))}
             */}
             <h1 id={'orderconf_h1'}>Payment Information</h1>
-            {Object.keys(paymentFormData).map((key) => (
+            {!previousPaymentSelected && Object.keys(paymentFormData).map((key) => (
                 <div key={key} id={"inp_cont"}>
                     <p htmlFor={key}>{key}</p>
                     <input
@@ -199,6 +201,13 @@ const CheckoutU = (props) => {
                     />
                 </div>
             ))}
+            {previousPaymentSelected && <p>Card Code:</p>}
+            {previousPaymentSelected && <input
+                id={'ibox'}
+                type="text"
+                value={paymentFormData.code}
+                onChange={(e) => handleInputChange('code', e.target.value)}
+            />}
             <h1 id={'orderconf_h1'}>Billing Information</h1>
             {Object.keys(billingFormData).map((key) => (
                 <div key={key} id={"inp_cont"}>
@@ -214,7 +223,7 @@ const CheckoutU = (props) => {
 
             
             <div id={"buttongroup"}>
-                <button id={"checkout_button"} onClick={save_payment}>Save Payment Method</button>
+                {!previousPaymentSelected && <button id={"checkout_button"} onClick={save_payment}>Save Payment Method</button>}
             </div>
         </div>
 
@@ -252,7 +261,7 @@ const CheckoutU = (props) => {
                     <div key={paymentMethod.cardId} id={"inp_cont"}>
                         <div id={"list_slot"}>
                             <input
-                                type="radio"
+                                type="checkbox"
                                 value={paymentMethod.cardId}
                                 name="paymentMethod"
                                 onChange={() => handlePaymentChange(paymentMethod)}
