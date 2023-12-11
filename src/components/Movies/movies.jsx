@@ -44,10 +44,10 @@ const Movies = ({ movies, refreshMovies }) => {
       <h3>Cast:<br></br>{movieCast}</h3>
         <h3>Description:<br></br>{movieSynopsis}</h3>
       <h3>Category:<br></br>{movieCategory}</h3>
-        <div className='button_div'>
-          <button  onClick={() => bookNow(id, movieTitle)}>Book Now</button>
-        </div>
     </article>
+      <div className='button_div'>
+        <button  onClick={() => bookNow(id, movieTitle)}>Book Now</button>
+      </div>
     </div>
   );
 
