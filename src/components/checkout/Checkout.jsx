@@ -1,4 +1,4 @@
-import Header from "../header/header";
+import CheckoutHeader from "./CheckoutHeader";
 import CheckoutU from "./CheckoutU";
 import Footer from "../footer/footer";
 import {useParams} from 'react-router-dom';
@@ -8,7 +8,7 @@ const Checkout = ({movies, refreshMovies}) => {
     const decodedDetails = JSON.parse(decodeURIComponent(encodedDetails));
     return (
         <>
-            <Header/>
+            <CheckoutHeader/>
             {decodedDetails && <CheckoutU {...decodedDetails}/>}
             <Footer/>
         </>
