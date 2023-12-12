@@ -42,8 +42,14 @@ const ShowTimePopout = ({ onClose, movieData }) => {
             toast.error(`Error fetching listings: ${response.message}`);
     };
 
-    const handleRemoveShowtime = (showtimeToRemove) => {
-
+    const handleRemoveShowtime = async (showingid) => {
+        const response = await api.deleteShowing(showingid)
+        if (response.ok) {
+            console.log(response)
+            refreshShowTimes();
+        } else if (response.type !== 'aborted')
+            console.log (response)
+        toast.error(`Error fetching listings: ${response.message}`);
     };
 
     return (
@@ -61,8 +67,8 @@ const ShowTimePopout = ({ onClose, movieData }) => {
             <ul>
                 {showTimes.map((showtime, index) => (
                     <li key={index}>
-                        {showtime}{' '}
-                        <button onClick={() => handleRemoveShowtime(showtime)}>Remove</button>
+                        <p>{showtime.startTime}</p>
+                        <button onClick={() => handleRemoveShowtime(showtime.id)}>Remove</button>
                     </li>
                 ))}
             </ul>
