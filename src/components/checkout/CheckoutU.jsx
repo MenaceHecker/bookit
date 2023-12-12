@@ -207,9 +207,9 @@ const CheckoutU = ({ pendingOrder, setPendingOrder }) => {
                     return (<p key={seatNum}>{type}: ${price.toFixed(2)}</p>);
                 })}
             </div>
-            <p>Total Price: {totalPrice}</p>
+            <p>Total Price: ${totalPrice.toFixed(2)}</p>
             {promotion !== null && <p id={'orderconf_h1'}>Discount: {promotion.name}</p>}
-            {promotion !== null && <p>Percentage: {promotion.discountPct}</p>}
+            {promotion !== null && <p>Percentage: {promotion.discountPct}% off</p>}
             {promotion !== null && <p>Description: {promotion.description}</p>}
             {promotion !== null && <p>Exp. Date: {promotion.expirationDate}</p>}
 
