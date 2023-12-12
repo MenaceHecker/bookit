@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import EditPromotionsForm from '../PromotionsForm/EditPromotionsForm';
 import { APIContext, useApiData } from '../../utils/API';
 import EditUserForm from '../UserForms/EditUserForm';
-
+import ShowTimePopout from "../ShowTimeForms/ShowTimePopout";
 
 //For ManageMovies.jsx: Movie name, Movie director, Rooms, Booking Date(s), Action buttons (add, remove, edit)
 
@@ -17,24 +17,34 @@ const Table = ({ data, pageType, refresh }) => {
 
   //Select a Certain movie for Editing
   const [selectedMovieData, setSelectedMovieData] = useState(null);
-
+  const [selectedShowTimeData, setSelectedShowTimeData] = useState(null);
 
 
 
   const api = useContext(APIContext);
   // const [showUserPopout, setShowUserPopout] = useState(false);
   const [showPopout, setShowPopout] = useState(false);
+  const [showPopoutS, setShowPopoutS] = useState(false);
   const [sentPromo, setSP] = useState(false);
       const togglePopout = (movieData) => {
         setShowPopout(!showPopout); 
         setSelectedMovieData(movieData);
         // setShowUserPopout(!showUserPopout);
       };
+  const toggleSPopout = (movieData) => {
+    setShowPopoutS(!showPopoutS);
+    setSelectedShowTimeData(movieData);
+    // setShowUserPopout(!showUserPopout);
+  };
 
      
   // Add a function to close the popout
   const closePopout = () => {
     setShowPopout(false);
+    refresh();
+  };
+  const closeSPopout = () => {
+    setShowPopoutS(false);
     refresh();
   };
   const removeMovie = async (id) => {
@@ -123,6 +133,10 @@ const Table = ({ data, pageType, refresh }) => {
                         <button onClick={() => togglePopout(item)}>Edit</button>
                         {showPopout && selectedMovieData === item && (
                           <EditMoviePopout onClose={closePopout} movieData={selectedMovieData} />
+                        )}
+                        <button onClick={() => toggleSPopout(item)}>Showtimes</button>
+                        {showPopoutS && selectedShowTimeData === item && (
+                            <ShowTimePopout onClose={closeSPopout} movieData={selectedShowTimeData} />
                         )}
                         <button onClick={() => removeMovie(item.id)}>Remove</button>
                       </td>

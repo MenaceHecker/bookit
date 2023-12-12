@@ -1,0 +1,48 @@
+.showtime-popout {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #722323;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.showtime-popout h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.showtime-popout ul {
+    list-style: none;
+    padding: 0;
+}
+
+.showtime-popout li {
+    margin-bottom: 10px;
+}
+
+.showtime-popout input {
+    width: 70%;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+.showtime-popout button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.showtime-popout button,
+.showtime-popout input {
+    font-size: 1em;
+}
+
+#showtime-li {
+    border: 1px solid #ccc;
+}
