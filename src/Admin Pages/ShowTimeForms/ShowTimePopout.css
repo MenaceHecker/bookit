@@ -50,4 +50,5 @@
     max-height: 150px; /* Set your desired max height */
     overflow-y: auto;
     border: 1px solid #ccc;
+    margin: 20px;
 }

@@ -60,8 +60,10 @@ const CheckoutU = ({ pendingOrder, setPendingOrder }) => {
         });
     const api = useContext(APIContext);
 
-    const previousPaymentSelected = true;
-
+    const [previousPaymentSelected, setPSS] = useState(true);
+    const togglePrev = () => {
+        setPSS(!previousPaymentSelected);
+    }
     const addCard = async (card) => {
         const response = await api.createCard(card);
         if (response.ok)
@@ -224,7 +226,7 @@ const CheckoutU = ({ pendingOrder, setPendingOrder }) => {
             </div>
 
             <div className={"right"}>
-                {paymentCards.map((card) => (
+                {previousPaymentSelected && paymentCards.map((card) => (
                     <div key={card.cardId} id={"inp_cont"}>
                         <div id={"list_slot"}>
                             <input
@@ -234,12 +236,20 @@ const CheckoutU = ({ pendingOrder, setPendingOrder }) => {
                                 checked={selectedCardId === card.cardId}
                                 onChange={() => setSelectedCardId(card.cardId)}
                             />
+
                             <p id={'orderconf_h1'}>{card.firstName} {card.lastName}</p>
                             <p id={'orderconf_h1'}>{card.lastFourDigits}</p>
                             <p id={'orderconf_h1'}>{card.expirationDate}</p>
                         </div>
                     </div>
                 ))}
+
+                <input
+                    type="checkbox"
+                    onChange={togglePrev}
+                />
+                <p>none</p>
+                <br/>
                 <button id={"checkout_button"} onClick={submit}>Complete Purchase</button>
             </div>
         </div>
