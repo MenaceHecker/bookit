@@ -48,11 +48,12 @@ const handleSubmit = async (e) => {
     securityCode: formData.securityCode,
     billingFirstName: formData.billingFirstName,
     billingLastName: formData.billingLastName,
-    billingStreetAddress: formData.billingStreetAddress,
-    billingCity: formData.billingCity,
-    billingState: formData.billingState,
-    billingZipCode: formData.billingZipCode,
-    billingPhoneNumber: formData.billingPhoneNumber,
+    billingStreetAddress: formData.streetAddress,
+    billingCity: formData.city,
+    billingState: formData.state,
+    billingZipCode: formData.zipCode,
+    billingPhoneNumber: formData.phoneNumber,
+    billingCountry: formData.country,
   };
   try {
     const paymentResponse = await api.makePayment(paymentData);
