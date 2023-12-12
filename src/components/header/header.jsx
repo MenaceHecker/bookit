@@ -151,7 +151,7 @@ const Header = () => {
                 <Link to='/MainAdmin'>Admin</Link>
               </li>
               <li>
-                <a href='/'>Contact Us</a>
+                <a href='#footer'>Contact Us</a>
               </li>
             </ul>
             <button className='toggle' onClick={() => setMobile(!Mobile)}>
