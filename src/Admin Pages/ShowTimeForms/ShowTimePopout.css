@@ -44,5 +44,10 @@
 }
 
 #showtime-li {
+
+}
+.scrollable-list {
+    max-height: 150px; /* Set your desired max height */
+    overflow-y: auto;
     border: 1px solid #ccc;
 }

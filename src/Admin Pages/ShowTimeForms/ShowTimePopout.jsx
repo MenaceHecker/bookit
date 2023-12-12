@@ -55,6 +55,7 @@ const ShowTimePopout = ({ onClose, movieData }) => {
     return (
         <div className="showtime-popout">
             <h2>Showtimes for {movieData.movieTitle}</h2>
+            <div className="scrollable-list">
             <ul>
                 {showRooms.map((showroom, index) => (
                     <li key={index} id={'showtime-li'}>
@@ -64,14 +65,17 @@ const ShowTimePopout = ({ onClose, movieData }) => {
                     </li>
                 ))}
             </ul>
+            </div>
+            <div className="scrollable-list">
             <ul>
                 {showTimes.map((showtime, index) => (
                     <li key={index}>
-                        <p>{showtime.startTime}</p>
+                        <p>{new Date(showtime.startTime).toLocaleString()}</p>
                         <button onClick={() => handleRemoveShowtime(showtime.id)}>Remove</button>
                     </li>
                 ))}
             </ul>
+            </div>
             <div>
                 <p>Show Time</p>
                 <input
