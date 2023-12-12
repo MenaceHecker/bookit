@@ -23,18 +23,30 @@ const Footer = () => {
           </div>
           <div className="box">
             <h3>Follow Us</h3>
-            <i className="fab fa-facebook-f"></i>
-            <i className="fab fa-twitter"></i>
-            <i className="fab fa-github"></i>
-            <i className="fab fa-instagram"></i>
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+              <i className="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+              <i className="fab fa-twitter"></i>
+            </a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <i className="fab fa-github"></i>
+            </a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+              <i className="fab fa-instagram"></i>
+            </a>
           </div>
           <div className="box">
             <h3>Bookit</h3>
             <div className="img flexSB">
-              <img src="https://img.icons8.com/color/48/000000/apple-app-store--v3.png" alt="App Store" />
-              <span>App Store</span>
-              <img src="https://img.icons8.com/fluency/48/000000/google-play.png" alt="Google Play Store" />
-              <span>Google Play Store</span>
+              <a href="https://www.apple.com/app-store/" target="_blank" rel="noopener noreferrer">
+                <img src="https://img.icons8.com/color/48/000000/apple-app-store--v3.png" alt="App Store" />
+                <span>App Store</span>
+              </a>
+              <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">
+                <img src="https://img.icons8.com/fluency/48/000000/google-play.png" alt="Google Play Store" />
+                <span>Google Play Store</span>
+              </a>
             </div>
           </div>
         </div>
