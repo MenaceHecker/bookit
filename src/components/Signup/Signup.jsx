@@ -41,8 +41,8 @@ const handleSubmit = async (e) => {
     return;
   }
   const paymentData = {
-    cardFirstName: formData.cardFirstName,
-    cardLastName: formData.cardLastName,
+    cardFirstName: formData.firstName,
+    cardLastName: formData.lastName,
     cardNumber: formData.cardNumber,
     expirationDate: formData.expirationDate,
     securityCode: formData.securityCode,
