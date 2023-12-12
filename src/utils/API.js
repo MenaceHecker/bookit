@@ -231,6 +231,12 @@ export class API {
     return await getResponseJson(this.#fetchGet(url));
   }
 
+  async listFreeSeats(showingId) {
+    const url = this.#newSessionUrl('api/listFreeSeats');
+    url.searchParams.append('showingId', showingId);
+    return await getResponseJson(this.#fetchGet(url));
+  }
+
   async deleteShowing(showingId) {
     const url = this.#newSessionUrl('api/deleteShowing');
     url.searchParams.append('showingId', showingId);

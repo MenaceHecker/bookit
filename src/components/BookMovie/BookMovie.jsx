@@ -1,101 +1,79 @@
-import React, { useState } from 'react';
-import MovieDetail from './MovieDetail';
-import ShowTimeSelector from './ShowTimeSelector';
-import SeatSelector from './SeatSelector';
-import AgeSelector from './AgeSelector';
-import ShowDateSelector from './ShowDateSelector';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './BookMovie.css';
+import AgeSelector from './AgeSelector';
+import MovieDetail from './MovieDetail';
+import SeatSelector from './SeatSelector';
+import ShowTimeSelector from './ShowTimeSelector';
+import { useApiData } from '../../utils/API';
 
-import { Link } from 'react-router-dom';
+const BookMovie = ({ selectedMovie, pendingOrder, setPendingOrder }) => {
+  const movieId = selectedMovie.id;
+  const movieTitle = selectedMovie.movieTitle;
+  const navigate = useNavigate();
+  const [showings, setShowings] = useState(null);
+  const [freeSeats, setFreeSeats] = useState([]);
 
-const BookMovie = (props) => {
- 
-  const {
-      id,
-    movieTitle,
-    movieShowDates,
-    movieShowTimes,
-  } = props;
-    const navigate = useNavigate();
+  useApiData(async (api) => {
+    const response = await api.listShowings(movieId);
+    if (response.ok)
+      setShowings(response.data);
+    else if (response.type !== 'aborted')
+      toast.error(`Error fetching showings: ${response.message}`);
+  }, { deps: [movieId] });
 
-  const [selectedShowDate, setSelectedShowDate] = useState(movieShowDates || '');
+  const selectedShowing = showings?.find((showing) => showing.id === pendingOrder.showingId);
 
-  const [selectedTime, setSelectedTime] = useState(movieShowTimes || '');
+  useApiData(async (api) => {
+    if (!selectedShowing)
+      return;
+    const response = await api.listFreeSeats(selectedShowing.id);
+    if (response.ok)
+      setFreeSeats(response.data);
+    else if (response.type !== 'aborted')
+      toast.error(`Error fetching free seats: ${response.message}`);
+  }, { deps: [selectedShowing] });
 
+  useEffect(() => {
+    if (showings && showings.length > 0 && !selectedShowing)
+      setPendingOrder((order) => ({ ...order, showingId: showings[0].id, tickets: [] }));
+  }, [showings, selectedShowing]);
 
-  // Seat and Ticket Selectors
+  if (!selectedShowing)
+    return <></>;
+
   const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
   const columns = [1, 2, 3, 4, 5, 6, 7, 8];
-  const availableSeats = rows.flatMap(row => columns.map(col => `${row}${col}`));
+  const seatNames = rows.flatMap(row => columns.map(col => `${row}${col}`));
   
-  const [selectedSeats, setSelectedSeats] = useState([]);
-
-  const [selectedTickets, setSelectedTickets] = useState({
-    child: 0,
-    adult: 0,
-    senior: 0,
-  });
-
-  // Show Date and Show Time Selectors
   const handleTimeSelect = (e) => {
-    setSelectedTime(e.target.value);
+    setPendingOrder((order) => ({ ...order, showingId: +e.target.value }));
   };
 
-  const handleShowDateSelect = (e) => {
-    setSelectedShowDate(e.target.value);
-    console.log(selectedShowDate);
+  const checkNow = () => {
+    navigate('/Checkout');
   };
-
-    const checkNow = (id, movieTitle) => {
-        //const shortTitle = movieTitle.slice(0, 16);
-        const checkoutDetails = {
-            id: id,
-            selectedTickets: selectedTickets,
-            selectedSeats: selectedSeats,
-            selectedTime: selectedTime,
-            selectedShowDate: selectedShowDate,
-        }
-        const encodedDetails = encodeURIComponent(JSON.stringify(checkoutDetails));
-        console.log("Encoded Details:", encodedDetails);
-        navigate(`/Checkout/${encodedDetails}`);
-    };
 
   return (
     <div className="book_movie_container">
-
       <div className="movie_detail">
-        <MovieDetail selectedMovie={movieTitle} />
+        <MovieDetail selectedMovie={movieTitle}/>
       </div>
 
-      <div className="show_day_selector">
-        <ShowDateSelector
-          showDates={movieShowDates}
-          selectedShowDate={selectedShowDate}
-          handleShowDateSelect={handleShowDateSelect} // Pass the handleShowDateSelect function as a prop
-        />
-      </div>
-
-      
       <div className="show_time_selector">
-        <ShowTimeSelector
-          selectedTime={movieShowTimes}
-          handleTimeSelect={handleTimeSelect}
-        />
+        <ShowTimeSelector {...{showings, pendingOrder, handleTimeSelect}}/>
       </div>
 
       <div className="seat_selector">
-        <SeatSelector availableSeats={availableSeats} setSelectedSeats={setSelectedSeats} />
+        <SeatSelector {...{seatNames, freeSeats, pendingOrder, setPendingOrder}}/>
       </div>
       
       <div className="age_selector">
-        <AgeSelector selectedSeats={selectedTickets} setSelectedTickets={setSelectedTickets} />
-        {/* Select tickets based on age: child, adult, senior */}
+        <AgeSelector {...{seatNames, pendingOrder, setPendingOrder}}/>
       </div>
 
-
-        <button onClick={() => checkNow(id, movieTitle)} className="book_movie_button">Proceed to Checkout</button>
-
+      <button onClick={() => checkNow()} className="book_movie_button">Proceed to Checkout</button>
     </div>
   );
 };
