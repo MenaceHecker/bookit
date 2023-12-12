@@ -35,17 +35,49 @@ const Signup = () => {
 //  verification code should be sent to user's email address upon registration
 const handleSubmit = async (e) => {
   e.preventDefault();
+
   if (formData.password !== formData.confirmPassword) {
     toast.error('Error: Passwords do not match');
     return;
   }
+  const paymentData = {
+    cardFirstName: formData.cardFirstName,
+    cardLastName: formData.cardLastName,
+    cardNumber: formData.cardNumber,
+    expirationDate: formData.expirationDate,
+    securityCode: formData.securityCode,
+    billingFirstName: formData.billingFirstName,
+    billingLastName: formData.billingLastName,
+    billingStreetAddress: formData.billingStreetAddress,
+    billingCity: formData.billingCity,
+    billingState: formData.billingState,
+    billingZipCode: formData.billingZipCode,
+    billingPhoneNumber: formData.billingPhoneNumber,
+  };
+  try {
+    const paymentResponse = await api.makePayment(paymentData);
 
-  const response = await api.createCustomer(formData);
-  if (response.ok) {
-    toast.success('Signed up');
-    navigate('/Activate');
-  } else {
-    toast.error(`Error: ${response.message}`);
+    if (paymentResponse.ok) {
+      // Payment was successful
+      toast.success('Payment Successful');
+    } else {
+      // Payment failed
+      toast.error(`Payment Error: ${paymentResponse.message}`);
+      return;
+    }
+    // Continue with the user registration
+    const userRegistrationResponse = await api.createCustomer(formData);
+
+    if (userRegistrationResponse.ok) {
+      toast.success('Signed up');
+      navigate('/Activate');
+    } else {
+      toast.error(`Error: ${userRegistrationResponse.message}`);
+    }
+  } catch (error) {
+    // Handle any unexpected errors
+    console.error('An error occurred:', error);
+    toast.error('An unexpected error occurred. Please try again.');
   }
 };
 
