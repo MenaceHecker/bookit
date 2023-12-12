@@ -7,18 +7,21 @@ import {SessionContext} from "../../utils/Session";
 import Login from "../Login/Login";
 
 
-function BookingPage ({movies, refreshMovies}) {
+function BookingPage ({ movies, refreshMovies, pendingOrder, setPendingOrder }) {
   const { id } = useParams();
   const session = useContext(SessionContext);
   useEffect(() => { refreshMovies(); }, [id, refreshMovies]);
+  if (session.currentUser === null)
+    return <Login/>;
   const selectedMovie = movies.find((movie) => movie.id === +id);
-    return (
-        <div>
-          {session.currentUser !== null && <Header/>}
-          {session.currentUser !== null && selectedMovie && <BookMovie {...selectedMovie} />}
-          {session.currentUser == null && <Login/>}
-        </div>
-    );
+  if (!selectedMovie)
+    return <Header/>;
+  return (
+    <div>
+      <Header/>
+      <BookMovie {...{selectedMovie, pendingOrder, setPendingOrder}}/>
+    </div>
+  );
 };
 
 export default BookingPage;

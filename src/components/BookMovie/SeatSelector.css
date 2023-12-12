@@ -24,17 +24,16 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
   }
-
- 
   
-  .seat.selected {
-    background-color: red;
-    border-color: red;
-    color: white;
-  }
+.seat.selected {
+  background-color: red;
+  border-color: red;
+  color: white;
+}
 
-  
-
+.seat.occupied {
+  background-color: gray;
+}
 
    .screen {
     width: 400px;

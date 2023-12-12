@@ -4,19 +4,45 @@ import { APIContext, useApiData } from '../../utils/API';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const CheckoutU = (props) => {
-    let navigate = useNavigate();
+const CheckoutU = ({ pendingOrder, setPendingOrder }) => {
+    const navigate = useNavigate();
+    const [ticketTypes, setTicketTypes] = useState(null);
+    const [paymentCards, setPaymentCards] = useState(null);
+    const [promoCode, setPromoCode] = useState('');
+    const [promotion, setPromotion] = useState(null);
+    const [selectedCardId, setSelectedCardId] = useState(null);
+
+    useApiData(async (api) => {
+        const response = await api.listTicketTypes();
+        if (response.ok)
+            setTicketTypes(response.data);
+        else if (response.type !== 'aborted')
+            toast.error(`Error fetching ticket types: ${response.message}`);
+    });
+
+    const [refreshPaymentCards] = useApiData(async (api) => {
+        const response = await api.listCards();
+        if (response.ok)
+            setPaymentCards(response.data);
+        else if (response.type !== 'aborted')
+            toast.error(`Error fetching cards: ${response.message}`);
+    });
+
+    useEffect(() => {
+        if (!paymentCards || paymentCards.length === 0)
+            setSelectedCardId(null);
+        else if (!paymentCards.some((card) => card.cardId === selectedCardId))
+            setSelectedCardId(paymentCards[0].cardId);
+    }, [paymentCards, selectedCardId]);
+
     let totalPrice = 0.0;
-    let [pCode, setPC] = useState('');
-    const {
-        id,
-        selectedTickets,
-        selectedSeats,
-        selectedTime,
-        selectedShowDate,
-    } = props;
-    console.log("Selected Seats:", selectedSeats);
-    const childPrice = 11.99, adultPrice = 48.99, seniorPrice = 2.99;
+    if (ticketTypes)
+        for (const { type } of pendingOrder.tickets)
+            totalPrice += ticketTypes.find((t) => t.name === type).price;
+    if (promotion)
+        totalPrice *= (100 - promotion.discountPct) / 100;
+    totalPrice = Math.round(totalPrice * 100) / 100;
+
     const [paymentFormData, setPFD] = useState({
         //Payment Information/Card Info
         firstName: '',
@@ -33,24 +59,8 @@ const CheckoutU = (props) => {
             billingStreetAddress: '',
         });
     const api = useContext(APIContext);
-    const [payments, setPayments] = useState([]);
-    const [selectedPayment, setSelectedPayment] = useState(null);
-    const [previousPaymentSelected, setPPS] = useState(false);
-    const handlePaymentChange = (paymentMethod) => {
-        setSelectedPayment(selectedPayment === paymentMethod ? null : paymentMethod);
-        setPPS(!previousPaymentSelected);
-    };
-    const [refreshPayments] = useApiData(async (api) => {
-        try {
-          const response = await api.listCards();
-          if (response.ok)
-            setPayments(response.data);
-          else if (response.type !== 'aborted')
-            toast.error(`Error fetching cards: ${response.message}`);
-        } catch (err) {
-          console.error(err);
-        }
-      });
+
+    const previousPaymentSelected = true;
 
     const addCard = async (card) => {
         const response = await api.createCard(card);
@@ -64,7 +74,7 @@ const CheckoutU = (props) => {
             password: '',
             password2: '',
         });*/
-        refreshPayments();
+        refreshPaymentCards();
     };
     const save_payment = async (e) => {
         e.preventDefault();
@@ -73,68 +83,21 @@ const CheckoutU = (props) => {
     };
     const submit = async (e) => {
         e.preventDefault();
-        if (selectedPayment) {
-            const book = {
-                showingId: id,
-                cardId: selectedPayment.cardId,
-                promoCode: pCode,
-                tickets: selectedTickets,
-            };
-            const response = await api.createBooking(book);
-            if (response.ok) {
-                toast.success('Tickets have been booked');
-                navigate('/OF');
-            } else {
-                toast.error(`Error: ${response.message}`);
-            }
+        const book = {
+            showingId: pendingOrder.showingId,
+            cardId: selectedCardId,
+            promoCode: promotion !== null ? promoCode : null,
+            tickets: pendingOrder.tickets,
+        };
+        const response = await api.createBooking(book);
+        if (response.ok) {
+            toast.success('Tickets have been booked');
+            navigate('/OrderConfirmation');
+            setPendingOrder((order) => ({ ...order, showingId: null, bookingId: null }));
         } else {
-            toast.error(`Error: No payment method selected`);
+            toast.error(`Error: ${response.message}`);
         }
-    }
-
-    let items = [], count = 1;
-    // logic for generating purchases
-    if (selectedTickets.child > 0) {
-        items.push(count + '. Child Tickets: ' + selectedTickets.child + '    $' + selectedTickets.child*childPrice);
-        totalPrice += selectedTickets.child*childPrice;
-        count++;
-    }
-    if (selectedTickets.adult > 0) {
-        items.push(count + '. Adult Tickets: ' + selectedTickets.adult + '    $' + selectedTickets.adult*adultPrice);
-        totalPrice += selectedTickets.adult*adultPrice;
-        count++;
-    }
-    if (selectedTickets.senior > 0) {
-        items.push(count + '. Senior Tickets: ' + selectedTickets.senior + '    $' + selectedTickets.senior*seniorPrice);
-        totalPrice += selectedTickets.senior*seniorPrice;
-        count++;
-    }
-    //Dummy Payment Methods
-    let methods = [{name:"Card name: Joe Shamlock", number: "Card: ****98"},{name:"Card name: Johnny Jackson", number:"Card: ****71"}, {name:"Card name: Jeffrey Humor", number:"Card: ****25"}]
-
-
-/*
-    const handleInputChange = (index, event) => {
-        const values = [...billingFormData];
-        values[index].value = event.target.value;
-        setBFD(values);
     };
-    const handleClear = (index, event) => {
-        const values = [...billingFormData];
-        values[index].value = '';
-        setBFD(values);
-    }
-    const handleInputChange2 = (index, event) => {
-        const values = [...paymentFormData];
-        values[index].value = event.target.value;
-        setPFD(values);
-    };
-    const handleClear2 = (index, event) => {
-        const values = [...paymentFormData];
-        values[index].value = '';
-        setPFD(values);
-    }
-    */
 
     const handleInputChange = (key, value) => {
         setPFD((prevData) => ({
@@ -151,14 +114,22 @@ const CheckoutU = (props) => {
     const [validPromo, setVP] = useState(false);
     const [promo, setPromo] = useState({});
     const handleInputChangePromo = (s) => {
-        setPC(s);
-    }
+        setPromoCode(s);
+        setPromotion(null);
+    };
     const checkPromo = async () => {
-        const response = await api.getPromotionFromCode(pCode);
-        setPromo(response.data);
-        console.log(promo);
-        setVP(true);
-    }
+        const response = await api.getPromotionFromCode(promoCode);
+        if (response.ok) {
+            setPromotion(response.data);
+            toast.success('Promo code applied');
+        } else {
+            toast.error(`Error: ${response.message}`);
+        }
+    };
+
+    if (!ticketTypes || !paymentCards)
+        return <></>;
+
     return (
         <div id={"checkout_cont"}>
         <div className={"left"}>
@@ -229,46 +200,43 @@ const CheckoutU = (props) => {
 
 
         <div className={"right"}>
-            {items.map((item, index) => (
-                <div key={index} id={"inp_cont"}>
-                    <p id={'orderconf_h1'}>{item}</p>
-                    <p>Time of seeing: {selectedTime}</p>
-                    <p>Date of seeing: {selectedShowDate}</p>
-                    <p>Seats selected: {selectedSeats.map((seat, index) => (
-                        <span key={index}>{seat}</span>
-                    ))}</p>
-                </div>
-            ))}
-            {validPromo && <p>Total Price: {totalPrice - (totalPrice*(promo.discountPct/100))}</p>}
-            {validPromo && <p id={'orderconf_h1'}>Discount: {promo.name}</p>}
-            {validPromo  && <p>Percentage: {promo.discountPct}</p>}
-            {validPromo   && <p>Description: {promo.description}</p>}
-            {validPromo  && <p>Exp. Date: {promo.expirationDate}</p>}
+            <div id={"inp_cont"}>
+                <h2 id={'orderconf_h1'}>Tickets:</h2>
+                {pendingOrder.tickets.map(({ type, seatNum }) => {
+                    let price = ticketTypes.find((t) => t.name === type).price;
+                    return (<p key={seatNum}>{type}: ${price.toFixed(2)}</p>);
+                })}
+            </div>
+            <p>Total Price: {totalPrice}</p>
+            {promotion !== null && <p id={'orderconf_h1'}>Discount: {promotion.name}</p>}
+            {promotion !== null && <p>Percentage: {promotion.discountPct}</p>}
+            {promotion !== null && <p>Description: {promotion.description}</p>}
+            {promotion !== null && <p>Exp. Date: {promotion.expirationDate}</p>}
 
         </div>
             <div className={"right"}>
-                <h2>Enter Promo:</h2>
+                <h2>Enter Promo Code:</h2>
                 <input
                     type="text"
-                    value={pCode}
+                    value={promoCode}
                     onChange={(e) => handleInputChangePromo(e.target.value)}
                 /><button onClick={checkPromo}>Enter</button>
-                {validPromo && <p>Promotional Code Applied</p>}
             </div>
 
             <div className={"right"}>
-                {payments.map((paymentMethod) => (
-                    <div key={paymentMethod.cardId} id={"inp_cont"}>
+                {paymentCards.map((card) => (
+                    <div key={card.cardId} id={"inp_cont"}>
                         <div id={"list_slot"}>
                             <input
-                                type="checkbox"
-                                value={paymentMethod.cardId}
-                                name="paymentMethod"
-                                onChange={() => handlePaymentChange(paymentMethod)}
+                                type="radio"
+                                value={card.cardId}
+                                name="paymentCard"
+                                checked={selectedCardId === card.cardId}
+                                onChange={() => setSelectedCardId(card.cardId)}
                             />
-                            <p id={'orderconf_h1'}>{paymentMethod.firstName} {paymentMethod.lastName}</p>
-                            <p id={'orderconf_h1'}>{paymentMethod.lastFourDigits}</p>
-                            <p id={'orderconf_h1'}>{paymentMethod.expirationDate}</p>
+                            <p id={'orderconf_h1'}>{card.firstName} {card.lastName}</p>
+                            <p id={'orderconf_h1'}>{card.lastFourDigits}</p>
+                            <p id={'orderconf_h1'}>{card.expirationDate}</p>
                         </div>
                     </div>
                 ))}

@@ -1,53 +1,48 @@
-import React from 'react';
-import './AgeSelector.css'
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import './AgeSelector.css';
+import { useApiData } from '../../utils/API';
 
-const AgeSelector = ({ selectedSeats, setSelectedTickets }) => {
-  
-  const handleTicketSelect = (e) => {
-    const { name, valueAsNumber } = e.target;
-    setSelectedTickets(prevTickets => ({
-      ...prevTickets,
-      [name]: valueAsNumber >= 0 ? valueAsNumber : 0 // Ensure non-negative values
+const AgeSelector = ({ seatNames, pendingOrder, setPendingOrder }) => {
+  const [ticketTypes, setTicketTypes] = useState(null);
+
+  useApiData(async (api) => {
+    const response = await api.listTicketTypes();
+    if (response.ok)
+      setTicketTypes(response.data);
+    else if (response.type !== 'aborted')
+      toast.error(`Error fetching ticket types: ${response.message}`);
+  });
+
+  const handleTypeSelect = (e, seatNum) => {
+    const type = e.target.value;
+    setPendingOrder((order) => ({
+      ...order,
+      tickets: order.tickets.map((t) => t.seatNum === seatNum ? { seatNum, type } : t)
     }));
   };
-  
+
+  if (!ticketTypes)
+    return <></>;
+
+  const options = ticketTypes.map(({ name }) => (
+    <option key={name} value={name}>{name}</option>
+  ));
+
+  const rows = pendingOrder.tickets.map(({ type, seatNum }) => (
+    <label key={seatNum}>
+      {seatNames[seatNum]}:{' '}
+      <select value={type} onChange={(e) => handleTypeSelect(e, seatNum) }>{options}</select>
+    </label>
+  ));
 
   return (
     <div className="select_tickets_row">
       <h3>Select Tickets</h3>
-      <label>
-        Child Tickets:{' '}
-        <input
-          type="number"
-          value={selectedSeats.child}
-          min="0"
-          onChange={handleTicketSelect}
-          name="child"
-        />
-      </label>
-      <label>
-        Adult Tickets:{' '}
-        <input
-          type="number"
-          value={selectedSeats.adult}
-          min="0"
-          onChange={handleTicketSelect}
-          name="adult"
-        />
-      </label>
-      <label>
-        Senior Tickets:{' '}
-        <input
-          type="number"
-          value={selectedSeats.senior}
-          min="0"
-          onChange={handleTicketSelect}
-          name="senior"
-        />
-      </label>
+
+      {rows}
     </div>
   );
 };
 
 export default AgeSelector;
-

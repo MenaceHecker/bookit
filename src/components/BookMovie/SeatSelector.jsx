@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import './SeatSelector.css'; // SeatSelector: Red Seat for occupied, Transparent for not.
 
-const SeatSelector = ({ availableSeats }) => {
+const SeatSelector = ({ seatNames, freeSeats, pendingOrder, setPendingOrder }) => {
   const [selectedSeats, setSelectedSeats] = useState([]);
 
-  const handleSeatSelect = (seat) => {
-    setSelectedSeats(prevSeats =>
-      prevSeats.includes(seat)
-        ? prevSeats.filter(s => s !== seat)
-        : [...prevSeats, seat]
-    );
+  const handleSeatSelect = (seatNum) => {
+    setPendingOrder(prevSeats => {
+      const { tickets } = prevSeats;
+      const occupied = !freeSeats.includes(seatNum);
+      const selected = tickets.some((t) => t.seatNum === seatNum);
+      const include = !occupied && !selected;
+      return {
+        ...prevSeats,
+        tickets: !occupied && !selected
+          ? [...tickets, { type: 'Adult', seatNum }]
+          : tickets.filter((t) => t.seatNum !== seatNum)
+      };
+    });
   };
 
   return (
@@ -35,13 +42,17 @@ const SeatSelector = ({ availableSeats }) => {
 
       <div className="screen"></div>
       <div className="seat-container">
-        {availableSeats.map(seat => (
+        {seatNames.map((seatName, i) => (
           <div
-            key={seat}
-            className={`seat ${selectedSeats.includes(seat) ? 'selected' : ''}`}
-            onClick={() => handleSeatSelect(seat)}
+            key={i}
+            className={`seat ${
+              pendingOrder.tickets.some((t) => t.seatNum === i) ? 'selected' : ''
+            } ${
+              !freeSeats.includes(i) ? 'occupied' : ''
+            }`}
+            onClick={() => handleSeatSelect(i)}
           >
-            {seat}
+            {seatName}
           </div>
         ))}
       </div>

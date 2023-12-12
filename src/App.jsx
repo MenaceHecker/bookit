@@ -41,19 +41,22 @@ export default function App() {
       toast.error(`Error fetching listings: ${response.message}`);
     tools.refreshOnTimeout(60000);
   }, { api });
+  const [pendingOrder, setPendingOrder] = useState({ showingId: null, tickets: null, cardId: null });
   return (
     <APIContext.Provider value={api}>
       <SessionContext.Provider value={session}>
         <ToastContainer
-          position="top-center" autoClose={1000} closeButton={false} transition={Slide}
+          position="top-center" autoClose={2000} closeButton={false} transition={Slide}
           hideProgressBar draggable={false} theme="light"
         />
         <Routes>
           <Route path="/" element={<Homepage {...{movies, refreshMovies}}/>}/>
           <Route path="/Activate" element={<Activate/>}/>
           <Route path="/admin" element={<MainAdmin/>}/>
-          <Route path="/BookingPage/:id/*" element={<BookingPage {...{movies, refreshMovies}}/>}/>
-          <Route path="/Checkout/:encodedDetails/" element={<Checkout/>}/>
+          <Route path="/BookingPage/:id/*" element={
+            <BookingPage {...{movies, refreshMovies, pendingOrder, setPendingOrder}}/>
+          }/>
+          <Route path="/Checkout/" element={<Checkout {...{pendingOrder, setPendingOrder}}/>}/>
           <Route path="/CreateNewPassword" element={<CreateNewPassword/>}/>
           <Route path="/EditProfile" element={<EditProfile/>}/>
           <Route path="/ForgotPassword" element={<ForgotPassword/>}/>
